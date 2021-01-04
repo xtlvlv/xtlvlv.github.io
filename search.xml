@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>test2</title>
+    <url>/test2/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
     <title>test</title>
     <url>/test/</url>
     <content><![CDATA[<h3 id="第一"><a href="#第一" class="headerlink" title="第一"></a>第一</h3><p>111<br>rf</p>
@@ -18,18 +23,13 @@
       </tags>
   </entry>
   <entry>
-    <title>test2</title>
-    <url>/test2/</url>
+    <title>test3</title>
+    <url>/test3/</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>test4</title>
     <url>/test4/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
-    <title>test3</title>
-    <url>/test3/</url>
     <content><![CDATA[]]></content>
   </entry>
 </search>
