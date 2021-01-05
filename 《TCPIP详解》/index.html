@@ -1,0 +1,2384 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head.jpeg">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xtlvlv.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":2,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="[TOC] 置顶 这本书略看了一下，学习的时候主要学的《计算机网络(谢希仁)》，这个笔记是根据“即时通讯网”上的资料整理的。获益良多。 关于TCP,嗯还有很多要学的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《TCPIP详解》">
+<meta property="og:url" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/index.html">
+<meta property="og:site_name" content="愚昧之巅">
+<meta property="og:description" content="[TOC] 置顶 这本书略看了一下，学习的时候主要学的《计算机网络(谢希仁)》，这个笔记是根据“即时通讯网”上的资料整理的。获益良多。 关于TCP,嗯还有很多要学的。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/1.ppp.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/2.IP%E9%A6%96%E9%83%A8.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/3.ftpARP.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/4.ARP.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/5.ICMP-IP.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/6.ICMP.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/7.ICMP%E6%8A%A5%E6%96%87%E7%B1%BB%E5%9E%8B.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/8.ICMP%E8%AF%B7%E6%B1%82%E6%8E%A9%E7%A0%81.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/9.ICMP%E6%97%B6%E9%97%B4%E6%88%B3.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/10.ICMP%E4%B8%8D%E5%8F%AF%E8%BE%BE%E6%8A%A5%E6%96%87.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/11.ICMP%E5%9B%9E%E6%98%BE.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/12.IP%E5%B1%82%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/13.ICMP%E9%87%8D%E5%AE%9A%E5%90%91.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/14.RIP.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/15.RIP2.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/16.UDP%E6%95%B0%E6%8D%AE%E6%8A%A5.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/17.UDP%E6%A0%A1%E9%AA%8C%E5%92%8C.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/18.ICMP%E4%B8%8D%E5%8F%AF%E8%BE%BE%E5%B7%AE%E9%94%99.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/19.IGMP%E6%8A%A5%E6%96%87.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/20.DNS%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/21.%E6%99%AE%E9%80%9A%E5%9F%9F.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/22.DNS%E6%8A%A5%E6%96%87.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/23.DNS%E9%97%AE%E9%A2%98.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/24.%E5%9F%9F%E5%90%8D.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/25.%E6%9F%A5%E8%AF%A2%E7%B1%BB%E5%9E%8B.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/26.BOOTP%E6%8A%A5%E6%96%87.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/27.TCP.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/28.TCP%E9%A6%96%E9%83%A8.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/29.%E6%A0%87%E5%BF%97%E4%BD%8D.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/30.%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B%E4%B8%8E%E6%96%AD%E5%BC%80%E4%BE%8B%E5%AD%90.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/TCP%E7%8A%B6%E6%80%81%E5%8F%98%E8%BF%81%E5%9B%BE.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/%E6%8C%89%E9%94%AE%E5%9B%9E%E6%98%BE%E6%9C%8D%E5%8A%A1%E5%99%A8.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/TCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/%E7%AA%97%E5%8F%A3%E7%A7%BB%E5%8A%A8.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E4%BE%8B%E5%AD%90.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/%E6%85%A2%E5%90%AF%E5%8A%A8%E4%BE%8B%E5%AD%90.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/%E8%B6%85%E6%97%B6%E4%B8%8E%E9%87%8D%E4%BC%A0%E4%BE%8B%E5%AD%90.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/%E6%85%A2%E5%90%AF%E5%8A%A8%E5%92%8C%E6%8B%A5%E5%A1%9E%E9%81%BF%E5%85%8D%E7%9A%84%E5%8F%AF%E8%A7%86%E5%8C%96%E6%8F%8F%E8%BF%B0.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/SNMP5%E7%A7%8D%E6%93%8D%E4%BD%9C.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/SNMP%E6%8A%A5%E6%96%87.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/SNMP%E5%AF%B9%E8%B1%A1%E6%A0%87%E8%AF%86.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/SNMP%E4%B9%8BUDP%E7%BB%84%E7%BB%93%E6%9E%84.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/UDP%E7%BB%84%E4%B8%8B%E7%AE%80%E5%8D%95%E5%8F%98%E9%87%8F.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/UDPtable%E4%B8%AD%E7%9A%84%E5%8F%98%E9%87%8F.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/Telnet%E7%99%BB%E5%BD%95.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/Rlogin%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/rlogin%E5%92%8Ctelnet%E7%9A%84%E4%B8%8D%E5%90%8C%E7%89%B9%E6%80%A7.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/FTP%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/%E5%B8%B8%E8%A7%81%E7%9A%84FTP%E5%91%BD%E4%BB%A4.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/FTP%E5%BA%94%E7%AD%94%E4%BB%A3%E7%A0%81.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/FTP%E8%BF%9E%E6%8E%A5.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/TCPIP%E4%BA%A4%E6%8D%A2%E7%94%B5%E5%AD%90%E9%82%AE%E4%BB%B6.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/RPC%E8%BF%87%E7%A8%8B%E8%B0%83%E7%94%A8%E6%8A%A5%E6%96%87.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/RPC%E5%BA%94%E7%AD%94%E6%8A%A5%E6%96%87.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/NFS%E5%AE%A2%E6%88%B7%E6%9C%8D%E5%8A%A1%E5%99%A8.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/NFS%E5%AE%89%E8%A3%85.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/xwindow.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/x%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%9B%E7%A8%8B.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/xscope.png">
+<meta property="article:published_time" content="2021-01-05T11:30:03.000Z">
+<meta property="article:modified_time" content="2021-01-05T11:58:59.941Z">
+<meta property="article:author" content="愚昧之巅">
+<meta property="article:tag" content="tcp">
+<meta property="article:tag" content="ip">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/1.ppp.png">
+
+<link rel="canonical" href="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>《TCPIP详解》 | 愚昧之巅</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<!-- require MetingJS-->
+
+<script src="https://cdn.jsdelivr.net/npm/meting@2.0.1/dist/Meting.min.js"></script> 
+
+  <!--pjax：防止跳转页面音乐暂停-->
+ <script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.js"></script>
+  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">愚昧之巅</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">27</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">22</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xtlvlv.github.io/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpeg">
+      <meta itemprop="name" content="愚昧之巅">
+      <meta itemprop="description" content="以阅读为生是一件很酷的事，以写作为生是一件更酷的事。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="愚昧之巅">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《TCPIP详解》
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-01-05 19:30:03 / 修改时间：19:58:59" itemprop="dateCreated datePublished" datetime="2021-01-05T19:30:03+08:00">2021-01-05</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/" class="post-meta-item leancloud_visitors" data-flag-title="《TCPIP详解》" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论数：</span>
+    
+    <a title="valine" href="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>49k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>45 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>[TOC]</p>
+<h1 id="置顶"><a href="#置顶" class="headerlink" title="置顶"></a>置顶</h1><ol>
+<li>这本书略看了一下，学习的时候主要学的《计算机网络(谢希仁)》，这个笔记是根据“即时通讯网”上的资料整理的。获益良多。</li>
+<li>关于TCP,嗯还有很多要学的。<a id="more"></a>
+
+</li>
+</ol>
+<h1 id="一：概述"><a href="#一：概述" class="headerlink" title="一：概述"></a>一：概述</h1><h3 id="网络常识"><a href="#网络常识" class="headerlink" title="网络常识"></a>网络常识</h3><ul>
+<li><ol>
+<li>互联网地址(ip地址)</li>
+</ol>
+<ul>
+<li>网络上每一个节点都必须有一个独立的Internet地址（也叫做IP地址）。现在，通常使用的IP地址是一个32bit的数字，也就是我们常说的IPv4 标准，这32bit的数字分成四组，也就是常见的255.255.255.255的样式。IPv4标准上，地址被分为五类，我们常用的是B类地址。具体的 分类请参考其他文档。需要注意的是IP地址是网络号+主机号的组合</li>
+</ul>
+</li>
+<li><ol start="2">
+<li>域名系统</li>
+</ol>
+<ul>
+<li>域名系统是一个分布的数据库，它提供将主机名（就是网址）转换成IP地址的服务。</li>
+</ul>
+</li>
+<li><ol start="3">
+<li>RFC</li>
+</ol>
+<ul>
+<li>RFC是什么？RFC就是tcp/ip协议的标准文档，在这里我们可以看到RFC那长长的定义列表，现在它一共有4000多个协议的定义，当然，我们所要学习的，也就是那么十几个协议而已。</li>
+</ul>
+</li>
+<li><ol start="4">
+<li>端口号(port)</li>
+</ol>
+<ul>
+<li>注意，这个号码是用在TCP，UDP上的一个逻辑号码，并不是一个硬件端口，我们平时说把某某端口封掉了，也只是在IP层次把带有这个号码的IP包给过滤掉了而已。</li>
+</ul>
+</li>
+<li><ol start="5">
+<li>应用编程接口</li>
+</ol>
+<ul>
+<li>现在常用的编程接口有socket和TLI。而前面的有时候也叫做“Berkeley socket”，可见Berkeley对于网络的发展有多大的贡献。</li>
+</ul>
+</li>
+</ul>
+<h1 id="二：链路层"><a href="#二：链路层" class="headerlink" title="二：链路层"></a>二：链路层</h1><h3 id="1-引言"><a href="#1-引言" class="headerlink" title="1. 引言"></a>1. 引言</h3><ul>
+<li><p>链路层主要有三个目的</p>
+<ol>
+<li>为IP模块发送和接收IP数据报；</li>
+<li>为ARP模块发送ARP请求和接收ARP应答；</li>
+<li>为RARP发送RARP请求和接收RARP应答。</li>
+</ol>
+</li>
+<li><p>TCP/IP支持多种不同的链路层协议，这取决于网络所使用的硬件，如以太网、令牌环网、FDDI（光纤分布式数据接口）及RS-232串行线路等。</p>
+</li>
+<li><p>本章讨论内容</p>
+<ol>
+<li>详细讨论以太网链路层协议</li>
+<li>两个串行接口链路层协议（SLIP和PPP），以及大多数实现都包含的环回（loopback）驱动程序。</li>
+<li>以太网和SLIP是本书中大多数例子使用的链路层。</li>
+<li>对MTU（最大传输单元）进行了介绍</li>
+<li>如何为串行线路选择MTU。</li>
+</ol>
+</li>
+</ul>
+<h3 id="2-以太网和IEEE-802封装"><a href="#2-以太网和IEEE-802封装" class="headerlink" title="2. 以太网和IEEE 802封装"></a>2. 以太网和IEEE 802封装</h3><ul>
+<li>以太网是当今TCP/IP采用的主要的局域网技术。它采用一种称作CSMA/CD的媒体接入方法，其意思是带冲突检测的载波侦听多路接入（Carrier Sense, Multiple Access with Collision Detection）。它的速率为10 Mb/s，地址为48 bit。</li>
+<li>几年后，IEEE（电子电气工程师协会）802委员会公布了一个稍有不同的标准集，其中802.3针对整个CSMA/CD网络，802.4针对令牌总线网络，802.5针对令牌环网络。这三者的共同特性由802.2标准来定义，那就是802网络共有的逻辑链路控制（LLC）。不幸的是，802.2和802.3定义了一个与以太网不同的帧格式。</li>
+</ul>
+<h3 id="3-SLIP：串行线路IP"><a href="#3-SLIP：串行线路IP" class="headerlink" title="3. SLIP：串行线路IP"></a>3. SLIP：串行线路IP</h3><ul>
+<li>SLIP的全称是Serial Line IP。它是一种在串行线路上对IP数据报进行封装的简单形式</li>
+<li>压缩的SLIP，CSLIP</li>
+<li>常用于低速的串行链路</li>
+</ul>
+<h3 id="4-PPP：点对点协议"><a href="#4-PPP：点对点协议" class="headerlink" title="4. PPP：点对点协议"></a>4. PPP：点对点协议</h3><ul>
+<li>点对点协议修改了SLIP协议中的所有缺陷</li>
+<li>PPP数据帧的格式。  <!-- ![1.ppp.png](./img/1.ppp.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/1.ppp.png" class="" title="1.ppp.png">
+<ul>
+<li>每一帧都以标志字符0x7e开始和结束。</li>
+<li>紧接着是一个地址字节，值始终是0xff</li>
+<li>然后是一个值为0x03的控制字节。</li>
+<li>接下来是协议字段，类似于以太网中类型字段的功能。当它的值为0x0021时，表示信息字段是一个IP数据报；值为0xc021时，表示信息字段是链路控制数据；值为0x8021时，表示信息字段是网络控制数据。</li>
+<li>CRC字段（或FCS，帧检验序列）是一个循环冗余检验码，以检测数据帧中的错误。</li>
+<li>0x7e结束</li>
+</ul>
+</li>
+<li>由于标志字符的值是0x7e，因此当该字符出现在信息字段中时，PPP需要对它进行转义。</li>
+<li>与SLIP类似，由于PPP经常用于低速的串行链路</li>
+<li>PPP比SLIP具有下面这些优点：<br>  (1)PPP支持在单根串行线路上运行多种协议，不只是IP协议；<br>  (2)每一帧都有循环冗余检验；<br>  (3)通信双方可以进行IP地址的动态协商(使用IP网络控制协议)；<br>  (4)与CSLIP类似，对TCP和IP报文首部进行压缩；<br>  (5)链路控制协议可以对多个数据链路选项进行设置。为这些优点付出的代价是在每一帧的首部增加3个字节，当建立链路时要发送几帧协商数据，以及更为复杂的实现。</li>
+</ul>
+<h3 id="5-环回接口"><a href="#5-环回接口" class="headerlink" title="5. 环回接口"></a>5. 环回接口</h3><ul>
+<li>作用：允许运行在同一台主机上的客户程序和服务器程序通过TCP/IP进行通信。</li>
+<li>A类网络号127就是为环回接口预留的。根据惯例，大多数系统把IP地址127.0.0.1分配给这个接口，并命名为localhost。一个传给环回接口的IP数据报不能在任何网络上出现。</li>
+<li>用ifconfig显示的lo就是loopback接口</li>
+</ul>
+<h3 id="6-最大传输单元MTU"><a href="#6-最大传输单元MTU" class="headerlink" title="6. 最大传输单元MTU"></a>6. 最大传输单元MTU</h3><ul>
+<li>以太网和802.3对数据帧的长度都有一个限制，其最大值分别是1500和1492字节。链路层的这个特性称作MTU ,最大传输单元。</li>
+<li>如果IP层有一个数据报要传，而且数据的长度比链路层的MTU还大,那么IP层就需要进行分片（fragmentation），把数据报分成若干片，这样每一片都小于MTU。</li>
+<li>netstat -in看MTU值</li>
+</ul>
+<h3 id="7-路径MTU"><a href="#7-路径MTU" class="headerlink" title="7. 路径MTU"></a>7. 路径MTU</h3><ul>
+<li>当在同一个网络上的两台主机互相进行通信时，该网络的MTU是非常重要的。但是如果两台主机之间的通信要通过多个网络，那么每个网络的链路层就可能有不同的MTU。重要的不是两台主机所在网络的MTU的值，重要的是两台通信主机路径中的最小MTU。它被称作路径MTU。</li>
+<li>两台主机之间的路径MTU不一定是个常数。它取决于当时所选择的路由。而选路不一定是对称的（从A到B的路由可能与从B到A的路由不同），因此路径MTU在两个方向上不一定是一致的。</li>
+</ul>
+<h3 id="8-串行线路吞吐量计算-如何为串行线路选择MTU"><a href="#8-串行线路吞吐量计算-如何为串行线路选择MTU" class="headerlink" title="8. 串行线路吞吐量计算(如何为串行线路选择MTU)"></a>8. 串行线路吞吐量计算(如何为串行线路选择MTU)</h3><ul>
+<li>如果线路速率是9600 b/s，而一个字节有8bit，加上一个起始比特和一个停止比特，那么线路的速率就是960 B/s（字节/秒）。以这个速率传输一个1024字节的分组需要1066 ms。如果用SLIP链接运行一个交互式应用程序，同时还运行另一个应用程序如FTP发送或接收1024字节的数据，那么一般来说就必须等待一半的时间（533 ms）才能把交互式应用程序的分组数据发送出去。</li>
+<li>对于交互应用来说，等待533 ms是不能接受的。关于人的有关研究表明，交互响应时间超过100～200 ms就被认为是不好的</li>
+<li>把SLIP的MTU缩短到256就意味着链路传输一帧最长需要266 ms，它的一半是133 ms（这是一般需要等待的时间）。这样情况会好一些，但仍然不完美。我们选择它的原因（与64或128相比）是因为大块数据提供良好的线路利用率（如大文件传输）。</li>
+<li>假设CSLIP的报文首部是5个字节，数据帧总长为261个字节，256个字节的数据使线路的利用率为98.1%，帧头占了1.9%，这样的利用率是很不错的。如果把MTU降到256以下，那么将降低传输大块数据的最大吞吐量。</li>
+</ul>
+<h1 id="三：IP-网际协议"><a href="#三：IP-网际协议" class="headerlink" title="三：IP:网际协议"></a>三：IP:网际协议</h1><h3 id="1-引言-1"><a href="#1-引言-1" class="headerlink" title="1. 引言"></a>1. 引言</h3><ul>
+<li>IP是TCP/IP协议族中最为核心的协议。所有的TCP、UDP、ICMP及IGMP数据都以IP数据报格式传输</li>
+<li>不可靠unreliable<ul>
+<li>意思是它不能保证IP数据报能成功地到达目的地。IP仅提供最好的传输服务。如果发生某种错误时，如某个路由器暂时用完了缓冲区，IP有一个简单的错误处理算法：丢弃该数据报，然后发送ICMP消息报给信源端。任何要求的可靠性必须由上层来提供（如TCP）。</li>
+</ul>
+</li>
+<li>无连接connectionless<ul>
+<li>意思是IP并不维护任何关于后续数据报的状态信息。每个数据报的处理是相互独立的。这也说明，IP数据报可以不按发送顺序接收。如果一信源向相同的信宿发送两个连续的数据报（先是A，然后是B），每个数据报都是独立地进行路由选择，可能选择不同的路线，因此B可能在A到达之前先到达。</li>
+</ul>
+</li>
+<li>本章讨论的内容<ul>
+<li><ol>
+<li>IP首部中的各个字段</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>讨论IP路由选择和子网的有关内容</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>介绍两个有用的命令：ifconfig和netstat。</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>关于IP首部中一些字段的细节，将留在以后使用这些字段的时候再进行讨论。</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-IP首部"><a href="#2-IP首部" class="headerlink" title="2. IP首部"></a>2. IP首部</h3><!-- ![2.IP首部.png](./img/2.IP首部.png) -->
+<img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/2.IP%E9%A6%96%E9%83%A8.png" class="" title="2.IP首部.png">
+<ul>
+<li>首部长度<ul>
+<li>首部长度指的是首部占32 bit字的数目，包括任何选项。由于它是一个4比特字段，因此首部最长为60个字节。在第8章中，我们将看到这种限制使某些选项如路由记录选项在当今已没有什么用处。普通IP数据报（没有任何选择项）字段的值是5。</li>
+</ul>
+</li>
+<li>服务类型<ul>
+<li>服务类型（TOS）字段包括一个3bit的优先权子字段（现在已被忽略），4bit的TOS子字段和1bit未用位但必须置0。4bit的TO S分别代表：最小时延、最大吞吐量、最高可靠性和最小费用。4bit中只能置其中1bit。如果所有4bit均为0，那么就意味着是一般服务。</li>
+</ul>
+</li>
+<li>总长度字段<ul>
+<li>是指整个IP数据报的长度，以字节为单位。利用首部长度字段和总长度字段，就可以知道IP数据报中数据内容的起始位置和长度。由于该字段长16比特，所以IP数据报最长可达65535字节（超级通道的MTU为65535。它的意思其实不是一个真正的MTU—它使用了最长的IP数据报）。当数据报被分片时，该字段的值也随着变化。</li>
+<li>尽管可以传送一个长达65535字节的IP数据报，但是大多数的链路层都会对它进行分片。而且，主机也要求不能接收超过576字节的数据报。</li>
+<li>由于TCP把用户数据分成若干片，因此一般来说这个限制不会影响TCP。</li>
+<li>大量使用UDP的应用（RIP，TFTP，BOOTP，DNS，以及SNMP），它们都限制用户数据报长度为512字节，小于576字节。但是，事实上现在大多数的实现（特别是那些支持网络文件系统NFS的实现）允许超过8192字节的IP数据报。</li>
+</ul>
+</li>
+<li>标识字段<ul>
+<li>唯一地标识主机发送的每一份数据报。通常每发送一份报文它的值就会加1。</li>
+<li>在讨论分片时再来分析标志字段和片偏移字段。</li>
+</ul>
+</li>
+<li>TTL<ul>
+<li>生存时间字段设置了数据报可以经过的最多路由器数。它指定了数据报的生存时间。TTL的初始值由源主机设置（通常为32或64），一旦经过一个处理它的路由器，它的值就减去1。当该字段的值为0时，数据报就被丢弃，并发送ICMP报文通知源主机。</li>
+</ul>
+</li>
+<li>协议字段<ul>
+<li>根据它可以识别是哪个协议向IP传送数据。(TCP or UDP?)</li>
+</ul>
+</li>
+<li>首部检验和字段<ul>
+<li>是根据IP首部计算的检验和码。它不对首部后面的数据进行计算。ICMP、IGMP、UDP和TCP在它们各自的首部中均含有同时覆盖首部和数据检验和码。</li>
+</ul>
+</li>
+<li>源IP地址和目的IP地址<ul>
+<li>它们都是32 bit的值。</li>
+</ul>
+</li>
+<li>任选项<ul>
+<li>这些选项很少被使用，并非所有的主机和路由器都支持这些选项。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-IP路由选择"><a href="#3-IP路由选择" class="headerlink" title="3. IP路由选择"></a>3. IP路由选择</h3><ul>
+<li>当今的大多数多用户系统，包括几乎所有的Unix系统，都可以配置成一个路由器。我们可以为它指定主机和路由器都可以使用的简单路由算法。本质上的区别在于主机从不把数据报从一个接口转发到另一个接口，而路由器则要转发数据报。内含路由器功能的主机应该从不转发数据报，除非它被设置成那样。</li>
+<li>在一般的体制中，IP可以从TCP、UDP、ICMP和IGMP接收数据报（即在本地生成的数据报）并进行发送，或者从一个网络接口接收数据报（待转发的数据报）并进行发送。</li>
+<li>IP层在内存中有一个路由表。当收到一份数据报并进行发送时，它都要对该表搜索一次。<ul>
+<li>当数据报来自某个网络接口时，IP首先检查目的IP地址是否为本机的IP地址之一或者IP广播地址。如果确实是这样，数据报就被送到由IP首部协议字段所指定的协议模块进行处理。</li>
+<li>如果数据报的目的不是这些地址，那么（1）如果IP层被设置为路由器的功能，那么就对数据报进行转发（也就是说，像下面对待发出的数据报一样处理）；否则（2）数据报被丢弃。</li>
+</ul>
+</li>
+<li>路由表中的每一项都包含下面这些信息：<ul>
+<li>目的IP地址</li>
+<li>下一跳路由器IP地址</li>
+<li>标志</li>
+<li>为数据报的传输指定一个网络接口</li>
+</ul>
+</li>
+<li>IP路由选择</li>
+<li>为一个网络指定一个路由器，而不必为每个主机指定一个路由器，这是IP路由选择机制的另一个基本特性。这样做可以极大地缩小路由表的规模</li>
+</ul>
+<h3 id="4-子网寻址和子网掩码"><a href="#4-子网寻址和子网掩码" class="headerlink" title="4. 子网寻址和子网掩码"></a>4. 子网寻址和子网掩码</h3><ul>
+<li>先比较是否是同类地址(A?B?C?),然后用子网掩码看是否在同一个子网，然后再看主机号</li>
+<li>主机号全1表示是该子网的广播地址</li>
+<li>255.255.255.255是受限的广播(永远不被转发)</li>
+</ul>
+<h3 id="5-ifconfig和netstat"><a href="#5-ifconfig和netstat" class="headerlink" title="5. ifconfig和netstat"></a>5. ifconfig和netstat</h3><ul>
+<li>查看/设置网卡信息</li>
+<li>查看TCP等连接情况，接口信息等</li>
+</ul>
+<h1 id="四：ARP-地址解析协议"><a href="#四：ARP-地址解析协议" class="headerlink" title="四：ARP:地址解析协议"></a>四：ARP:地址解析协议</h1><h3 id="1-引言-2"><a href="#1-引言-2" class="headerlink" title="1. 引言"></a>1. 引言</h3><ul>
+<li>数据链路如以太网或令牌环网都有自己的寻址机制（常常为48 bit地址），这是使用数据链路的任何网络层都必须遵从的。</li>
+<li>一个网络如以太网可以同时被不同的网络层使用。例如，一组使用TCP/IP协议的主机和另一组使用某种PC网络软件的主机可以共享相同的电缆。</li>
+<li>ARP<ul>
+<li>为IP地址到对应的硬件地址之间提供动态映射。我们之所以用动态这个词是因为这个过程是自动完成的，一般应用程序用户或系统管理员不必关心。</li>
+</ul>
+</li>
+<li>RARP<ul>
+<li>是被那些没有磁盘驱动器的系统使用（一般是无盘工作站或X终端），它需要系统管理员进行手工设置。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-一个例子"><a href="#2-一个例子" class="headerlink" title="2. 一个例子"></a>2. 一个例子</h3><ul>
+<li>使用 ftp <a target="_blank" rel="noopener" href="http://www.xxx.com/">www.xxx.com</a> 过程<ul>
+<li><ol>
+<li>应用程序FTP客户端调用函数gethostbyname(3)把主机名（bsdi）转换成32 bit的IP地址。这个函数在DNS（域名系统）中称作解析器，我们将在第14章对它进行介绍。这个转换过程或者使用DNS，或者在较小网络中使用一个静态的主机文件（/etc/hosts）。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>FTP客户端请求TCP用得到的IP地址建立连接。</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>TCP发送一个连接请求分段到远端的主机，即用上述IP地址发送一份IP数据报（在第18章我们将讨论完成这个过程的细节）。</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>如果目的主机在本地网络上（如以太网、令牌环网或点对点链接的另一端），那么IP数据报可以直接送到目的主机上。如果目的主机在一个远程网络上，那么就通过IP选路函数来确定位于本地网络上的下一站路由器地址，并让它转发IP数据报。在这两种情况下，IP数据报都是被送到位于本地网络上的一台主机或路由器。</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>假定是一个以太网，那么发送端主机必须把32 bit的IP地址变换成48 bit的以太网地址。从逻辑Internet地址到对应的物理硬件地址需要进行翻译。这就是ARP的功能。ARP本来是用于广播网络的，有许多主机或路由器连在同一个网络上。</li>
+</ol>
+</li>
+<li><ol start="6">
+<li>ARP发送一份称作ARP请求的以太网数据帧给以太网上的每个主机。这个过程称作广播，如图4-2中的虚线所示。ARP请求数据帧中包含目的主机的IP地址（主机名为bsdi），其意思是“如果你是这个IP地址的拥有者，请回答你的硬件地址。”</li>
+</ol>
+</li>
+<li><ol start="7">
+<li>目的主机的ARP层收到这份广播报文后，识别出这是发送端在寻问它的IP地址，于是发送一个ARP应答。这个ARP应答包含IP地址及对应的硬件地址。</li>
+</ol>
+</li>
+<li><ol start="8">
+<li>收到ARP应答后，使ARP进行请求—应答交换的IP数据报现在就可以传送了。</li>
+</ol>
+</li>
+<li><ol start="9">
+<li>发送IP数据报到目的主机。<!-- ![3.ftpARP.png](./img/3.ftpARP.png) -->
+<img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/3.ftpARP.png" class="" title="3.ftpARP.png"></li>
+</ol>
+</li>
+</ul>
+</li>
+<li>在ARP背后有一个基本概念，那就是网络接口有一个硬件地址（一个48 bit的值，标识不同的以太网或令牌环网络接口）。</li>
+<li>点对点链路不使用ARP。当设置这些链路时（一般在引导过程进行），必须告知内核链路每一端的IP地址。像以太网地址这样的硬件地址并不涉及。</li>
+</ul>
+<h3 id="3-ARP高速缓存"><a href="#3-ARP高速缓存" class="headerlink" title="3. ARP高速缓存"></a>3. ARP高速缓存</h3><ul>
+<li>ARP高效运行的关键是由于每个主机上都有一个ARP高速缓存。这个高速缓存存放了最近Internet地址到硬件地址之间的映射记录。</li>
+<li>高速缓存中每一项的生存时间一般为20分钟，起始时间从被创建时开始算起。</li>
+<li>arp -a 查看缓存表</li>
+</ul>
+<h3 id="4-ARP的分组格式"><a href="#4-ARP的分组格式" class="headerlink" title="4. ARP的分组格式"></a>4. ARP的分组格式</h3><!-- ![4.ARP.png](./img/4.ARP.png) -->
+<img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/4.ARP.png" class="" title="4.ARP.png">
+<ul>
+<li>以太网首部14字节</li>
+<li>ARP请求/应答28字节</li>
+</ul>
+<h3 id="5-ARP代理"><a href="#5-ARP代理" class="headerlink" title="5. ARP代理"></a>5. ARP代理</h3><ul>
+<li>如果ARP请求是从一个网络的主机发往另一个网络上的主机，那么连接这两个网络的路由器就可以回答该请求，这个过程称作委托ARP或ARP代理(Proxy ARP)。</li>
+</ul>
+<h3 id="6-免费ARP"><a href="#6-免费ARP" class="headerlink" title="6. 免费ARP"></a>6. 免费ARP</h3><ul>
+<li>免费ARP(gratuitous ARP)。它是指主机发送ARP查找自己的IP地址。通常，它发生在系统引导期间进行接口配置的时候。</li>
+<li>免费ARP可以有两个方面的作用：<ul>
+<li><ol>
+<li>一个主机可以通过它来确定另一个主机是否设置了相同的IP地址。主机bsdi并不希望对此请求有一个回答。但是，如果收到一个回答，那么就会在终端日志上产生一个错误消息“以太网地址：a:b:c:d:e:f发送来重复的IP地址”。这样就可以警告系统管理员，某个系统有不正确的设置。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>如果发送免费ARP的主机正好改变了硬件地址（很可能是主机关机了，并换了一块接口卡，然后重新启动），那么这个分组就可以使其他主机高速缓存中旧的硬件地址进行相应的更新。</li>
+</ol>
+</li>
+<li>一个比较著名的ARP协议事实[Plummer 1982]是，如果主机收到某个IP地址的ARP请求，而且它已经在接收者的高速缓存中，那么就要用ARP请求中的发送端硬件地址（如以太网地址）对高速缓存中相应的内容进行更新。主机接收到任何ARP请求都要完成这个操作（ARP请求是在网上广播的，因此每次发送ARP请求时网络上的所有主机都要这样做）。</li>
+</ul>
+</li>
+</ul>
+<h1 id="五-RARP-逆地址解析协议"><a href="#五-RARP-逆地址解析协议" class="headerlink" title="五 RARP:逆地址解析协议"></a>五 RARP:逆地址解析协议</h1><h3 id="1-引言-3"><a href="#1-引言-3" class="headerlink" title="1. 引言"></a>1. 引言</h3><ul>
+<li><p>具有本地磁盘的系统引导时，一般是从磁盘上的配置文件中读取IP地址。但是无盘机，如X终端或无盘工作站，则需要采用其他方法来获得IP地址。</p>
+</li>
+<li><p>网络上的每个系统都具有唯一的硬件地址，它是由网络接口生产厂家配置的。无盘系统的RARP实现过程是从接口卡上读取唯一的硬件地址，然后发送一份RARP请求（一帧在网络上广播的数据），请求某个主机响应该无盘系统的IP地址（在RARP应答中）。</p>
+</li>
+<li><p>RARP分组的格式与ARP分组基本一致</p>
+</li>
+<li><p>ARP服务器很简单，通常是TCP/IP在内核中实现的一部分。由于内核知道IP地址和硬件地址，因此当它收到一个询问IP地址的ARP请求时，只需用相应的硬件地址来提供应答就可以了。</p>
+</li>
+<li><p>但是一个RARP服务器的设计与系统相关而且比较复杂。</p>
+</li>
+<li><p>虽然RARP在概念上很简单，但是RARP服务器的实现却与系统相关。因此，并不是所有的TCP/IP实现都提供RARP服务器。</p>
+</li>
+</ul>
+<h1 id="六-ICMP-Internet控制报文协议"><a href="#六-ICMP-Internet控制报文协议" class="headerlink" title="六 ICMP:Internet控制报文协议"></a>六 ICMP:Internet控制报文协议</h1><h3 id="1-引言-4"><a href="#1-引言-4" class="headerlink" title="1. 引言"></a>1. 引言</h3><ul>
+<li><p>IP数据包</p>
+<table>
+<thead>
+<tr>
+<th>IP首部</th>
+<th>ICMP报文</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>20字节</td>
+<td>不确定字节</td>
+</tr>
+<tr>
+<td><!-- ![5.ICMP-IP.png](./img/5.ICMP-IP.png) --></td>
+<td></td>
+</tr>
+<tr>
+<td><img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/5.ICMP-IP.png" class="" title="5.ICMP-IP.png"></td>
+<td></td>
+</tr>
+</tbody></table>
+</li>
+<li><p>ICMP</p>
+<table>
+<thead>
+<tr>
+<th>8位类型</th>
+<th>8位代码</th>
+<th>16位校验和</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>其他内容</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td><!-- ![6.ICMP.png](./img/6.ICMP.png) --></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/6.ICMP.png" class="" title="6.ICMP.png"></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+</li>
+<li><p>本章内容</p>
+<ul>
+<li><ol>
+<li>讨论ICMP报文</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>详解地址掩码请求和应答、时间戳请求和应答以及不可达端口。</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-ICMP报文类型"><a href="#2-ICMP报文类型" class="headerlink" title="2. ICMP报文类型"></a>2. ICMP报文类型</h3><!-- ![7.ICMP报文类型.png](./img/7.ICMP报文类型.png) -->
+<img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/7.ICMP%E6%8A%A5%E6%96%87%E7%B1%BB%E5%9E%8B.png" class="" title="7.ICMP报文类型.png">
+<ul>
+<li><p>图中的最后两列表明ICMP报文是一份查询报文还是一份差错报文。因为对ICMP差错报文有时需要作特殊处理，因此我们需要对它们进行区分。</p>
+<ul>
+<li>例如，在对ICMP差错报文进行响应时，永远不会生成另一份ICMP差错报文（如果没有这个限制规则，可能会遇到一个差错产生另一个差错的情况，而差错再产生差错，这样会无休止地循环下去）。</li>
+</ul>
+</li>
+<li><p>当发送一份ICMP差错报文时，报文始终包含IP的首部和产生ICMP差错报文的IP数据报的前8个字节。这样，接收ICMP差错报文的模块就会把它与某个特定的协议（根据IP数据报首部中的协议字段来判断）和用户进程（根据包含在IP数据报前8个字节中的TCP或UDP报文首部中的TCP或UDP端口号来判断）联系起来。</p>
+</li>
+<li><p>下面各种情况都不会导致产生ICMP差错报文：</p>
+<ol>
+<li>ICMP差错报文（但是，ICMP查询报文可能会产生ICMP差错报文）。</li>
+<li>目的地址是广播地址或多播地址的IP数据报。</li>
+<li>作为链路层广播的数据报。</li>
+<li>不是IP分片的第一片（将在11.5节介绍分片）。</li>
+<li>源地址不是单个主机的数据报。这就是说，源地址不能为零地址、环回地址、广播地址或多播地址。</li>
+</ol>
+<ul>
+<li>这些规则是为了防止过去允许ICMP差错报文对广播分组响应所带来的广播风暴。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-ICMP地址掩码请求与应答"><a href="#3-ICMP地址掩码请求与应答" class="headerlink" title="3. ICMP地址掩码请求与应答"></a>3. ICMP地址掩码请求与应答</h3><ul>
+<li>ICMP地址掩码请求用于无盘系统在引导过程中获取自己的子网掩码</li>
+<li>ICMP地址掩码请求和应答报文共12字节<!-- ![8.ICMP请求掩码.png](./img/8.ICMP请求掩码.png) -->
+<img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/8.ICMP%E8%AF%B7%E6%B1%82%E6%8E%A9%E7%A0%81.png" class="" title="8.ICMP请求掩码.png">
+
+</li>
+</ul>
+<h3 id="4-ICMP时间戳请求与应答"><a href="#4-ICMP时间戳请求与应答" class="headerlink" title="4. ICMP时间戳请求与应答"></a>4. ICMP时间戳请求与应答</h3><ul>
+<li>ICMP时间戳请求允许系统向另一个系统查询当前的时间。</li>
+<li>报文有20字节<!-- ![9.ICMP时间戳.png](./img/9.ICMP时间戳.png) -->
+<img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/9.ICMP%E6%97%B6%E9%97%B4%E6%88%B3.png" class="" title="9.ICMP时间戳.png">
+
+</li>
+</ul>
+<h3 id="5-ICMP端口不可达差错"><a href="#5-ICMP端口不可达差错" class="headerlink" title="5. ICMP端口不可达差错"></a>5. ICMP端口不可达差错</h3><ul>
+<li><p>端口不可达报文，它是ICMP目的不可到达报文中的一种，以此来看一看ICMP差错报文中所附加的信息。使用UDP（见第11章）来查看它。</p>
+</li>
+<li><p>UDP的规则之一是，如果收到一份UDP数据报而目的端口与某个正在使用的进程不相符，那么UDP返回一个ICMP不可达报文。可以用TFTP来强制生成一个端口不可达报文（TFTP将在第15章描述）。</p>
+</li>
+<li><p>有16种不同类型的ICMP不可达报文，代码分别从0到15。</p>
+</li>
+<li><p>netstat -s 查看每个协议统计数据</p>
+</li>
+<li><p>ICMP不可达报文</p>
+  <!-- ![10.ICMP不可达报文.png](./img/10.ICMP不可达报文.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/10.ICMP%E4%B8%8D%E5%8F%AF%E8%BE%BE%E6%8A%A5%E6%96%87.png" class="" title="10.ICMP不可达报文.png">
+
+</li>
+</ul>
+<h1 id="七-Ping程序"><a href="#七-Ping程序" class="headerlink" title="七 Ping程序"></a>七 Ping程序</h1><h3 id="1-引言-5"><a href="#1-引言-5" class="headerlink" title="1. 引言"></a>1. 引言</h3><ul>
+<li>一般来说，如果不能Ping到某台主机，那么就不能Telnet或者FTP到那台主机。反过来，如果不能Telnet到某台主机，那么通常可以用Ping程序来确定问题出在哪里。</li>
+<li>Ping程序还能测出到这台主机的往返时间，以表明该主机离我们有“多远”。</li>
+</ul>
+<h3 id="2-Ping程序"><a href="#2-Ping程序" class="headerlink" title="2. Ping程序"></a>2. Ping程序</h3><ul>
+<li><p>大多数的TCP/IP实现都在内核中直接支持Ping服务器—这种服务器不是一个用户进程</p>
+  <!-- ![11.ICMP回显.png](./img/11.ICMP回显.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/11.ICMP%E5%9B%9E%E6%98%BE.png" class="" title="11.ICMP回显.png"></li>
+<li><p>Unix系统在实现ping程序时是把ICMP报文中的标识符字段置成发送进程的ID号。这样即使在同一台主机上同时运行了多个ping程序实例，ping程序也可以识别出返回的信息。</p>
+</li>
+<li><p>运行在不同的环境下结果不一样</p>
+<ul>
+<li>LAN</li>
+<li>WAN</li>
+<li>线路SLIP链接</li>
+<li>拨号SLIP链路</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-IP记录路由选项"><a href="#3-IP记录路由选项" class="headerlink" title="3. IP记录路由选项"></a>3. IP记录路由选项</h3><ul>
+<li>ping程序为我们提供了查看IP记录路由（RR）选项的机会。</li>
+<li>发送出去的IP数据报中设置IPRR选项（该IP数据报包含ICMP回显请求报文）。这样，每个处理该数据报的路由器都把它的IP地址放入选项字段中。</li>
+<li>只能存放9个IP地址。</li>
+</ul>
+<h3 id="4-小结"><a href="#4-小结" class="headerlink" title="4. 小结"></a>4. 小结</h3><ul>
+<li>Ping服务器一般在内核中实现ICMP的功能。</li>
+<li>只利用ICMP回显请求(类型8)和回显应答报文(类型0)，而不用经过传输层（TCP/UDP）。</li>
+</ul>
+<h1 id="八-Traceroute程序"><a href="#八-Traceroute程序" class="headerlink" title="八 Traceroute程序"></a>八 Traceroute程序</h1><h3 id="1-引言-6"><a href="#1-引言-6" class="headerlink" title="1. 引言"></a>1. 引言</h3><ul>
+<li>Traceroute程序可以让我们看到IP数据报从一台主机传到另一台主机所经过的路由。</li>
+<li>IP记录路由选项（RR）。为什么不使用这个选项而另外开发一个新的应用程序？有三个方面的原因。<ul>
+<li>首先，原先并不是所有的路由器都支持记录路由选项，因此该选项在某些路径上不能使用（Traceroute程序不需要中间路由器具备任何特殊的或可选的功能）。</li>
+<li>其次，记录路由一般是单向的选项。发送端设置了该选项，那么接收端不得不从收到的IP首部中提取出所有的信息，然后全部返回给发送端。</li>
+<li>最后一个原因也是最主要的原因是，IP首部中留给选项的空间有限，不能存放当前大多数的路径。在IP首部选项字段中最多只能存放9个IP地址。在原先的ARPANET中这是足够的，但是对现在来说是远远不够的。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-Traceroute程序的操作"><a href="#2-Traceroute程序的操作" class="headerlink" title="2. Traceroute程序的操作"></a>2. Traceroute程序的操作</h3><ul>
+<li>Traceroute程序使用ICMP报文和IP首部中的TTL字段（生存周期）。</li>
+<li>TTL字段的目的是防止数据报在选路时无休止地在网络中流动。</li>
+<li>Traceroute程序的操作过程。<ul>
+<li>它发送一份TTL字段为1的IP数据报给目的主机。处理这份数据报的第一个路由器将TTL值减1，丢弃该数据报，并发回一份超时ICMP报文。这样就得到了该路径中的第一个路由器的地址。然后Traceroute程序发送一份TTL值为2的数据报，这样我们就可以得到第二个路由器的地址。继续这个过程直至该数据报到达目的主机。但是目的主机哪怕接收到TTL值为1的IP数据报，也不会丢弃该数据报并产生一份超时ICMP报文，这是因为数据报已经到达其最终目的地。那么我们该如何判断是否已经到达目的主机了呢？</li>
+<li>Traceroute程序发送一份UDP数据报给目的主机，但它选择一个不可能的值作为UDP端口号（大于30 000），使目的主机的任何一个应用程序都不可能使用该端口。因为，当该数据报到达时，将使目的主机的UDP模块产生一份“端口不可达”错误（见6.5节）的ICMP报文。这样，Traceroute程序所要做的就是区分接收到的ICMP报文是超时还是端口不可达，以判断什么时候结束。</li>
+</ul>
+</li>
+<li>UDP or ICMP<ul>
+<li>windows使用的是ICMP，最终使用ICMP seq识别</li>
+<li>UNIX使用的UDP+ICMP,最终用一个大于30000的端口号来返回ICMP端口不可达</li>
+</ul>
+</li>
+</ul>
+<h1 id="九-IP选路"><a href="#九-IP选路" class="headerlink" title="九 IP选路"></a>九 IP选路</h1><h3 id="1-引言-7"><a href="#1-引言-7" class="headerlink" title="1. 引言"></a>1. 引言</h3><ul>
+<li>需要进行选路的数据报可以由本地主机产生，也可以由其他主机产生。在后一种情况下，主机必须配置成一个路由器，否则通过网络接口接收到的数据报，如果目的地址不是本机就要被丢弃</li>
+<li>netstat -r 查看路由表 -n 以数字格式打印出IP地址</li>
+<li>IP层工作流程  <!-- ![12.IP层工作流程.png](./img/12.IP层工作流程.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/12.IP%E5%B1%82%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B.png" class="" title="12.IP层工作流程.png">
+
+</li>
+</ul>
+<h3 id="2-选路的原理"><a href="#2-选路的原理" class="headerlink" title="2. 选路的原理"></a>2. 选路的原理</h3><ul>
+<li><p>首先要理解内核是如何维护路由表的。路由表中包含的信息决定了IP层所做的所有决策。IP搜索路由表的几个步骤：</p>
+<ul>
+<li>搜索匹配的主机地址；</li>
+<li>搜索匹配的网络地址；</li>
+<li>搜索默认表项（默认表项一般在路由表中被指定为一个网络表项，其网络号为0）。</li>
+</ul>
+</li>
+<li><p>IP层进行的选路实际上是一种选路机制，它搜索路由表并决定向哪个网络接口发送分组。</p>
+</li>
+<li><p>路由表的五种标志</p>
+<ul>
+<li>U 该路由可以使用。</li>
+<li>G 该路由是到一个网关（路由器）。如果没有设置该标志，说明目的地是直接相连的。</li>
+<li>H 该路由是到一个主机，也就是说，目的地址是一个完整的主机地址。如果没有设置该标志，说明该路由是到一个网络，而目的地址是一个网络地址：一个网络号，或者网络号与子网号的组合。</li>
+<li>D 该路由是由重定向报文创建的（9.5节）。</li>
+<li>M 该路由已被重定向报文修改（9.5节）。</li>
+</ul>
+</li>
+<li><p>初始化路由表</p>
+<ul>
+<li>每当初始化一个接口时（通常是用ifconfig命令设置接口地址），就为接口自动创建一个直接路由。</li>
+<li>初始化路由表的其他方法是运行路由守护程序（第10章）或者用较新的路由器发现协议（9.6节）。</li>
+</ul>
+</li>
+<li><p>没有到达目的地的路由</p>
+<ul>
+<li>如果路由表中没有默认项，而又没有找到匹配项，结果取决于该IP数据报是由主机产生的还是被转发的（例如，我们就充当一个路由器）。如果数据报是由本地主机产生的，那么就给发送该数据报的应用程序返回一个差错，或者是“主机不可达差错”或者是“网络不可达差错”。如果是被转发的数据报，那么就给原始发送端发送一份ICMP主机不可达的差错报文。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-ICMP主机与网络不可达差错"><a href="#3-ICMP主机与网络不可达差错" class="headerlink" title="3. ICMP主机与网络不可达差错"></a>3. ICMP主机与网络不可达差错</h3><ul>
+<li>当路由器收到一份IP数据报但又不能转发时，就要发送一份ICMP“主机不可达”差错报文</li>
+</ul>
+<h3 id="4-转发或不转发"><a href="#4-转发或不转发" class="headerlink" title="4. 转发或不转发"></a>4. 转发或不转发</h3><ul>
+<li>一般都假定主机不转发IP数据报，除非对它们进行特殊配置而作为路由器使用。</li>
+</ul>
+<h3 id="5-ICMP重定向差错"><a href="#5-ICMP重定向差错" class="headerlink" title="5. ICMP重定向差错"></a>5. ICMP重定向差错</h3><ul>
+<li>当IP数据报应该被发送到另一个路由器时，收到数据报的路由器就要发送ICMP重定向差错报文给IP数据报的发送端。</li>
+<li>步骤<ol>
+<li>我们假定主机发送一份IP数据报给R1。这种选路决策经常发生，因为R1是该主机的默认路由。</li>
+<li>R1收到数据报并且检查它的路由表，发现R2是发送该数据报的下一站。当它把数据报发送给R2时，R1检测到它正在发送的接口与数据报到达接口是相同的（即主机和两个路由器所在的LAN）。这样就给路由器发送重定向报文给原始发送端提供了线索。</li>
+<li>R1发送一份ICMP重定向报文给主机，告诉它以后把数据报发送给R2而不是R1。    </li>
+</ol>
+</li>
+<li>ICMP重定向例子  <!-- ![13.ICMP重定向.png](./img/13.ICMP重定向.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/13.ICMP%E9%87%8D%E5%AE%9A%E5%90%91.png" class="" title="13.ICMP重定向.png"></li>
+<li>重定向一般用来让具有很少选路信息的主机逐渐建立更完善的路由表。</li>
+</ul>
+<h3 id="6-ICMP路由器发现报文"><a href="#6-ICMP路由器发现报文" class="headerlink" title="6. ICMP路由器发现报文"></a>6. ICMP路由器发现报文</h3><ul>
+<li><p>前面已提到过一种初始化路由表的方法，即在配置文件中指定静态路由。这种方法经常用来设置默认路由。另一种新的方法是利用ICMP路由器通告和请求报文。</p>
+</li>
+<li><p>一般认为，主机在引导以后要广播或多播传送一份路由器请求报文。一台或更多台路由器响应一份路由器通告报文。另外，路由器定期地广播或多播传送它们的路由器通告报文，允许每个正在监听的主机相应地更新它们的路由表。</p>
+</li>
+<li><p>路由器操作</p>
+<ul>
+<li>当路由器启动时，它定期在所有广播或多播传送接口上发送通告报文。准确地说，这些通告报文不是定期发送的，而是随机传送的，以减小与子网上其他路由器发生冲突的概率。一般每两次通告间隔450秒和600秒。一份给定的通告报文默认生命周期是30分钟。</li>
+<li>除了定期发送主动提供的通告报文以外，路由器还要监听来自主机的请求报文，并发送路由器通告报文以响应这些请求报文。</li>
+</ul>
+</li>
+<li><p>主机操作</p>
+<ul>
+<li>主机在引导期间一般发送三份路由器请求报文，每三秒钟发送一次。一旦接收到一个有效的通告报文，就停止发送请求报文。</li>
+<li>主机也监听来自相邻路由器的请求报文。这些通告报文可以改变主机的默认路由器。另外，如果没有接收到来自当前默认路由器的通告报文，那么默认路由器会超时。</li>
+</ul>
+</li>
+<li><p>实现</p>
+<ul>
+<li>路由器发现报文一般由用户进程（守护程序）创建和处理。</li>
+</ul>
+</li>
+</ul>
+<h1 id="十-动态选路协议"><a href="#十-动态选路协议" class="headerlink" title="十 动态选路协议"></a>十 动态选路协议</h1><h3 id="1-引言-8"><a href="#1-引言-8" class="headerlink" title="1. 引言"></a>1. 引言</h3><ul>
+<li>动态选路协议，它用于路由器间的通信。</li>
+<li>本章内容<ul>
+<li>主要讨论RIP，即选路信息协议(Routing Infromation Protocol)，大多数TCP/IP实现都提供这个应用广泛的协议。</li>
+<li>然后讨论两种新的选路协议，OSPF和BGP。</li>
+<li>最后研究一种名叫无分类域间选路的新的选路技术，现在Internet上正在开始采用该协议以保持B类网络的数量。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-动态选路"><a href="#2-动态选路" class="headerlink" title="2. 动态选路"></a>2. 动态选路</h3><ul>
+<li><p>当相邻路由器之间进行通信，以告知对方每个路由器当前所连接的网络，这时就出现了动态选路。</p>
+</li>
+<li><p>路由器上有一个进程称为路由守护程序（routing daemon），它运行选路协议，并与其相邻的一些路由器进行通信。</p>
+</li>
+<li><p>在像Internet这样的系统中，目前采用了许多不同的选路协议。Internet是以一组自治系统(AS，Autonomous System)的方式组织的，每个自治系统通常由单个实体管理。常常将一个公司或大学校园定义为一个自治系统。NSFNET的Internet骨干网形成一个自治系统，这是因为骨干网中的所有路由器都在单个的管理控制之下。</p>
+</li>
+<li><p>每个自治系统可以选择该自治系统中各个路由器之间的选路协议。这种协议我们称之为内部网关协议IGP（Interior Gateway Protocol）或域内选路协议（intradomain routing protocol）。最常用的IGP是选路信息协议RIP。一种新的IGP是开放最短路径优先OSPF（Open Shortest Path First）协议。它意在取代RIP。另一种1986年在原来NSFNET骨干网上使用的较早的IGP协议——HELLO，现在已经不用了。</p>
+</li>
+<li><p>外部网关协议EGP（Exterier Gateway Protocol）或域内选路协议的分隔选路协议用于不同自治系统之间的路由器。在历史上，（令人容易混淆）改进的EGP有着一个与它名称相同的协议：EGP。新EGP是当前在NSFNET骨干网和一些连接到骨干网的区域性网络上使用的是边界网关协议BGP（Border Gateway Protocol）。BGP意在取代EGP。</p>
+</li>
+</ul>
+<h3 id="3-Unix选路守护进程"><a href="#3-Unix选路守护进程" class="headerlink" title="3. Unix选路守护进程"></a>3. Unix选路守护进程</h3><ul>
+<li>Unix系统上常常运行名为routed路由守护程序。几乎在所有的TCP/IP实现中都提供该程序。该程序只使用RIP进行通信</li>
+<li>另一个程序是gated。IGP和EGP都支持它。[Fedor 1998]描述了早期开发的gated。</li>
+</ul>
+<h3 id="4-RIP：选路信息协议"><a href="#4-RIP：选路信息协议" class="headerlink" title="4. RIP：选路信息协议"></a>4. RIP：选路信息协议</h3><h5 id="1-报文格式"><a href="#1-报文格式" class="headerlink" title="1. 报文格式"></a>1. 报文格式</h5><ul>
+<li>RIP报文包含中在UDP数据报中</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>IP首部</th>
+<th>UDP首部</th>
+<th>RIP报文</th>
+</tr>
+</thead>
+</table>
+<ul>
+<li>RIP报文格式  <!-- ![14.RIP.png](./img/14.RIP.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/14.RIP.png" class="" title="14.RIP.png">
+
+</li>
+</ul>
+<h5 id="2-正常运行"><a href="#2-正常运行" class="headerlink" title="2. 正常运行"></a>2. 正常运行</h5><ul>
+<li>让我们来看一下采用RIP协议的routed程序正常运行的结果。RIP常用的UDP端口号是520。</li>
+</ul>
+<ol>
+<li>初始化：在启动一个路由守护程序时，它先判断启动了哪些接口，并在每个接口上发送一个请求报文，要求其他路由器发送完整路由表。在点对点链路中，该请求是发送给其他终点的。如果网络支持广播的话，这种请求是以广播形式发送的。目的UDP端口号是520（这是其他路由器的路由守护程序端口号）。 这种请求报文的命令字段为1，但地址系列字段设置为0，而度量字段设置为16。这是一种要求另一端完整路由表的特殊请求报文。</li>
+<li>接收到请求。如果这个请求是刚才提到的特殊请求，那么路由器就将完整的路由表发送给请求者。否则，就处理请求中的每一个表项：如果有连接到指明地址的路由，则将度量设置成我们的值，否则将度量置为16（度量为16是一种称为“无穷大”的特殊值，它意味着没有到达目的的路由）。然后发回响应。</li>
+<li>接收到响应。使响应生效，可能会更新路由表。可能会增加新表项，对已有的表项进行修改，或是将已有表项删除。</li>
+<li>定期选路更新。每过30秒，所有或部分路由器会将其完整路由表发送给相邻路由器。发送路由表可以是广播形式的（如在以太网上），或是发送给点对点链路的其他终点的。</li>
+<li>触发更新。每当一条路由的度量发生变化时，就对它进行更新。不需要发送完整路由表，而只需要发送那些发生变化的表项。</li>
+</ol>
+<ul>
+<li>每条路由都有与之相关的定时器。如果运行RIP的系统发现一条路由在3分钟内未更新，就将该路由的度量设置成无穷大（16），并标注为删除。这意味着已经在6个30秒更新时间里没收到通告该路由的路由器的更新了。再过60秒，将从本地路由表中删除该路由，以保证该路由的失效已被传播开。</li>
+</ul>
+<h5 id="3-RIP版本2"><a href="#3-RIP版本2" class="headerlink" title="3. RIP版本2"></a>3. RIP版本2</h5><ul>
+<li>RFC 1388 [Malkin 1993a]中对RIP定义进行了扩充，通常称其结果为RIP-2。</li>
+<li>RIP2报文格式  <!-- ![15.RIP2.png](./img/15.RIP2.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/15.RIP2.png" class="" title="15.RIP2.png">
+
+</li>
+</ul>
+<h3 id="5-OSPF：开放最短路径优先"><a href="#5-OSPF：开放最短路径优先" class="headerlink" title="5. OSPF：开放最短路径优先"></a>5. OSPF：开放最短路径优先</h3><ul>
+<li>OSPF是除RIP外的另一个内部网关协议。它克服了RIP的所有限制。RFC 1247[Moy 1991]中对第2版OSPF进行了描述。</li>
+<li>与采用距离向量的RIP协议不同的是，OSPF是一个链路状态协议。距离向量的意思是，RIP发送的报文包含一个距离向量（跳数）。每个路由器都根据它所接收到邻站的这些距离向量来更新自己的路由表。</li>
+<li>二者的不同点是链路状态协议总是比距离向量协议收敛更快。收敛的意思是在路由发生变化后，例如在路由器关闭或链路出故障后，可以稳定下来。</li>
+<li>OSPF与RIP（以及其他选路协议）的不同点在于，OSPF直接使用IP。也就是说，它并不使用UDP或TCP。对于IP首部的protocol字段，OSPF有其自己的值</li>
+</ul>
+<h3 id="6-BGP：边界网关协议"><a href="#6-BGP：边界网关协议" class="headerlink" title="6. BGP：边界网关协议"></a>6. BGP：边界网关协议</h3><ul>
+<li>BGP是一种不同自治系统的路由器之间进行通信的外部网关协议。</li>
+<li>BGP与RIP和OSPF的不同之处在于BGP使用TCP作为其传输层协议。两个运行BGP的系统之间建立一条TCP连接，然后交换整个BGP路由表。从这个时候开始，在路由表发生变化时，再发送更新信号。</li>
+<li>BGP是一个距离向量协议，但是与（通告到目的地址跳数的）RIP不同的是，BGP列举了到每个目的地址的路由（自治系统到达目的地址的序列号）。这样就排除了一些距离向量协议的问题。采用16 bit数字表示自治系统标识。</li>
+</ul>
+<h3 id="7-CIDR：无类型域间选路"><a href="#7-CIDR：无类型域间选路" class="headerlink" title="7. CIDR：无类型域间选路"></a>7. CIDR：无类型域间选路</h3><ul>
+<li>无类型域间选路（CIDR）是一个防止Internet路由表膨胀的方法，它也称为超网（supernetting）。</li>
+<li>CIDR同时还使用一种技术，使最佳匹配总是最长的匹配：即在32 bit掩码中，它具有最大值。</li>
+<li>“无类型”的意思是现在的选路决策是基于整个32 bit IP地址的掩码操作，而不管其IP地址是A类、B类或是C类，都没有什么区别。</li>
+</ul>
+<h1 id="十一-UDP-用户数据报协议"><a href="#十一-UDP-用户数据报协议" class="headerlink" title="十一 UDP:用户数据报协议"></a>十一 UDP:用户数据报协议</h1><h3 id="1-引言-9"><a href="#1-引言-9" class="headerlink" title="1. 引言"></a>1. 引言</h3><ul>
+<li>UDP是一个简单的面向数据报的运输层协议<ul>
+<li>进程的每个输出操作都正好产生一个UDP数据报，并组装成一份待发送的IP数据报。这与面向流字符的协议不同，如TCP，应用程序产生的全体数据与真正发送的单个IP数据报可能没有什么联系。</li>
+</ul>
+</li>
+<li>UDP不提供可靠性<ul>
+<li>它把应用程序传给IP层的数据发送出去，但是并不保证它们能到达目的地。由于缺乏可靠性，我们似乎觉得要避免使用UDP而使用一种可靠协议如TCP。我们在第17章讨论完TCP后将再回到这个话题，看看什么样的应用程序可以使用UDP。</li>
+</ul>
+</li>
+<li>应用程序必须关心IP数据报的长度。<ul>
+<li>如果它超过网络的MTU（2.8节），那么就要对IP数据报进行分片。如果需要，源端到目的端之间的每个网络都要进行分片，并不只是发送端主机连接第一个网络才这样做（我们在2.9节中已定义了路径MTU的概念）。在11.5节中，我们将讨论IP分片机制。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-UDP首部"><a href="#2-UDP首部" class="headerlink" title="2. UDP首部"></a>2. UDP首部</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">|   16位源端口  |   16位目的端口    |</span><br><span class="line">|   16位UDP长度 |   16位UDP校验和  |</span><br><span class="line">|           数据（如果有）         |</span><br></pre></td></tr></table></figure>
+<!-- ![16.UDP数据报.png](./img/16.UDP数据报.png) -->
+<img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/16.UDP%E6%95%B0%E6%8D%AE%E6%8A%A5.png" class="" title="16.UDP数据报.png">
+<ul>
+<li><p>端口号表示发送进程和接收进程。TCP端口号由TCP来查看，而UDP端口号由UDP来查看。TCP端口号与UDP端口号是相互独立的。</p>
+</li>
+<li><p>UDP长度字段指的是UDP首部和UDP数据的字节长度。16位，最小值为8字节，也就是没有数据。</p>
+</li>
+</ul>
+<h3 id="3-UDP检验和"><a href="#3-UDP检验和" class="headerlink" title="3. UDP检验和"></a>3. UDP检验和</h3><!-- ![17.UDP校验和.png](./img/17.UDP校验和.png) -->
+<img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/17.UDP%E6%A0%A1%E9%AA%8C%E5%92%8C.png" class="" title="17.UDP校验和.png">
+<ul>
+<li>UDP检验和覆盖UDP首部和UDP数据。回想IP首部的检验和，它只覆盖IP的首部—并不覆盖IP数据报中的任何数据。</li>
+<li>UDP和TCP在首部中都有覆盖它们首部和数据的检验和。UDP的检验和是可选的，而TCP的检验和是必需的。</li>
+<li>UDP数据报和TCP段都包含一个12字节长的伪首部，它是为了计算检验和而设置的。伪首部包含IP首部一些字段(源IP/目的IP地址)。其目的是让UDP两次检查数据是否已经正确到达目的地。</li>
+<li>UDP检验和是一个端到端的检验和。它由发送端计算，然后由接收端验证。其目的是为了发现UDP首部和数据在发送端到接收端之间发生的任何改动。</li>
+</ul>
+<h3 id="4-IP分片"><a href="#4-IP分片" class="headerlink" title="4. IP分片"></a>4. IP分片</h3><ul>
+<li>物理网络层一般要限制每次发送数据帧的最大长度。任何时候IP层接收到一份要发送的IP数据报时，它要判断向本地哪个接口发送数据（选路），并查询该接口获得其MTU。IP把MTU与数据报长度进行比较，如果需要则进行分片。分片可以发生在原始发送端主机上，也可以发生在中间路由器上。</li>
+<li>把一份IP数据报分片以后，只有到达目的地才进行重新组装（这里的重新组装与其他网络协议不同，它们要求在下一站就进行进行重新组装，而不是在最终的目的地）。重新组装由目的端的IP层来完成，其目的是使分片和重新组装过程对运输层（TCP和UDP）是透明的</li>
+<li>回忆IP首部，下面这些字段用于分片过程。对于发送端发送的每份IP数据报来说，其标识字段都包含一个唯一值。该值在数据报分片时被复制到每个片中（我们现在已经看到这个字段的用途）。标志字段用其中一个比特来表示“更多的片”。除了最后一片外，其他每个组成数据报的片都要把该比特置1。片偏移字段指的是该片偏移原始数据报开始处的位置。另外，当数据报被分片后，每个片的总长度值要改为该片的长度值。</li>
+<li>IP标志字段中有一个比特称作“不分片”位。如果将这一比特置1，IP将不对数据报进行分片。相反把数据报丢弃并发送一个ICMP差错报文（“需要进行分片但设置了不分片比特”，见图6-3）给起始端。</li>
+<li>尽管IP分片过程看起来是透明的，但有一点让人不想使用它：即使只丢失一片数据也要重传整个数据报。为什么会发生这种情况呢？因为IP层本身没有超时重传的机制——由更高层来负责超时和重传（TCP有超时和重传机制，但UDP没有。一些UDP应用程序本身也执行超时和重传）。</li>
+<li>解释几个术语：<ul>
+<li>IP数据报是指IP层端到端的传输单元（在分片之前和重新组装之后）</li>
+<li>分组是指在IP层和链路层之间传送的数据单元。一个分组可以是一个完整的IP数据报，也可以是IP数据报的一个分片。</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-ICMP不可达差错（需要分片）"><a href="#5-ICMP不可达差错（需要分片）" class="headerlink" title="5. ICMP不可达差错（需要分片）"></a>5. ICMP不可达差错（需要分片）</h3><ul>
+<li>发生ICMP不可达差错的另一种情况是，当路由器收到一份需要分片的数据报，而在IP首部又设置了不分片（DF）的标志比特。如果某个程序需要判断到达目的端的路途中最小MTU是多少—称作路径MTU发现机制（2.9节），那么这个差错就可以被该程序使用。<!-- ![18.ICMP不可达差错.png](./img/18.ICMP不可达差错.png) -->
+<img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/18.ICMP%E4%B8%8D%E5%8F%AF%E8%BE%BE%E5%B7%AE%E9%94%99.png" class="" title="18.ICMP不可达差错.png">
+
+</li>
+</ul>
+<h3 id="6-用Traceroute确定路径MTU"><a href="#6-用Traceroute确定路径MTU" class="headerlink" title="6. 用Traceroute确定路径MTU"></a>6. 用Traceroute确定路径MTU</h3><ul>
+<li>尽管大多数的系统不支持路径MTU发现功能，但可以很容易地修改traceroute程序，用它来确定路径MTU。</li>
+<li>要做的是发送分组，并设置“不分片”标志比特。发送的第一个分组的长度正好与出口MTU相等，每次收到ICMP“不能分片”差错时（在上一节讨论的）就减小分组的长度。如果路由器发送的ICMP差错报文是新格式，包含出口的MTU，那么就用该MTU值来发送，否则就用下一个最小的MTU值来发送。正如RFC 1191[Mogul and Deering 1990]声明的那样，MTU值的个数是有限的，因此在我们的程序中有一些由近似值构成的表，取下一个最小MTU值来发送。</li>
+</ul>
+<h3 id="7-采用UDP的路径MTU发现"><a href="#7-采用UDP的路径MTU发现" class="headerlink" title="7. 采用UDP的路径MTU发现"></a>7. 采用UDP的路径MTU发现</h3><p>看书</p>
+<h3 id="8-UDP和ARP之间的交互作用"><a href="#8-UDP和ARP之间的交互作用" class="headerlink" title="8. UDP和ARP之间的交互作用"></a>8. UDP和ARP之间的交互作用</h3><p>看书</p>
+<h3 id="9-最大UDP数据报长度"><a href="#9-最大UDP数据报长度" class="headerlink" title="9. 最大UDP数据报长度"></a>9. 最大UDP数据报长度</h3><ul>
+<li>理论上，IP数据报的最大长度是65535字节，这是由IP首部16比特总长度字段所限制的。去除20字节的IP首部和8个字节的UDP首部，UDP数据报中用户数据的最长长度为65507字节。但是，大多数实现所提供的长度比这个最大值小。</li>
+<li>两个限制因素。<ul>
+<li>第一，应用程序可能会受到其程序接口的限制。socket API提供了一个可供应用程序调用的函数，以设置接收和发送缓存的长度。对于UDP socket，这个长度与应用程序可以读写的最大UDP数据报的长度直接相关。现在的大部分系统都默认提供了可读写大于8192字节的UDP数据报（使用这个默认值是因为8192是NFS读写用户数据数的默认值）。</li>
+<li>第二个限制来自于TCP/IP的内核实现。可能存在一些实现特性（或差错），使IP数据报长度小于65535字节。</li>
+</ul>
+</li>
+</ul>
+<h3 id="10-UDP服务器的设计"><a href="#10-UDP服务器的设计" class="headerlink" title="10. UDP服务器的设计"></a>10. UDP服务器的设计</h3><ol>
+<li>客户IP地址及端口号<ul>
+<li>当一个应用程序接收到UDP数据报时，操作系统必须告诉它是谁发送了这份消息，即源IP地址和端口号。</li>
+<li>这个特性允许一个交互UDP服务器对多个客户进行处理。给每个发送请求的客户发回应答。</li>
+</ul>
+</li>
+<li>目的IP地址<ul>
+<li>一些应用程序需要知道数据报是发送给谁的，即目的IP地址。</li>
+</ul>
+</li>
+<li>UDP输入队列<ul>
+<li>大多数UDP服务器是交互服务器。这意味着，单个服务器进程对单个UDP端口上（服务器上的名知端口）的所有客户请求进行处理。</li>
+</ul>
+</li>
+<li>限制本地IP地址</li>
+<li>限制远端IP地址</li>
+<li>每个端口有多个接收者</li>
+</ol>
+<h1 id="十二-广播和多播"><a href="#十二-广播和多播" class="headerlink" title="十二 广播和多播"></a>十二 广播和多播</h1><h3 id="1-引言-10"><a href="#1-引言-10" class="headerlink" title="1. 引言"></a>1. 引言</h3><ul>
+<li>有三种IP地址：单播地址、广播地址和多播地址。</li>
+<li>广播和多播仅应用于UDP，它们对需将报文同时传往多个接收者的应用来说十分重要。TCP是一个面向连接的协议，它意味着分别运行于两主机（由IP地址确定）内的两进程（由端口号确定）间存在一条连接。</li>
+<li>单播<ul>
+<li>通常每个以太网帧仅发往单个目的主机，目的地址指明单个接收接口，因而称为单播(unicast)。在这种方式下，任意两个主机的通信不会干扰网内其他主机（可能引起争夺共享信道的情况除外）。</li>
+</ul>
+</li>
+<li>广播<ul>
+<li>有时一个主机要向网上的所有其他主机发送帧，这就是广播。</li>
+</ul>
+</li>
+<li>多播(multicast)<ul>
+<li>处于单播和广播之间：帧仅传送给属于多播组的多个主机。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-广播"><a href="#2-广播" class="headerlink" title="2. 广播"></a>2. 广播</h3><ol>
+<li>受限的广播<ul>
+<li>受限的广播地址是255.255.255.255。</li>
+<li>在任何情况下，路由器都不转发目的地址为受限的广播地址的数据报，这样的数据报仅出现在本地网络中。</li>
+</ul>
+</li>
+<li>指向网络的广播<ul>
+<li>指向网络的广播地址是主机号为全1的地址。</li>
+<li>A类网络广播地址为netid.255.255.255，其中netid为A类网络的网络号。</li>
+</ul>
+</li>
+<li>指向子网的广播<ul>
+<li>指向子网的广播地址为主机号为全1且有特定子网号的地址。</li>
+<li>例如，如果路由器收到发往128.1.2.255的数据报，当B类网络128.1的子网掩码为255.255.255.0时，该地址就是指向子网的广播地址；但如果该子网的掩码为255.255.254.0，该地址就不是指向子网的广播地址。</li>
+</ul>
+</li>
+<li>指向所有子网的广播<ul>
+<li>指向所有子网的广播也需要了解目的网络的子网掩码，以便与指向网络的广播地址区分开。</li>
+<li>指向所有子网的广播地址的子网号及主机号为全1。</li>
+<li>例如，如果目的子网掩码为255.255.255.0，那么IP地址128.1.255.255是一个指向所有子网的广播地址。然而，如果网络没有划分子网，这就是一个指向网络的广播。</li>
+<li>当前的看法[Almquist 1993]是这种广播是陈旧过时的，更好的方式是使用多播而不是对所有子网的广播。</li>
+</ul>
+</li>
+</ol>
+<h3 id="3-ping-255-255-255-255"><a href="#3-ping-255-255-255-255" class="headerlink" title="3. ping 255.255.255.255"></a>3. ping 255.255.255.255</h3><ul>
+<li>ping 把点分十进制IP转换成二进制的函数是 inet_addr(),这个函数对255.255.255.255返回-1，即出错</li>
+</ul>
+<p>###　4. 多播</p>
+<ol>
+<li>IP多播提供两类服务：<ul>
+<li>向多个目的地址传送数据。有许多向多个接收者传送信息的应用：例如交互式会议系统和向多个接收者分发邮件或新闻。如果不采用多播，目前这些应用大多采用TCP来完成（向每个目的地址传送一个单独的数据复制）。然而，即使使用多播，某些应用可能继续采用TCP来保证它的可靠性。</li>
+<li>客户对服务器的请求。例如，无盘工作站需要确定启动引导服务器。目前，这项服务是通过广播来提供的（正如第16章的BOOTP），但是使用多播可降低不提供这项服务主机的负担。</li>
+</ul>
+</li>
+<li>多播组地址<ul>
+<li>一些多播组地址被IANA确定为知名地址。它们也被当作永久主机组，这和TCP及UDP中的熟知端口相似。</li>
+<li>例如，224.0.0.1代表“该子网内的所有系统组”，224.0.0.2代表“该子网内的所有路由器组”。多播地址224.0.1.1用作网络时间协议NTP，224.0.0.9用作RIP-2(见10.5节)，224.0.1.2用作SGI公司的dogfight应用。</li>
+<li>D类IP地址被称为多播组地址。通过将其低位23 bit映射到相应以太网地址中便可实现多播组地址到以太网地址的转换。由于地址映射是不唯一的，因此需要其他的协议实现额外的数据报过滤。</li>
+</ul>
+</li>
+</ol>
+<h1 id="十三-IGMP-Internet组管理协议"><a href="#十三-IGMP-Internet组管理协议" class="headerlink" title="十三 IGMP:Internet组管理协议"></a>十三 IGMP:Internet组管理协议</h1><h3 id="1-引言-11"><a href="#1-引言-11" class="headerlink" title="1. 引言"></a>1. 引言</h3><ul>
+<li>Internet组管理协议（IGMP）。它让一个物理网络上的所有系统知道主机当前所在的多播组。多播路由器需要这些信息以便知道多播数据报应该向哪些接口转发。</li>
+<li>正如ICMP一样，IGMP也被当作IP层的一部分。IGMP报文通过IP数据报进行传输。不像我们已经见到的其他协议，IGMP有固定的报文长度，没有可选数据。</li>
+<li>多播是一种将报文发往多个接收者的通信方式。在许多应用中，它比广播更好，因为多播降低了不参与通信的主机的负担。简单的主机成员报告协议(IGMP)是多播的基本模块。</li>
+<li>多播还未解决的一个问题是在广域网内的多播。</li>
+</ul>
+<h3 id="2-IGMP报文"><a href="#2-IGMP报文" class="headerlink" title="2. IGMP报文"></a>2. IGMP报文</h3><ul>
+<li><p>格式</p>
+  <!-- ![19.IGMP报文.png](./img/19.IGMP报文.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/19.IGMP%E6%8A%A5%E6%96%87.png" class="" title="19.IGMP报文.png"></li>
+<li><p>IGMP类型为1说明是由多播路由器发出的查询报文，为2说明是主机发出的报告报文。检验和的计算和ICMP协议相同。</p>
+</li>
+<li><p>组地址为D类IP地址。</p>
+</li>
+<li><p>这个需要的时候再看书吧，很多概念有点抽象</p>
+</li>
+</ul>
+<h1 id="十四-DNS-域名系统"><a href="#十四-DNS-域名系统" class="headerlink" title="十四 DNS:域名系统"></a>十四 DNS:域名系统</h1><h3 id="1-引言-12"><a href="#1-引言-12" class="headerlink" title="1. 引言"></a>1. 引言</h3><ul>
+<li>域名系统（DNS）是一种用于TCP/IP应用程序的分布式数据库，它提供主机名字和IP地址之间的转换及有关电子邮件的选路信息。</li>
+<li>这里提到的分布式是指在Internet上的单个站点不能拥有所有的信息。每个站点（如大学中的系、校园、公司或公司中的部门）保留它自己的信息数据库，并运行一个服务器程序供Internet上的其他系统（客户程序）查询。</li>
+<li>DNS提供了允许服务器和客户程序相互通信的协议。</li>
+<li>从应用的角度上看，对DNS的访问是通过一个地址解析器（resolver）来完成的。在Unix主机中，该解析器主要是通过两个库函数gethostbyname(3)和gethostbyaddr(3)来访问的，它们在编译应用程序时与应用程序连接在一起。</li>
+</ul>
+<h3 id="2-DNS基础"><a href="#2-DNS基础" class="headerlink" title="2. DNS基础"></a>2. DNS基础</h3><ul>
+<li>DNS的名字空间和Unix的文件系统相似，也具有树型层次结构。  <!-- ![20.DNS层次结构.png](./img/20.DNS层次结构.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/20.DNS%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84.png" class="" title="20.DNS层次结构.png"></li>
+<li>DNS的一个基本特性是使用超高速缓存。即当一个名字服务器收到有关映射的信息（主机名字到IP地址）时，它会将该信息存放在高速缓存中。这样若以后遇到相同的映射请求，就能直接使用缓存中的结果而无需通过其他服务器查询。</li>
+<li>7个普通域  <!-- ![21.普通域.png](./img/21.普通域.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/21.%E6%99%AE%E9%80%9A%E5%9F%9F.png" class="" title="21.普通域.png">
+
+</li>
+</ul>
+<h3 id="3-DNS的报文格式"><a href="#3-DNS的报文格式" class="headerlink" title="3. DNS的报文格式"></a>3. DNS的报文格式</h3><ul>
+<li>这个报文由12字节长的首部和4个长度可变的字段组成。  <!-- ![22.DNS报文.png](./img/22.DNS报文.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/22.DNS%E6%8A%A5%E6%96%87.png" class="" title="22.DNS报文.png"></li>
+<li>DNS查询报文问题部分  <!-- ![23.DNS问题.png](./img/23.DNS问题.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/23.DNS%E9%97%AE%E9%A2%98.png" class="" title="23.DNS问题.png">
+<ol>
+<li>如何存储查询名 <!-- ![24.域名.png](./img/24.域名.png) -->
+ <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/24.%E5%9F%9F%E5%90%8D.png" class="" title="24.域名.png"></li>
+<li>查询类型 <!-- ![25.查询类型.png](./img/25.查询类型.png) -->
+ <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/25.%E6%9F%A5%E8%AF%A2%E7%B1%BB%E5%9E%8B.png" class="" title="25.查询类型.png"></li>
+<li>查询类通常是1，指互联网地址（某些站点也支持其他非IP地址）。</li>
+</ol>
+</li>
+<li>所有的DNS查询和响应都有相同的报文格式。这个报文格式中包含查询请求和可能的回答资源记录、授权资源记录和附加资源记录。</li>
+</ul>
+<h3 id="4-名字解析器的配置文件-etc-resolv-conf"><a href="#4-名字解析器的配置文件-etc-resolv-conf" class="headerlink" title="4. 名字解析器的配置文件/etc/resolv.conf"></a>4. 名字解析器的配置文件/etc/resolv.conf</h3><h3 id="5-DNS的优化措施"><a href="#5-DNS的优化措施" class="headerlink" title="5. DNS的优化措施"></a>5. DNS的优化措施</h3><ul>
+<li>指向域名的指针（减少报文的长度）、查询结果的高速缓存、in-addr.arpa域（查找IP地址对应的域名）以及返回的附加资源记录（避免主机重发同一查询请求）。</li>
+</ul>
+<h3 id="6-用-UDP-还是-TCP"><a href="#6-用-UDP-还是-TCP" class="headerlink" title="6. 用 UDP 还是 TCP"></a>6. 用 UDP 还是 TCP</h3><ul>
+<li>DNS 服务器支持 TCP 和 UDP 两种协议的查询方式,而且端口都是53。而大多数的查询都是 UDP 查询的</li>
+<li>一般需要 TCP 查询的 有两种情况:<ol>
+<li>当查询数据多大以至于产生了数据截断(TC标志为1),这时,需要利用TCP的分片能力来进行数据传输(看TCP的相关章节)。</li>
+<li>当主(master)服务器和辅(slave)服务器之间通信,辅服务器要拿到主服务器的 zone 信息的时候。</li>
+</ol>
+</li>
+</ul>
+<h1 id="十五-TFTP-简单文件传送协议"><a href="#十五-TFTP-简单文件传送协议" class="headerlink" title="十五 TFTP:简单文件传送协议"></a>十五 TFTP:简单文件传送协议</h1><h3 id="1-引言-13"><a href="#1-引言-13" class="headerlink" title="1. 引言"></a>1. 引言</h3><ul>
+<li>TFTP(Trivial File Transfer Protocol)即简单文件传送协议，最初打算用于引导无盘系统（通常是工作站或X终端）。</li>
+<li>和将在第27章介绍的使用TCP的文件传送协议（FTP）不同，为了保持简单和短小，TFTP将使用UDP。</li>
+<li>TFTP的代码（和它所需要的UDP、IP和设备驱动程序）都能适合只读存储器。</li>
+</ul>
+<h3 id="2-协议"><a href="#2-协议" class="headerlink" title="2. 协议"></a>2. 协议</h3><ul>
+<li>操作码|文件名|0|模式|0</li>
+<li>TFTP报文的头两个字节表示操作码。对于读请求和写请求（WRQ）</li>
+<li>文件名字段说明客户要读或写的位于服务器上的文件。这个文件字段以0字节作为结束</li>
+<li>模式字段是一个ASCII码串netascii或octet（可大小写任意组合），同样以0字节结束。</li>
+<li>停止等待协议<ul>
+<li>以读一个文件作为例子，TFTP客户需要发送一个读请求说明要读的文件名和文件模式(mode)。如果这个文件能被这个客户读取，TFTP服务器就返回一个块编号为1的数据分组。TFTP客户又发送一个块编号为1的ACK。TFTP服务器随后发送块编号为2的数据。TFTP客户发回块编号为2的ACK。重复这个过程直到这个文件传送完。除了最后一个数据分组可含有不足512字节的数据，其他每个数据分组均含有512字节的数据。当TFTP客户收到一个不足512字节的数据分组，就知道它收到最后一个数据分组。</li>
+<li>在写请求的情况下，TFTP客户发送WRQ指明文件名和模式。如果该文件能被该客户写，TFTP服务器就返回块编号为0的ACK包。该客户就将文件的头512字节以块编号为1发出。服务器则返回块编号为1的ACK。</li>
+<li>这种类型的数据传输称为停止等待协议。它只用在一些简单的协议如TFTP中。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-安全性"><a href="#3-安全性" class="headerlink" title="3. 安全性"></a>3. 安全性</h3><ul>
+<li>在TFTP分组中并不提供用户名和口令。这是TFTP的一个特征（即“安全漏洞”）。</li>
+<li>由于TFTP是设计用于系统引导进程，它不可能提供用户名和口令。</li>
+<li>TFTP的这一特性被许多解密高手用于获取Unix口令文件的复制，然后来猜测用户口令。为防止这种类型的访问，目前大多数TFTP服务器提供了一个选项来限制只能访问特定目录下的文件（Unix系统中通常是/tftpboot）。这个目录中只包含无盘系统进行系统引导时所需的文件。</li>
+</ul>
+<h3 id="4-总结"><a href="#4-总结" class="headerlink" title="4. 总结"></a>4. 总结</h3><ul>
+<li>TFTP是一个简单的协议，适合于只读存储器，仅用于无盘系统进行系统引导。</li>
+<li>它只使用几种报文格式，是一种停止等待协议。</li>
+<li>TFTP服务器通过为每个客户提供一个新的UDP端口来提供并发。这允许不同的客户输入数据报，然后由服务器中的UDP模块根据目的端口号进行区分，而不是由服务器本身来进行区分。</li>
+<li>TFTP协议没有提供安全特性。大多数执行指望TFTP服务器的系统管理员来限制客户的访问，只允许它们访问引导所必须的文件。</li>
+<li>文件传输协议（FTP）是设计用于一般目的的、高吞吐量的文件传输。</li>
+</ul>
+<h1 id="十六-BOOTP-引导程序协议"><a href="#十六-BOOTP-引导程序协议" class="headerlink" title="十六 BOOTP:引导程序协议"></a>十六 BOOTP:引导程序协议</h1><h3 id="1-引言-14"><a href="#1-引言-14" class="headerlink" title="1. 引言"></a>1. 引言</h3><ul>
+<li><p>无盘系统，它在不知道自身IP地址的情况下，在进行系统引导时能够通过RARP来获取它的IP地址。</p>
+</li>
+<li><p>然而使用RARP有两个问题：</p>
+<ul>
+<li>（1）IP地址是返回的唯一结果；</li>
+<li>（2）既然RARP使用链路层广播，RARP请求就不会被路由器转发（迫使每个实际网络设置一个RARP服务器）。</li>
+</ul>
+</li>
+<li><p>本章将介绍一种用于无盘系统进行系统引导的替代方法，又称为引导程序协议，或BOOTP。</p>
+</li>
+<li><p>BOOTP使用UDP，且通常需与TFTP（参见第15章）协同工作。</p>
+</li>
+</ul>
+<h3 id="2-BOOTP的分组格式"><a href="#2-BOOTP的分组格式" class="headerlink" title="2. BOOTP的分组格式"></a>2. BOOTP的分组格式</h3><ul>
+<li>BOOTP 请求和应答均被封装在UDP数据报中，共300字节  <!-- ![26.BOOTP报文.png](./img/26.BOOTP报文.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/26.BOOTP%E6%8A%A5%E6%96%87.png" class="" title="26.BOOTP报文.png">
+
+</li>
+</ul>
+<h3 id="3-BOOTP服务器的设计"><a href="#3-BOOTP服务器的设计" class="headerlink" title="3. BOOTP服务器的设计"></a>3. BOOTP服务器的设计</h3><ul>
+<li>BOOTP客户通常固化在无盘系统只读存储器中</li>
+<li>首先，BOOTP服务器将从它的熟知端口（67）读取UDP数据报。</li>
+<li>它不同于RARP服务器，它必须读取类型字段为“RARP请求”的以太网帧。</li>
+<li>BOOTP协议通过将客户的硬件地址放入BOOTP分组中，使得服务器很容易获取客户的硬件地址</li>
+<li>具体再看书吧</li>
+</ul>
+<h3 id="4-总结-1"><a href="#4-总结-1" class="headerlink" title="4. 总结"></a>4. 总结</h3><ul>
+<li>BOOTP使用UDP，它为引导无盘系统获得它的IP地址提供了除RARP外的另外一种选择。</li>
+<li>BOOTP还能返回其他的信息，如路由器的IP地址、客户的子网掩码和名字服务器的IP地址。</li>
+<li>既然BOOTP用于系统引导过程，一个无盘系统需要下列协议才能在只读存储器中完成：BOOTP、TFTP、UDP、IP和一个局域网的驱动程序。</li>
+<li>BOOTP服务器比RARP服务器更易于实现，因为BOOTP请求和应答是在UDP数据报中，而不是特殊的数据链路层帧。一个路由器还能作为真正BOOTP服务器的代理，向位于不同网络的真正BOOTP服务器转发客户的BOOTP请求。</li>
+</ul>
+<h1 id="十七-TCP：传输控制协议"><a href="#十七-TCP：传输控制协议" class="headerlink" title="十七 TCP：传输控制协议"></a>十七 TCP：传输控制协议</h1><h3 id="1-引言-15"><a href="#1-引言-15" class="headerlink" title="1. 引言"></a>1. 引言</h3><ul>
+<li>本章将介绍<ul>
+<li>TCP为应用层提供的服务</li>
+<li>TCP首部中的各个字段。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-TCP的服务"><a href="#2-TCP的服务" class="headerlink" title="2. TCP的服务"></a>2. TCP的服务</h3><ul>
+<li>TCP提供一种面向连接的、可靠的字节流服务。</li>
+<li>面向连接意味着两个使用TCP的应用（通常是一个客户和一个服务器）在彼此交换数据之前必须先建立一个TCP连接。</li>
+<li>TCP对字节流的内容不作任何解释。TCP不知道传输的数据字节流是二进制数据，还是ASCII字符、EBCDIC字符或者其他类型数据。对字节流的解释由TCP连接双方的应用层解释。</li>
+</ul>
+<h3 id="3-TCP的首部"><a href="#3-TCP的首部" class="headerlink" title="3. TCP的首部"></a>3. TCP的首部</h3><!-- ![27.TCP.png](./img/27.TCP.png) -->
+<img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/27.TCP.png" class="" title="27.TCP.png">
+<!-- ![28.TCP首部.png](./img/28.TCP首部.png) -->
+<img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/28.TCP%E9%A6%96%E9%83%A8.png" class="" title="28.TCP首部.png">
+<ul>
+<li>20字节固定加变长选项</li>
+<li>16位源端口/目的端口：每个TCP段都包含源端和目的端的端口号，用于寻找发端和收端应用进程。</li>
+<li>序号：序号用来标识从TCP发端向TCP收端发送的数据字节流，它表示在这个报文段中的的第一个数据字节。</li>
+<li>确认序号：包含发送确认的一端所期望收到的下一个序号。因此，确认序号应当是上次已成功收到数据字节序号加1。只有ACK标志（下面介绍）为1时确认序号字段才有效。</li>
+<li>首部长度给出首部中32 bit字的数目。需要这个值是因为任选字段的长度是可变的。这个字段占4bit，因此TCP最多有60字节的首部。</li>
+<li>6位标志位  <!-- ![29.标志位.png](./img/29.标志位.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/29.%E6%A0%87%E5%BF%97%E4%BD%8D.png" class="" title="29.标志位.png"></li>
+<li>TCP的流量控制由连接的每一端通过声明的窗口大小来提供。窗口大小为字节数，起始于确认序号字段指明的值，这个值是接收端正期望接收的字节。窗口大小是一个16 bit字段，因而窗口大小最大为65535字节。</li>
+<li>检验和覆盖了整个的TCP报文段：TCP首部和TCP数据。这是一个强制性的字段，一定是由发端计算和存储，并由收端进行验证。TCP检验和的计算和UDP检验和的计算相似，使用如11章所述的一个伪首部。</li>
+<li>只有当URG标志置1时紧急指针才有效。紧急指针是一个正的偏移量，和序号字段中的值相加表示紧急数据最后一个字节的序号。TCP的紧急方式是发送端向另一端发送紧急数据的一种方式。</li>
+<li>最常见的可选字段是最长报文大小，又称为MSS(Maximum Segment Size)。每个连接方通常都在通信的第一个报文段（为建立连接而设置SYN标志的那个段）中指明这个选项。它指明本端所能接收的最大长度的报文段。</li>
+<li>TCP报文段中的数据部分是可选的。在一个连接建立和一个连接终止时，双方交换的报文段仅有TCP首部。如果一方没有数据要发送，也使用没有任何数据的首部来确认收到的数据。在处理超时的许多情况中，也会发送不带任何数据的报文段。</li>
+</ul>
+<h3 id="4-TCP-保证可靠性的简单工作原理"><a href="#4-TCP-保证可靠性的简单工作原理" class="headerlink" title="4. TCP 保证可靠性的简单工作原理"></a>4. TCP 保证可靠性的简单工作原理</h3><ol>
+<li>应用数据被分割成 TCP 认为最适合发送的数据块。这和 UDP 完全不同,应用程序产生的 数据报长度将保持不变。由TCP 传递给 IP 的信息单位称为报文段或段( segment)</li>
+<li>当 TCP 发出一个段后,它启动一个定时器,等待目的端确认收到这个报文段。如果不能 及时收到一个确认,将重发这个报文段。</li>
+<li>当 TCP 收到发自 TCP 连接另一端的数据,它将发送一个确认。这个确认不是立即发送,通常将推迟几分之一秒,</li>
+<li>TCP 将保持它首部和数据的检验和。这是一个端到端的检验和,目的是检测数据在传输 过程中的任何变化。如果收到段的检验和有差错, TCP 将丢弃这个报文段和不确认收到此报文段(希望发端超时并重发)。</li>
+<li>既然 TCP 报文段作为 IP 数据报来传输,而 IP 数据报的到达可能会失序,因此 TCP 报文段 的到达也可能会失序。如果必要, TCP 将对收到的数据进行重新排序,将收到的数据以正确的顺序交给应用层。</li>
+<li>TCP 还能提供流量控制。TCP 连接的每一方都有固定大小的缓冲空间。TCP 的接收端只允许另一端发送接收端缓冲区所能接纳的数据。这将防止较快主机致使较慢主机的缓冲区溢出。</li>
+<li>,TCP 中保持可靠性的方式就是超时重发,这是有道理的,虽然 TCP 也可以用各种各样的 ICMP 报文来处理这些,但是这也不是可靠的,最可靠的方式就是只要不得到确认,就重新发送数据报,直到得到对方的确认为止。</li>
+</ol>
+<h3 id="5-小结"><a href="#5-小结" class="headerlink" title="5. 小结"></a>5. 小结</h3><ul>
+<li>TCP将用户数据打包构成报文段；它发送数据后启动一个定时器；另一端对收到的数据进行确认，对失序的数据重新排序，丢弃重复数据；TCP提供端到端的流量控制，并计算和验证一个强制性的端到端检验和。</li>
+<li>许多流行的应用程序如Telnet、Rlogin、FTP和SMTP都使用TCP。</li>
+</ul>
+<h1 id="十八-TCP连接的建立与终止"><a href="#十八-TCP连接的建立与终止" class="headerlink" title="十八 TCP连接的建立与终止"></a>十八 TCP连接的建立与终止</h1><h3 id="1-连接的建立与终止"><a href="#1-连接的建立与终止" class="headerlink" title="1. 连接的建立与终止"></a>1. 连接的建立与终止</h3><ul>
+<li><p>三次握手建立连接</p>
+<ul>
+<li>C–&gt;S:SYN</li>
+<li>S–&gt;C:SYN,ACK（ACK是回应上一个SYN）</li>
+<li>C–&gt;S:ACK</li>
+</ul>
+</li>
+<li><p>四次握手终止连接</p>
+<ul>
+<li>C–&gt;S:FIN</li>
+<li>S–&gt;C:ACK（对FIN的）</li>
+<li>S–&gt;C:FIN（处理未处理完的数据后）</li>
+<li>C–&gt;:ACK(对FIN)<!-- ![30.连接建立与断开例子.png](./img/30.连接建立与断开例子.png) -->
+<img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/30.%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B%E4%B8%8E%E6%96%AD%E5%BC%80%E4%BE%8B%E5%AD%90.png" class="" title="30.连接建立与断开例子.png">
+
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-连接建立的超时"><a href="#2-连接建立的超时" class="headerlink" title="2. 连接建立的超时"></a>2. 连接建立的超时</h3><ul>
+<li>在SYN无相应时，客户间隔多长时间再发送一个SYN，试图建立连接。tcpdump实验输出第2个SYN与第1个的间隔是5.8秒，而第3个与第2个的间隔是24秒。</li>
+<li>大多数伯克利系统将建立一个新连接的最长时间限制为75秒。超时后就放弃连接</li>
+</ul>
+<h3 id="3-最大报文段长度"><a href="#3-最大报文段长度" class="headerlink" title="3. 最大报文段长度"></a>3. 最大报文段长度</h3><ul>
+<li>最大报文段长度（MSS）表示TCP传往另一端的最大块数据的长度。</li>
+<li>当一个连接建立时，连接的双方都要通告各自的MSS。我们已经见过MSS都是1024。这导致IP数据报通常是40字节长：20字节的TCP首部和20字节的IP首部。</li>
+</ul>
+<h3 id="4-TCP的半关闭"><a href="#4-TCP的半关闭" class="headerlink" title="4. TCP的半关闭"></a>4. TCP的半关闭</h3><ul>
+<li>就是四次握手关闭时，服务端对FIN相应ACK后，继续把剩余的数据发送，这时服务端处于close_wait状态，客户端处于半关闭状态</li>
+<li>看范例，我对半关闭的理解是：告诉服务器自己的数据传完了，服务器单向传递数据</li>
+</ul>
+<h3 id="5-TCP的状态变迁图"><a href="#5-TCP的状态变迁图" class="headerlink" title="5. TCP的状态变迁图"></a>5. TCP的状态变迁图</h3><!-- ![TCP状态变迁图](./img/TCP状态变迁图.png) -->
+<img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/TCP%E7%8A%B6%E6%80%81%E5%8F%98%E8%BF%81%E5%9B%BE.png" class="" title="TCP状态变迁图.png">
+<ul>
+<li><p>初看很乱，三次握手四次握手懂了后就能看明白了</p>
+</li>
+<li><p>2MSL等待状态</p>
+<ul>
+<li>TIME_WAIT状态也称为2MSL等待状态。</li>
+<li>每个具体TCP实现必须选择一个报文段最大生存时间MSL（Maximum Segment Lifetime）。它是任何报文段被丢弃前在网络内的最长时间。规定为2分钟，通常为30秒</li>
+<li>这个TCP连接在2MSL等待期间，定义这个连接的插口（客户的IP地址和端口号，服务器的IP地址和端口号）不能再被使用。这个连接只能在2MSL结束后才能再被使用。</li>
+<li>只有当另一端的进程完成这个关闭，我们这端才会从FIN_WAIT_2状态进入TIME_WAIT状态。</li>
+</ul>
+</li>
+</ul>
+<h3 id="6-复位报文段"><a href="#6-复位报文段" class="headerlink" title="6. 复位报文段"></a>6. 复位报文段</h3><ul>
+<li>TCP首部中的RST比特是用于“复位”的。一般说来，无论何时一个报文段发往基准的连接（referenced connection）出现错误，TCP都会发出一个复位报文段（这里提到的“基准的连接”是指由目的IP地址和目的端口号以及源IP地址和源端口号指明的连接。这就是为什么RFC 793称之为插口）。</li>
+<li>到不存在的端口的连接请求<ul>
+<li>产生复位的一种常见情况是当连接请求到达时，目的端口没有进程正在听。</li>
+<li>对于UDP，当一个数据报到达目的端口时，该端口没在使用，它将产生一个ICMP端口不可达的信息。而TCP则使用复位。</li>
+</ul>
+</li>
+<li>异常终止一个连接<ul>
+<li>终止一个连接的正常方式是一方发送FIN。有时这也称为有序释放（orderly release），因为在所有排队数据都已发送之后才发送FIN，正常情况下没有任何数据丢失。</li>
+<li>但也有可能发送一个复位报文段而不是FIN来中途释放一个连接。有时称这为异常释放（abortive release）。</li>
+</ul>
+</li>
+<li>检测半打开连接<ul>
+<li>如果一方已经关闭或异常终止连接而另一方却还不知道，我们将这样的TCP连接称为半打开（Half-Open）的。任何一端的主机异常都可能导致发生这种情况。只要不打算在半打开连接上传输数据，仍处于连接状态的一方就不会检测另一方已经出现异常。</li>
+<li>半打开连接的另一个常见原因是当客户主机突然掉电而不是正常的结束客户应用程序后再关机。</li>
+<li>服务器主机重启后，我们重新接上电缆，并从客户向服务器发送另一行字符。由于服务器的TCP已经重新启动，它将丢失复位前连接的所有信息，因此它不知道数据报文段中提到的连接。TCP的处理原则是接收方以复位作为应答。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-同时打开、同时关闭"><a href="#7-同时打开、同时关闭" class="headerlink" title="7. 同时打开、同时关闭"></a>7. 同时打开、同时关闭</h3><ul>
+<li>两个应用程序同时彼此执行主动打开的情况是可能的，尽管发生的可能性极小。</li>
+<li>TCP是特意设计为了可以处理同时打开，对于同时打开它仅建立一条连接而不是两条连接（其他的协议族，最突出的是OSI运输层，在这种情况下将建立两条连接而不是一条连接）。</li>
+<li>一个同时打开的连接需要交换4个报文段，比正常的三次握手多一个。（去掉最后的ACK再乘2）</li>
+<li>双方都执行主动关闭也是可能的，TCP协议也允许这样的同时关闭（simultaneous close）。</li>
+</ul>
+<h1 id="十九-TCP的交互数据流"><a href="#十九-TCP的交互数据流" class="headerlink" title="十九 TCP的交互数据流"></a>十九 TCP的交互数据流</h1><h3 id="1-引言-16"><a href="#1-引言-16" class="headerlink" title="1. 引言"></a>1. 引言</h3><ul>
+<li>一些有关TCP通信量的研究如[Caceres et al. 1991]发现<ul>
+<li>如果按照分组数量计算，约有一半的TCP报文段包含成块数据（如FTP、电子邮件和Usenet新闻），另一半则包含交互数据（如Telnet和Rlogin）。</li>
+<li>如果按字节计算，则成块数据与交互数据的比例约为90%和10%。这是因为成块数据的报文段基本上都是满长度（full-sized）的（通常为512字节的用户数据），而交互数据则小得多（上述研究表明Telnet和Rlogin分组中通常约90%左右的用户数据小于10个字节）。</li>
+</ul>
+</li>
+<li>TCP需要同时处理这两类数据，但使用的处理算法则有所不同。</li>
+</ul>
+<h3 id="2-交互式输入"><a href="#2-交互式输入" class="headerlink" title="2. 交互式输入"></a>2. 交互式输入</h3><!-- ![按键回显服务器](./img/按键回显服务器.png) -->
+<img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/%E6%8C%89%E9%94%AE%E5%9B%9E%E6%98%BE%E6%9C%8D%E5%8A%A1%E5%99%A8.png" class="" title="按键回显服务器.png">
+<ul>
+<li>这样就会产生4个报文段：<br>  （1）来自客户的交互按键；<br>  （2）来自服务器的按键确认；<br>  （3）来自服务器的按键回显；<br>  （4）来自客户的按键回显确认。</li>
+<li>我们一般可以将报文段2和3进行合并—按键确认与按键回显一起发送。(经受时延的确认,捎带)</li>
+<li>对于交互性要求比较高的应用,TCP 给出两个策略来提高发送效率和减低网络负担:<ol>
+<li>捎带 ACK。</li>
+<li>Nagle 算法(一次尽量多 的发数据)。</li>
+</ol>
+</li>
+</ul>
+<h3 id="3-经受时延的确认"><a href="#3-经受时延的确认" class="headerlink" title="3. 经受时延的确认"></a>3. 经受时延的确认</h3><ul>
+<li>通常TCP在接收到数据时并不立即发送ACK；相反，它推迟发送，以便将ACK与需要沿该方向发送的数据一起发送（有时称这种现象为数据捎带ACK）。绝大多数实现采用的时延为200 ms，也就是说，TCP将以最大200 ms的时延等待是否有数据一起发送。</li>
+<li>Host Requirements RFC声明TCP需要实现一个经受时延的ACK，但时延必须小于500 ms。</li>
+</ul>
+<h3 id="4-Nagle算法-一次尽量多的发数据"><a href="#4-Nagle算法-一次尽量多的发数据" class="headerlink" title="4. Nagle算法(一次尽量多的发数据)"></a>4. Nagle算法(一次尽量多的发数据)</h3><ul>
+<li><p>在前一节我们看到,在一个Rlogin连接上客户一般每次发送一个字节到服务器，这就产生了一些41字节长的分组：20字节的IP首部、20字节的TCP首部和1个字节的数据。在局域网上，这些小分组（被称为微小分组（tinygram））通常不会引起麻烦，因为局域网一般不会出现拥塞。但在广域网上，这些小分组则会增加拥塞出现的可能。一种简单和好的方法就是采用RFC 896 [Nagle 1984]中所建议的Nagle算法。</p>
+</li>
+<li><p>形象的来说：Nagle 算法是说,当主机 A 给主机 B 发送了一个 TCP 数据报并进入等待主机 B 的 ACK 数据报的状态时,TCP 的输出缓冲区里面 只能有一个 TCP 数 据报,并且,这个数据报不断地收集后来的数据,整合成一个大的数据报,等到 B 主机的 ACK 包一到,就把这些 数据“一股脑”的发送出去。虽然这样的描述有些 不准确,但还算形象和易于理解,我们同样可以体会到这个策略对于低减网络负担的 好处。</p>
+</li>
+<li><p>该算法要求一个TCP连接上最多只能有一个未被确认的未完成的小分组，在该分组的确认到达之前不能发送其他的小分组。</p>
+</li>
+<li><p>该算法的优越之处在于它是自适应的：确认到达得越快，数据也就发送得越快。</p>
+</li>
+<li><p>在以太网上一个字节被发送、确认和回显的平均往返时间约为16ms。为了产生比这个速度更快的数据，我们每秒键入的字符必须多于60个。这表明在局域网环境下两个主机之间发送数据时很少使用这个算法。</p>
+</li>
+<li><p>在编写插口程序的时候,可以通过 TCP_NODELAY 来关闭这个算法。并且,使用这个算法看情况的,比如基于 TCP 的 X 窗口协议,如果处理鼠标事件时还是用这个算法,那么“延迟”可就非常大了。</p>
+</li>
+</ul>
+<h3 id="5-小结-1"><a href="#5-小结-1" class="headerlink" title="5. 小结"></a>5. 小结</h3><ol>
+<li>交互数据总是以小于最大报文段长度的分组发送。在Rlogin中通常只有一个字节从客户发送到服务器。Telnet允许一次发送一行输入数据，但是目前大多数实现仍然发送一个字节。</li>
+<li>对于这些小的报文段，接收方使用经受时延的确认方法来判断确认是否可被推迟发送，以便与回送数据一起发送。这样通常会减少报文段的数目，尤其是对于需要回显用户输入字符的Rlogin会话。</li>
+<li>在较慢的广域网环境中，通常使用Nagle算法来减少这些小报文段的数目。这个算法限制发送者任何时候只能有一个发送的小报文段未被确认。</li>
+</ol>
+<h1 id="二十-TCP的成块数据流"><a href="#二十-TCP的成块数据流" class="headerlink" title="二十 TCP的成块数据流"></a>二十 TCP的成块数据流</h1><h3 id="1-引言-17"><a href="#1-引言-17" class="headerlink" title="1. 引言"></a>1. 引言</h3><ul>
+<li>TFTP使用了停止等待协议。数据发送方在发送下一个数据块之前需要等待接收对已发送数据的确认。</li>
+<li>本章我们将介绍TCP所使用的被称为滑动窗口协议的另一种形式的流量控制方法。该协议允许发送方在停止并等待确认前可以连续发送多个分组。由于发送方不必每发一个分组就停下来等待确认，因此该协议可以加速数据的传输。</li>
+<li>我们还将介绍TCP的PUSH标志，该标志在前面的许多例子中都出现过。</li>
+<li>此外，我们还要介绍慢启动，TCP使用该技术在一个连接上建立数据流</li>
+<li>最后介绍成块数据流的吞吐量。</li>
+</ul>
+<h3 id="2-滑动窗口"><a href="#2-滑动窗口" class="headerlink" title="2. 滑动窗口"></a>2. 滑动窗口</h3><ul>
+<li>滑动窗口可视化表达  <!-- ![TCP滑动窗口](./img/TCP滑动窗口.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/TCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3.png" class="" title="TCP滑动窗口.png">
+<ul>
+<li>在这个图中，我们将字节从1至11进行标号。接收方通告的窗口称为提出的窗口（offered window），它覆盖了从第4字节到第9字节的区域，表明接收方已经确认了包括第3字节在内的数据，且通告窗口大小为6。</li>
+<li>窗口大小是与确认序号相对应的。发送方计算它的可用窗口，该窗口表明多少数据可以立即被发送。</li>
+</ul>
+</li>
+<li>当接收方确认数据后，这个滑动窗口不时地向右移动。窗口两个边沿的相对运动增加或减少了窗口的大小。我们使用三个术语来描述窗口左右边沿的运动：<ul>
+<li>称窗口左边沿向右边沿靠近为窗口合拢。这种现象发生在数据被发送和确认时。</li>
+<li>当窗口右边沿向右移动时将允许发送更多的数据，我们称之为窗口张开。这种现象发生在另一端的接收进程读取已经确认的数据并释放了TCP的接收缓存时。</li>
+<li>当右边沿向左移动时，我们称之为窗口收缩。Host Requirements RFC强烈建议不要使用这种方式。但TCP必须能够在某一端产生这种情况时进行处理。第22.3节给出了这样的一个例子，一端希望向左移动右边沿来收缩窗口，但没能够这样做。<!-- ![窗口移动](./img/窗口移动.png) -->
+<img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/%E7%AA%97%E5%8F%A3%E7%A7%BB%E5%8A%A8.png" class="" title="窗口移动.png"></li>
+<li>因为窗口的左边沿受另一端发送的确认序号的控制，因此不可能向左边移动。如果接收到一个指示窗口左边沿向左移动的ACK，则它被认为是一个重复ACK</li>
+<li>如果左边沿到达右边沿，则称其为一个零窗口，此时发送方不能够发送任何数据。</li>
+</ul>
+</li>
+<li>一个例子  <!-- ![滑动窗口例子](./img/滑动窗口例子.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E4%BE%8B%E5%AD%90.png" class="" title="滑动窗口例子.png">
+<ol>
+<li>发送方不必发送一个全窗口大小的数据。</li>
+<li>来自接收方的一个报文段确认数据并把窗口向右边滑动。这是因为窗口的大小是相对于确认序号的。</li>
+<li>正如从报文段7到报文段8中变化的那样，窗口的大小可以减小，但是窗口的右边沿却不能够向左移动。</li>
+<li>接收方在发送一个ACK前不必等待窗口被填满。在前面我们看到许多实现每收到两个报文段就会发送一个ACK。</li>
+</ol>
+</li>
+</ul>
+<h3 id="3-窗口大小"><a href="#3-窗口大小" class="headerlink" title="3. 窗口大小"></a>3. 窗口大小</h3><ul>
+<li>由接收方提供的窗口的大小通常可以由接收进程控制，这将影响TCP的性能。</li>
+<li>4.2BSD默认设置发送和接受缓冲区的大小为2048个字节。在4.3BSD中双方被增加为4096个字节。SunOS 4.1.3、BSD/386和SVR4仍然使用4096字节的默认大小。其他的系统，如Solaris 2.2、4.4BSD和AIX3.2则使用更大的默认缓存大小，如8192或16384等。</li>
+<li>插口API允许进程设置发送和接收缓存的大小。接收缓存的大小是该连接上所能够通告的最大窗口大小。有一些应用程序通过修改插口缓存大小来增加性能。</li>
+</ul>
+<h3 id="4-PUSH标志"><a href="#4-PUSH标志" class="headerlink" title="4. PUSH标志"></a>4. PUSH标志</h3><ul>
+<li>发送方使用该标志通知接收方将所收到的数据全部提交给接收进程。这里的数据包括与PUSH一起传送的数据以及接收方TCP已经为接收进程收到的其他数据。</li>
+<li>通过允许客户应用程序通知其TCP设置PUSH标志，客户进程通知TCP在向服务器发送一个报文段时不要因等待额外数据而使已提交数据在缓存中滞留。</li>
+<li>类似地，当服务器的TCP接收到一个设置了PUSH标志的报文段时，它需要立即将这些数据递交给服务器进程而不能等待判断是否还会有额外的数据到达。</li>
+<li>然而，目前大多数的API没有向应用程序提供通知其TCP设置PUSH标志的方法。的确，许多实现程序认为PUSH标志已经过时，一个好的TCP实现能够自行决定何时设置这个标志。</li>
+<li>如果待发送数据将清空发送缓存，则大多数的源于伯克利的实现能够自动设置PUSH标志。这意味着我们能够观察到每个应用程序写的数据均被设置了PUSH标志，因为数据在写的时候就立即被发送。</li>
+<li>由于源于伯克利的实现一般从不将接收到的数据推迟交付给应用程序，因此它们忽略所接收的PUSH标志。</li>
+</ul>
+<h3 id="5-慢启动"><a href="#5-慢启动" class="headerlink" title="5. 慢启动"></a>5. 慢启动</h3><ul>
+<li>迄今为止，在所有的例子中，发送方一开始便向网络发送多个报文段，直至达到接收方通告的窗口大小为止。当发送方和接收方处于同一个局域网时，这种方式是可以的。但是如果在发送方和接收方之间存在多个路由器和速率较慢的链路时，就有可能出现一些问题。一些中间路由器必须缓存分组，并有可能耗尽存储器的空间。这种连接方式是如何严重降低了TCP连接的吞吐量的。</li>
+<li>现在，TCP需要支持一种被称为“慢启动(slow start)”的算法。该算法通过观察到新分组进入网络的速率应该与另一端返回确认的速率相同而进行工作。</li>
+<li>慢启动为发送方的TCP增加了另一个窗口：拥塞窗口(congestion window)，记为cwnd。当与另一个网络的主机建立TCP连接时，拥塞窗口被初始化为1个报文段（即另一端通告的报文段大小）。每收到一个ACK，拥塞窗口就增加一个报文段（cwnd以字节为单位，但是慢启动以报文段大小为单位进行增加）。发送方取拥塞窗口与通告窗口中的最小值作为发送上限。拥塞窗口是发送方使用的流量控制，而通告窗口则是接收方使用的流量控制。</li>
+<li>发送方开始时发送一个报文段，然后等待ACK。当收到该ACK时，拥塞窗口从1增加为2，即可以发送两个报文段。当收到这两个报文段的ACK时，拥塞窗口就增加为4。这是一种指数增加的关系。</li>
+<li>在某些点上可能达到了互联网的容量，于是中间路由器开始丢弃分组。这就通知发送方它的拥塞窗口开得过大。当我们在下一章讨论TCP的超时和重传机制时，将会看到它们是怎样对拥塞窗口起作用的。现在，我们来观察一个实际中的慢启动。  <!-- ![慢启动例子](./img/慢启动例子.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/%E6%85%A2%E5%90%AF%E5%8A%A8%E4%BE%8B%E5%AD%90.png" class="" title="慢启动例子.png">
+<ul>
+<li>我们观察到发送方发送一个长度为512字节的报文段，然后等待ACK。该ACK在716 ms后收到。这个时间是一个往返时间的指示。于是拥塞窗口增加了2个报文段，且又发送了两个报文段。当收到报文段5的ACK后，拥塞窗口增加为3。此时尽管可发送多达3个报文段，可是在下一个ACK收到之前，只发送了2个报文段。</li>
+</ul>
+</li>
+</ul>
+<h3 id="6-成块数据的吞吐量"><a href="#6-成块数据的吞吐量" class="headerlink" title="6. 成块数据的吞吐量"></a>6. 成块数据的吞吐量</h3><h5 id="带宽时延乘积"><a href="#带宽时延乘积" class="headerlink" title="带宽时延乘积"></a>带宽时延乘积</h5><ul>
+<li>可以计算通道的容量为：<br>  capacity (bit) = bandwidth (b/s) × round-trip time (s)<ul>
+<li>一般称之为带宽时延乘积。这个值依赖于网络速度和两端的RT T，可以有很大的变动。</li>
+</ul>
+</li>
+</ul>
+<h5 id="拥塞"><a href="#拥塞" class="headerlink" title="拥塞"></a>拥塞</h5><ul>
+<li>当数据到达一个大的管道（如一个快速局域网）并向一个较小的管道（如一个较慢的广域网）发送时便会发生拥塞。当多个输入流到达一个路由器，而路由器的输出流小于这些输入流的总和时也会发生拥塞。</li>
+</ul>
+<h3 id="7-紧急方式"><a href="#7-紧急方式" class="headerlink" title="7. 紧急方式"></a>7. 紧急方式</h3><ul>
+<li><p>TCP提供了“紧急方式(urgent mode)”，它使一端可以告诉另一端有些具有某种方式的“紧急数据”已经放置在普通的数据流中。另一端被通知这个紧急数据已被放置在普通数据流中，由接收方决定如何处理。</p>
+</li>
+<li><p>不幸的是，许多实现不正确地称TCP的紧急方式为带外数据(out-of-band data)。如果一个应用程序确实需要一个独立的带外信道，第二个TCP连接是达到这个目的的最简单的方法（许多运输层确实提供许多人认为的那种真正的带外数据：使用同一个连接的独立的逻辑数据通道作为正常的数据通道。这是TCP所没有提供的）。</p>
+</li>
+<li><p>TCP的紧急方式与带外数据之间的混淆，也是因为主要的编程接口（插口API）将TCP的紧急方式映射为称为带外数据的插口。</p>
+</li>
+<li><p>紧急方式有什么作用呢？</p>
+<ul>
+<li>两个最常见的例子是Telnet和Rlogin。当交互用户键入中断键时，使用紧急方式来完成这个功能。</li>
+<li>另一个例子是FTP，当交互用户放弃一个文件的传输时.</li>
+</ul>
+</li>
+<li><p>Telnet和Rlogin从服务器到客户使用紧急方式是因为在这个方向上的数据流很可能要被客户的TCP停止（也即，它通告了一个大小为0的窗口）。但是如果服务器进程进入了紧急方式，尽管它不能够发送任何数据，服务器TCP也会立即发送紧急指针和URG标志。当客户TCP接收到这个通知时就会通知客户进程，于是客户可以从服务器读取其输入、打开窗口并使数据流动。</p>
+</li>
+</ul>
+<h1 id="二十一-TCP的超时与重传"><a href="#二十一-TCP的超时与重传" class="headerlink" title="二十一 TCP的超时与重传"></a>二十一 TCP的超时与重传</h1><h3 id="1-引言-18"><a href="#1-引言-18" class="headerlink" title="1. 引言"></a>1. 引言</h3><ul>
+<li>TCP提供可靠的运输层。它使用的方法之一就是确认从另一端收到的数据。<ul>
+<li>但数据和确认都有可能会丢失。TCP通过在发送时设置一个定时器来解决这种问题。如果当定时器溢出时还没有收到确认，它就重传该数据。</li>
+<li>对任何实现而言，关键之处就在于超时和重传的策略，即怎样决定超时间隔和如何确定重传的频率。</li>
+</ul>
+</li>
+<li>我们已经看到过两个超时和重传的例子：<ol>
+<li>在6.5节的ICMP端口不能到达的例子中，看到TFTP客户使用UDP实现了一个简单的超时和重传机制：假定5秒是一个适当的时间间隔，并每隔5秒进行重传；</li>
+<li>在向一个不存在的主机发送ARP的例子中（第4.5节），我们看到当TCP试图建立连接的时候，在每个重传之间使用一个较长的时延来重传SYN。</li>
+</ol>
+</li>
+<li>对每个连接，TCP管理4个不同的定时器。<ol>
+<li>重传定时器使用于当希望收到另一端的确认。在本章我们将详细讨论这个定时器以及一些相关的问题，如拥塞避免。</li>
+<li>坚持(persist)定时器使窗口大小信息保持不断流动，即使另一端关闭了其接收窗口。第22章将讨论这个问题。</li>
+<li>保活(keepalive)定时器可检测到一个空闲连接的另一端何时崩溃或重启。第23章将描述这个定时器。</li>
+<li>2MSL定时器测量一个连接处于TIME_WA IT状态的时间。我们在18.6节对该状态进行了介绍。</li>
+</ol>
+</li>
+</ul>
+<h3 id="2-超时与重传的简单例子"><a href="#2-超时与重传的简单例子" class="headerlink" title="2. 超时与重传的简单例子"></a>2. 超时与重传的简单例子</h3><!-- ![超时与重传例子](./img/超时与重传例子.png) -->
+<img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/%E8%B6%85%E6%97%B6%E4%B8%8E%E9%87%8D%E4%BC%A0%E4%BE%8B%E5%AD%90.png" class="" title="超时与重传例子.png">
+<ul>
+<li>第1、2和3行表示正常的TCP连接建立的过程，第4行是“hello,world”（12个字符加上回车和换行）的传输过程，第5行是其确认。接着我们从svr4拔掉了以太网电缆，第6行表示“and hi”将被发送。第7~18行是这个报文段的12次重传过程，而第19行则是发送方的TCP最终放弃并发送一个复位信号的过程。</li>
+<li>现在检查连续重传之间不同的时间差，它们取整后分别为1、3、6、12、24、48和多个64秒。</li>
+<li>这个倍乘关系被称为“指数退避(exponential backoff)”。</li>
+</ul>
+<h3 id="3-往返时间测量"><a href="#3-往返时间测量" class="headerlink" title="3. 往返时间测量"></a>3. 往返时间测量</h3><ul>
+<li>TCP超时与重传中最重要的部分就是对一个给定连接的往返时间（RTT）的测量。由于路由器和网络流量均会变化，因此我们认为这个时间可能经常会发生变化，TCP应该跟踪这些变化并相应地改变其超时时间。</li>
+<li>首先TCP必须测量在发送一个带有特别序号的字节和接收到包含该字节的确认之间的RTT。数据报文段和ACK之间通常并没有一一对应的关系。在上章的例子中，这意味着发送方可以测量到的一个RTT，是在发送报文段4（第1<del>1024字节）和接收报文段7（对1</del>1024字节的ACK）之间的时间，用M表示所测量到的RTT。</li>
+</ul>
+<h3 id="4-拥塞避免算法"><a href="#4-拥塞避免算法" class="headerlink" title="4. 拥塞避免算法"></a>4. 拥塞避免算法</h3><ul>
+<li>在第20章介绍的慢启动算法是在一个连接上发起数据流的方法，但有时我们会达到中间路由器的极限，此时分组将被丢弃。拥塞避免算法是一种处理丢失分组的方法。</li>
+<li>该算法假定由于分组受到损坏引起的丢失是非常少的（远小于1%），因此分组丢失就意味着在源主机和目的主机之间的某处网络上发生了拥塞。</li>
+<li>有两种分组丢失的指示：<ul>
+<li>发生超时，如果使用超时作为拥塞指示，则需要使用一个好的RTT算法，</li>
+<li>接收到重复的确认</li>
+</ul>
+</li>
+<li>拥塞避免算法和慢启动算法是两个目的不同、独立的算法。但是当拥塞发生时，我们希望降低分组进入网络的传输速率，于是可以调用慢启动来作到这一点。在实际中这两个算法通常在一起实现。</li>
+<li>拥塞避免算法和慢启动算法需要对每个连接维持两个变量：一个拥塞窗口cwnd和一个慢启动门限ssthresh。这样得到的算法的工作过程如下：<ol>
+<li>对一个给定的连接，初始化cwnd为1个报文段，ssthresh为65535个字节。</li>
+<li>TCP输出例程的输出不能超过cwnd和接收方通告窗口的大小。拥塞避免是发送方使用的流量控制，而通告窗口则是接收方进行的流量控制。前者是发送方感受到的网络拥塞的估计，而后者则与接收方在该连接上的可用缓存大小有关。</li>
+<li>当拥塞发生时（超时或收到重复确认），ssthresh被设置为当前窗口大小的一半（cwnd和接收方通告窗口大小的最小值，但最少为2个报文段）。此外，如果是超时引起了拥塞，则cwnd被设置为1个报文段（这就是慢启动）。</li>
+<li>当新的数据被对方确认时，就增加cwnd，但增加的方法依赖于我们是否正在进行慢启动或拥塞避免。如果cwnd小于或等于ssthresh，则正在进行慢启动，否则正在进行拥塞避免。慢启动一直持续到我们回到当拥塞发生时所处位置的半时候才停止（因为我们记录了在步骤2中给我们制造麻烦的窗口大小的一半），然后转为执行拥塞避免。</li>
+</ol>
+</li>
+<li>慢启动算法初始设置cwnd为1个报文段，此后每收到一个确认就加1。这会使窗口按指数方式增长：发送1个报文段，然后是2个，接着是4个……。</li>
+<li>拥塞避免算法要求每次收到一个确认时将cwnd增加1/cwnd。与慢启动的指数增加比起来，这是一种加性增长(additive increase)。我们希望在一个往返时间内最多为cwnd增加1个报文段（不管在这个RTT中收到了多少个ACK），然而慢启动将根据这个往返时间中所收到的确认的个数增加cwnd。</li>
+<li>慢启动和拥塞避免的可视化描述  <!-- ![慢启动和拥塞避免的可视化描述](./img/慢启动和拥塞避免的可视化描述.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/%E6%85%A2%E5%90%AF%E5%8A%A8%E5%92%8C%E6%8B%A5%E5%A1%9E%E9%81%BF%E5%85%8D%E7%9A%84%E5%8F%AF%E8%A7%86%E5%8C%96%E6%8F%8F%E8%BF%B0.png" class="" title="慢启动和拥塞避免的可视化描述.png">
+<ul>
+<li>在该图中，假定当cwnd为32个报文段时就会发生拥塞。于是设置ssthresh为16个报文段，而cwnd为1个报文段。在时刻0发送了一个报文段，并假定在时刻1接收到它的ACK，此时cwnd增加为2。接着发送了2个报文段，并假定在时刻2接收到它们的ACK，于是cwnd增加为4（对每个ACK增加1次）。这种指数增加算法一直进行到在时刻3和4之间收到8个ACK后cwnd等于ssthresh时才停止，从该时刻起，cwnd以线性方式增加，在每个往返时间内最多增加1个报文段。</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-快速重传与快速恢复算法"><a href="#5-快速重传与快速恢复算法" class="headerlink" title="5. 快速重传与快速恢复算法"></a>5. 快速重传与快速恢复算法</h3><ul>
+<li>在收到一个失序的报文段时，TCP立即需要产生一个ACK（一个重复的ACK）。这个重复的ACK不应该被迟延。该重复的ACK的在于让对方知道收到一个失序的报文段，并告诉对方自己希望收到的序号。</li>
+<li>由于我们不知道一个重复的ACK是由一个丢失的报文段引起的，还是由于仅仅出现了几个报文段的重新排序，因此我们等待少量重复的ACK到来。假如这只是一些报文段的重新排序，则在重新排序的报文段被处理并产生一个新的ACK之前，只可能产生1~2个重复的ACK。如果一连串收到3个或3个以上的重复ACK，就非常可能是一个报文段丢失了</li>
+<li>于是我们就重传丢失的数据报文段，而无需等待超时定时器溢出。这就是快速重传算法。接下来执行的不是慢启动算法而是拥塞避免算法。这就是快速恢复算法。</li>
+<li>没有执行慢启动的原因是由于收到重复的ACK不仅仅告诉我们一个分组丢失了。由于接收方只有在收到另一个报文段时才会产生重复的ACK，而该报文段已经离开了网络并进入了接收方的缓存。也就是说，在收发两端之间仍然有流动的数据，而我们不想执行慢启动来突然减少数据流。</li>
+<li>这个算法通常按如下过程进行实现：<ul>
+<li>当收到第3个重复的ACK时，将ssthresh设置为当前拥塞窗口cwnd的一半。重传丢失的报文段。设置cwnd为ssthresh加上3倍的报文段大小。</li>
+<li>每次收到另一个重复的ACK时，cwnd增加1个报文段大小并发送1个分组（如果新的cwnd允许发送）。</li>
+<li>当下一个确认新数据的ACK到达时，设置cwnd为ssthresh（在第1步中设置的值）。这个ACK应该是在进行重传后的一个往返时间内对步骤1中重传的确认。另外，这个ACK也应该是对丢失的分组和收到的第1个重复的ACK之间的所有中间报文段的确认。这一步采用的是拥塞避免，因为当分组丢失时我们将当前的速率减半。</li>
+</ul>
+</li>
+</ul>
+<h3 id="6-重新分组"><a href="#6-重新分组" class="headerlink" title="6. 重新分组"></a>6. 重新分组</h3><ul>
+<li>当TCP超时并重传时，它不一定要重传同样的报文段。相反，TCP允许进行重新分组而发送一个较大的报文段，这将有助于提高性能（当然，这个较大的报文段不能够超过接收方声明的MSS）。在协议中这是允许的，因为TCP是使用字节序号而不是报文段序号来进行识别它所要发送的数据和进行确认。</li>
+</ul>
+<h1 id="二十二-TCP的坚持定时器"><a href="#二十二-TCP的坚持定时器" class="headerlink" title="二十二 TCP的坚持定时器"></a>二十二 TCP的坚持定时器</h1><h3 id="1-引言-19"><a href="#1-引言-19" class="headerlink" title="1. 引言"></a>1. 引言</h3><ul>
+<li>我们已经看到TCP通过让接收方指明希望从发送方接收的数据字节数（即窗口大小）来进行流量控制。如果窗口大小为0会发生什么情况呢？这将有效地阻止发送方传送数据，直到窗口变为非0为止。</li>
+<li>TCP不对ACK报文段进行确认，TCP只确认那些包含有数据的ACK报文段。<ul>
+<li>如果一个确认丢失了，则双方就有可能因为等待对方而使连接终止：接收方等待接收数据（因为它已经向发送方通告了一个非0的窗口），而发送方在等待允许它继续发送数据的窗口更新。</li>
+</ul>
+</li>
+<li>为防止这种死锁情况的发生，发送方使用一个坚持定时器(persist timer)来周期性地向接收方查询，以便发现窗口是否已增大。这些从发送方发出的报文段称为窗口探查(window probe)。</li>
+<li>本章<ul>
+<li>我们将讨论窗口探查和坚持定时器</li>
+<li>还将讨论与坚持定时器有关的糊涂窗口综合症。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-窗口探查"><a href="#2-窗口探查" class="headerlink" title="2. 窗口探查"></a>2. 窗口探查</h3><ul>
+<li>窗口为0，从而使客户停止发送任何其他的数据。这就引起客户设置其坚持定时器。如果在该定时器时间到时客户还没有接收到一个窗口更新，它就探查这个空的窗口以决定窗口更新是否丢失。</li>
+<li>请注意客户发出的窗口探查之间的时间间隔。在收到一个大小为0的窗口通告后的第1个间隔为4.949秒，下一个间隔是4.996秒，随后的间隔分别约为6,12,24,48和60秒。</li>
+<li>坚持状态与第21章中介绍的重传超时之间一个不同的特点就是TCP从不放弃发送窗口探查。这些探查每隔60秒发送一次，这个过程将持续到或者窗口被打开，或者应用进程使用的连接被终止。</li>
+</ul>
+<h3 id="3-糊涂窗口综合症"><a href="#3-糊涂窗口综合症" class="headerlink" title="3. 糊涂窗口综合症"></a>3. 糊涂窗口综合症</h3><ul>
+<li>如果发生这种情况，则少量的数据将通过连接进行交换，而不是满长度的报文段</li>
+<li>这个问题可以归结为小包的问题，就是由于发送端和接收端上的处理不一致，导致网络上产生很多的小包，之前也介绍过避免网络上产生过多小包的措施，比如Nagle算法。在滑动窗口机制下，如果发送端和接收端速率很不一致，也会产生这种比较犯傻的状态：发送方发送的数据，只要一个大大的头部，携带数据很少。</li>
+<li>对于接收端来讲，如果接收很慢，一次接收1个字节或者几个字节，这个时候接收端 缓冲区很快就会被填满，然后窗口通告为0字节，这个时候发送端停止发送，应用程序收上去1个字节后，发出窗口通告为1字节，发送方收到通告之后，发出1个字节的数据，这样周而复始，传输效率会非常低。</li>
+<li>该现象可发生在两端中的任何一端：接收方可以通告一个小的窗口（而不是一直等到有大的窗口时才通告），而发送方也可以发送少量的数据（而不是等待其他的数据以便发送一个大的报文段）。可以在任何一端采取措施避免出现糊涂窗口综合症的现象。<ol>
+<li>接收方不通告小窗口。通常的算法是接收方不通告一个比当前窗口大的窗口（可以为0），除非窗口可以增加一个报文段大小（也就是将要接收的MSS）或者可以增加接收方缓存空间的一半，不论实际有多少。</li>
+<li>发送方避免出现糊涂窗口综合症的措施是只有以下条件之一满足时才发送数据:<br> (a)可以发送一个满长度的报文段；<br> (b)可以发送至少是接收方通告窗口大小一半的报文段；<br> (c)可以发送任何数据并且不希望接收ACK（也就是说，我们没有还未被确认的数据）或者该连接上不能使用Nagle算法。</li>
+</ol>
+</li>
+</ul>
+<h1 id="二十三-TCP的保活定时器"><a href="#二十三-TCP的保活定时器" class="headerlink" title="二十三 TCP的保活定时器"></a>二十三 TCP的保活定时器</h1><h3 id="1-引言-20"><a href="#1-引言-20" class="headerlink" title="1. 引言"></a>1. 引言</h3><ul>
+<li>如果TCP连接的双方都没有向对方发送数据，则在两个TCP模块之间不交换任何信息。</li>
+<li>我们可以启动一个客户与服务器建立一个连接，然后离去数小时、数天、数个星期或者数月，而连接依然保持。中间路由器可以崩溃和重启，电话线可以被挂断再连通，但是只要两端的主机没有被重启，则连接依然保持建立。<ul>
+<li>这意味着两个应用进程—客户进程或服务器进程—都没有使用应用级的定时器来检测非活动状态，而这种非活动状态可以导致应用进程中的任何一个终止其活动。</li>
+<li>然而，许多时候一个服务器希望知道客户主机是否崩溃并关机或者崩溃又重新启动。许多实现提供的保活定时器可以提供这种能力。</li>
+</ul>
+</li>
+<li>保活并不是TCP规范中的一部分。Host Requirements RFC提供了3个不使用保活定时器的理由：<br>  (1)在出现短暂差错的情况下，这可能会使一个非常好的连接释放掉；<br>  (2)它们耗费不必要的带宽；<br>  (3)在按分组计费的情况下会在互联网上花掉更多的钱。<ul>
+<li>然而，许多实现提供了保活定时器。</li>
+</ul>
+</li>
+<li>保活定时器是一个有争论的功能。许多人认为如果需要，这个功能不应该在TCP中提供，而应该由应用程序来完成。</li>
+<li>保活功能主要是为服务器应用程序提供的。服务器应用程序希望知道客户主机是否崩溃，从而可以代表客户使用资源。许多版本的Rlogin和Telnet服务器默认使用这个选项。</li>
+<li>一个说明现在需要使用保活功能的常见例子是当个人计算机用户使用TCP/IP向一个使用Telnet的主机注册时。如果在一天结束时，他们仅仅关闭了电源而没有注销，那么便会留下一个半开放的连接。一个半开放连接发送数据会导致返回一个复位，但那是在来自正在发送数据的客户端。如果客户已经消失了，使得在服务器上留下一个半开放连接，而服务器又在等待来自客户的数据，则服务器将永远等待下去。保活功能就是试图在服务器端检测到这种半开放的连接。</li>
+</ul>
+<h3 id="2-描述"><a href="#2-描述" class="headerlink" title="2. 描述"></a>2. 描述</h3><ul>
+<li><p>通常都是服务器设置这个功能。如果双方都特别需要了解对方是否已经消失，则双方都可以使用这个选项,Telnet和Rlogin中，只有服务器设置了这个选项，而客户则没有</p>
+</li>
+<li><p>如果一个给定的连接在两个小时之内没有任何动作，则服务器就向客户发送一个探查报文段（我们将在随后的例子中看到这个探查报文段看起来像什么）。客户主机必须处于以下4个状态之一。</p>
+<ol>
+<li>客户主机依然正常运行，并从服务器可达。客户的TCP响应正常，而服务器也知道对方是正常工作的。服务器在两小时以后将保活定时器复位。如果在两个小时定时器到时间之前有应用程序的通信量通过此连接，则定时器在交换数据后的未来2小时再复位。</li>
+<li>客户主机已经崩溃，并且关闭或者正在重新启动。在任何一种情况下，客户的TCP都没有响应。服务器将不能够收到对探查的响应，并在75秒后超时。服务器总共发送10个这样的探查，每个间隔75秒。如果服务器没有收到一个响应，它就认为客户主机已经关闭并终止连接。</li>
+<li>客户主机崩溃并已经重新启动。这时服务器将收到一个对其保活探查的响应，但是这个响应是一个复位，使得服务器终止这个连接。</li>
+<li>客户主机正常运行，但是从服务器不可达。这与状态2相同，因为TCP不能够区分状态4与状态2之间的区别，它所能发现的就是没有收到探查的响应。</li>
+</ol>
+</li>
+<li><p>一个被人们不断讨论的关于保活选项的问题就是两个小时的空闲时间是否可以改变。通常他们希望该数值可以小得多，处在分钟的数量级。正如我们在附录E看到的，这个值通常可以改变，但是在该附录所描述的所有系统中，保活间隔时间是系统级的变量，因此改变它会影响到所有使用该功能的用户。</p>
+</li>
+</ul>
+<h1 id="二十四-TCP的未来和性能"><a href="#二十四-TCP的未来和性能" class="headerlink" title="二十四 TCP的未来和性能"></a>二十四 TCP的未来和性能</h1><h3 id="1-引言-21"><a href="#1-引言-21" class="headerlink" title="1. 引言"></a>1. 引言</h3><ul>
+<li>本章讨论TCP的一些修改建议，这些建议可以使TCP在高速率环境中获得最大的吞吐量。</li>
+<li>首先要讨论前面已经碰到过的路径MTU发现机制，本章主要关注它如何与TCP协同工作。这个机制通常可以使TCP为非本地的连接使用大于536字节的MTU，从而增加吞吐量。</li>
+<li>接着介绍长肥管道(long fat pipe)，也就是那些具有很大的带宽时延乘积的网络，以及TCP在这些网络上所具有的局限性。<ul>
+<li>为处理长肥管道，我们描述两个新的TCP选项：窗口扩大选项（用来增加TCP的最大窗口，使之超过65535字节）和时间戳选项。</li>
+<li>后面这个选项可以使TCP对报文段进行更加精确的RTT测量，还可以在高速率下对可能发生的序号回绕提供保护。</li>
+</ul>
+</li>
+<li>我们还将介绍建议的T/TCP，这是为增加事务功能而对TCP进行的修改。通信的事务模式以客户的请求将被服务器应答的响应为主要特征。这是客户服务器计算的常见模型。T/TCP的目的就是减少两端交换的报文段数量，避免三次握手和使用4个报文段进行连接的关闭，从而使客户可以在一个RTT和处理请求所必需的时间内收到服务器的应答。</li>
+<li>这些新选项（路径MTU发现、窗口扩大选项、时间戳选项和T/TCP）中令人印象最深刻的就是它们与现有的TCP实现能够向后兼容，即包括这些新选项的系统仍然可以与原有的旧系统进行交互。除了在一个ICMP报文中为路径MTU发现增加了一个额外字段之外，这些新的选项只需要在那些需要使用它们的端系统中进行实现。</li>
+</ul>
+<h3 id="2-路径MTU发现"><a href="#2-路径MTU发现" class="headerlink" title="2. 路径MTU发现"></a>2. 路径MTU发现</h3><ul>
+<li><p>TCP的路径MTU发现按如下方式进行：在连接建立时，TCP使用输出接口或对端声明的MSS中的最小MTU作为起始的报文段大小。路径MTU发现不允许TCP超过对端声明的MSS。如果对端没有指定一个MSS，则默认为536。</p>
+</li>
+<li><p>一旦选定了起始的报文段大小，在该连接上的所有被TCP发送的IP数据报都将被设置DF比特。如果某个中间路由器需要对一个设置了DF标志的数据报进行分片，它就丢弃这个数据报</p>
+<h3 id="3-长肥管道"><a href="#3-长肥管道" class="headerlink" title="3. 长肥管道"></a>3. 长肥管道</h3></li>
+<li><p>在20章中，我们把一个连接的容量表示为如下，并称之为带宽时延乘积。也可称它为两端的管道大小。<br>  capacity(b) = bandwidth(b/s) × round - triptime(s)</p>
+</li>
+<li><p>具有大的带宽时延乘积的网络被称为长肥网络（Long Fat Network，即LFN，发音为“elefan(t)s”），而一个运行在LFN上的TCP连接被称为长肥管道。</p>
+</li>
+<li><p>管道可以被水平拉长（一个长的RT T），或被垂直拉高（较高的带宽），或向两个方向拉伸。使用长肥管道会遇到多种问题。</p>
+</li>
+<li><p>千兆比网络</p>
+<ul>
+<li>在千兆比速率下，时延限制占据了主要地位，而带宽不再成为限制。</li>
+<li>时延主要是由光速引起的，而且不能够被减小（除非爱因斯坦是错误的）。当我们考虑到分组需要建立和终止一个连接时，这个固定时延起的作用就更糟糕了。千兆比网络会引起一些需要不同看待的连网观点。</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-窗口扩大选项"><a href="#4-窗口扩大选项" class="headerlink" title="4. 窗口扩大选项"></a>4. 窗口扩大选项</h3><ul>
+<li>窗口扩大选项使TCP的窗口定义从16 bit增加为32 bit。这并不是通过修改TCP首部来实现的，TCP首部仍然使用16 bit，而是通过定义一个选项实现对16 bit的扩大操作(scaling operation)来完成的。于是TCP在内部将实际的窗口大小维持为32 bit的值。</li>
+</ul>
+<h3 id="5-时间戳选项"><a href="#5-时间戳选项" class="headerlink" title="5. 时间戳选项"></a>5. 时间戳选项</h3><ul>
+<li>时间戳选项使发送方在每个报文段中放置一个时间戳值。接收方在确认中返回这个数值，从而允许发送方为每一个收到的ACK计算RTT（我们必须说“每一个收到的ACK”而不是“每一个报文段”，是因为TCP通常用一个ACK来确认多个报文段）。我们提到过目前许多实现为每一个窗口只计算一个RTT，对于包含8个报文段的窗口而言这是正确的。然而，较大的窗口大小则需要进行更好的RTT计算。</li>
+</ul>
+<h3 id="6-T-TCP：为事务用的TCP扩展"><a href="#6-T-TCP：为事务用的TCP扩展" class="headerlink" title="6. T/TCP：为事务用的TCP扩展"></a>6. T/TCP：为事务用的TCP扩展</h3><ul>
+<li>TCP提供的是一种虚电路方式的运输服务。一个连接的生存时间包括三个不同的阶段：建立、数据传输和终止。这种虚电路服务非常适合诸如远程注册和文件传输之类的应用。</li>
+<li>但是，还有出现其他的应用进程被设计成使用事务服务。一个事务(transaction)就是符合下面这些特征的一个客户请求及其随后的服务器响应。<ol>
+<li>应该避免连接建立和连接终止的开销，在可能的时候，发送一个请求分组并接收一个应答分组。</li>
+<li>等待时间应当减少到等于RTT与SPT之和。其中RTT(Round-Trip Time)为往返时间，而SPT(Server Processing Time)则是服务器处理请求的时间。</li>
+<li>服务器应当能够检测出重复的请求，并且当收到一个重复的请求时不重新处理事务（避免重新处理意味着服务器不必再次处理请求，而是返回保存的、与该请求对应的应答）。</li>
+</ol>
+</li>
+<li>如今一个应用程序设计人员面对的一种选择是使用TCP还是UDP。TCP提供了过多的事务特征，而UDP提供的则不够。通常应用程序使用UDP来构造（避免TCP连接的开销），而许多需要的特征（如动态超时和重传、拥塞避免等）被放置在应用层，一遍又一遍的重新设计和实现。</li>
+<li>一个较好的解决方法是提供一个能够提供足够多的事务处理功能的运输层。我们在本节所介绍的事务协议被称为T/TCP。</li>
+<li>TCP为处理事务而需要进行的两个改动是避免三次握手和缩短WAIT_TIME状态。T/TCP通过使用加速打开来避免三次握手</li>
+</ul>
+<h1 id="二十五-SNMP-简单网络管理协议"><a href="#二十五-SNMP-简单网络管理协议" class="headerlink" title="二十五 SNMP:简单网络管理协议"></a>二十五 SNMP:简单网络管理协议</h1><h3 id="1-引言-22"><a href="#1-引言-22" class="headerlink" title="1. 引言"></a>1. 引言</h3><ul>
+<li><p>随着网络技术的飞速发展，网络的数量也越来越多。而网络中的设备来自各个不同的厂家，如何管理这些设备就变得十分重要。本章的内容就是介绍管理这些设备的标准。</p>
+</li>
+<li><p>基于TCP/IP的网络管理包含两个部分：</p>
+<ol>
+<li>网络管理站（也叫管理进程，manager）<ul>
+<li><ul>
+<li>管理站一般都是带有彩色监视器的工作站，可以显示所有被管设备的状态(例如连接是否掉线、各种连接上的流量状况等)。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>被管的网络单元（也叫被管设备）<ul>
+<li>被管设备种类繁多，例如：路由器、X终端、终端服务器和打印机等。</li>
+<li>这些被管设备的共同点就是都运行TCP/IP协议。</li>
+<li>被管设备端和管理相关的软件叫做代理程序(agent)或代理进程。</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><p>管理进程和代理进程之间的通信可以有两种方式。</p>
+<ol>
+<li>一种是管理进程向代理进程发出请求，询问一个具体的参数值（例如：你产生了多少个不可达的ICMP端口？）。它还可以按要求改变代理进程的参数值（例如：把默认的IP TTL值改为64）。</li>
+<li>另外一种方式是代理进程主动向管理进程报告有某些重要的事件发生（例如：一个连接口掉线了）。</li>
+</ol>
+</li>
+<li><p>基于TCP/IP的网络管理包含3个组成部分：</p>
+<ol>
+<li>一个管理信息库MIB（Management Information Base）。<ul>
+<li>管理信息库包含所有代理进程的所有可被查询和修改的参数。</li>
+</ul>
+</li>
+<li>关于MIB的一套公用的结构和表示符号。叫做管理信息结构SMI（Structure of Management Information）。<ul>
+<li>SMI定义计数器是一个非负整数，它的计数范围是0~4294 967 295，当达到最大值时，又从0开始计数。</li>
+</ul>
+</li>
+<li>管理进程和代理进程之间的通信协议，叫做简单网络管理协议SNMP（Simple Network Management Protocol）。<ul>
+<li>尽管可以在运输层采用各种各样的协议，但是在SNMP中，用得最多的协议还是UDP。</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><p>本章</p>
+<ul>
+<li>首先介绍管理进程和代理进程之间的协议</li>
+<li>然后讨论参数的数据类型。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-协议-1"><a href="#2-协议-1" class="headerlink" title="2. 协议"></a>2. 协议</h3><ul>
+<li>关于管理进程和代理进程之间的交互信息，SNMP定义了5种报文：<ol>
+<li>get-request操作：从代理进程处提取一个或多个参数值。</li>
+<li>get-next-request操作：从代理进程处提取一个或多个参数的下一个参数值（关于“下一个（next）”的含义将在后面的章节中介绍）。</li>
+<li>set-request操作：设置代理进程的一个或多个参数值。</li>
+<li>get-response操作：返回的一个或多个参数值。这个操作是由代理进程发出的。它是前面3中操作的响应操作。</li>
+<li>trap操作：代理进程主动发出的报文，通知管理进程有某些事情发生。</li>
+</ol>
+<ul>
+<li>前面的3个操作是由管理进程向代理进程发出的。后面两个是代理进程发给管理进程的<!-- ![SNMP5种操作](./img/SNMP5种操作.png) -->
+<img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/SNMP5%E7%A7%8D%E6%93%8D%E4%BD%9C.png" class="" title="SNMP5种操作.png"></li>
+</ul>
+</li>
+<li>前4种操作是简单的请求-应答方式（也就是管理进程发出请求，代理进程应答响应），而且在SNMP中往往使用UDP协议，可能发生管理进程和代理进程之间数据报丢失的情况。因此一定要有超时和重传机制。</li>
+<li>管理进程发出的前面3种操作采用UDP的161端口。代理进程发出的Tr ap操作采用UDP的162端口。由于收发采用了不同的端口号，所以一个系统可以同时为管理进程和代理进程</li>
+<li>封装成UDP数据报的5种操作的SNMP报文格式。  <!-- ![SNMP报文](./img/SNMP报文.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/SNMP%E6%8A%A5%E6%96%87.png" class="" title="SNMP报文.png">
+
+</li>
+</ul>
+<h3 id="3-管理信息结构"><a href="#3-管理信息结构" class="headerlink" title="3. 管理信息结构"></a>3. 管理信息结构</h3><ul>
+<li>SNMP中有一些自己的数据类型。有点多，有需要再看书吧。</li>
+</ul>
+<h3 id="4-对象标识符"><a href="#4-对象标识符" class="headerlink" title="4. 对象标识符"></a>4. 对象标识符</h3><ul>
+<li>对象标识是一种数据类型，它指明一种“授权”命名的对象。“授权”的意思就是这些标识不是随便分配的，它是由一些权威机构进行管理和分配的。</li>
+<li>对象标识是一个整数序列，以点（“.”）分隔。这些整数构成一个树型结构，类似于DNS或Unix的文件系统。对象标识从树的顶部开始，顶部没有标识，以root表示（这和Unix中文件系统的树遍历方向非常类似）。</li>
+<li>下图显示了在SNMP中用到的这种树型结构。所有的MIB变量都从1.3.6.1.2.1这个标识开始。  <!-- ![SNMP对象标识](./img/SNMP对象标识.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/SNMP%E5%AF%B9%E8%B1%A1%E6%A0%87%E8%AF%86.png" class="" title="SNMP对象标识.png">
+
+</li>
+</ul>
+<h3 id="5-管理信息库介绍"><a href="#5-管理信息库介绍" class="headerlink" title="5. 管理信息库介绍"></a>5. 管理信息库介绍</h3><ul>
+<li>所谓管理信息库，或者MIB，就是所有代理进程包含的、并且能够被管理进程进行查询和设置的信息的集合。</li>
+<li>如上图所示，MIB被划分为若干个组，如system、interfaces、at（地址转换）和ip组等。</li>
+<li>在本节，我们仅仅讨论UDP组中的变量。这个组比较简单，它包含几个变量和一个表格。  <!-- ![SNMP之UDP组结构](./img/SNMP之UDP组结构.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/SNMP%E4%B9%8BUDP%E7%BB%84%E7%BB%93%E6%9E%84.png" class="" title="SNMP之UDP组结构.png"></li>
+<li>在该组中，包含4个简单变量和1个由两个简单变量组成的表格。  <!-- ![UDP组下简单变量](./img/UDP组下简单变量.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/UDP%E7%BB%84%E4%B8%8B%E7%AE%80%E5%8D%95%E5%8F%98%E9%87%8F.png" class="" title="UDP组下简单变量.png">
+  <!-- ![UDPtable中的变量](./img/UDPtable中的变量.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/UDPtable%E4%B8%AD%E7%9A%84%E5%8F%98%E9%87%8F.png" class="" title="UDPtable中的变量.png">
+
+</li>
+</ul>
+<h3 id="6-实例标识"><a href="#6-实例标识" class="headerlink" title="6. 实例标识"></a>6. 实例标识</h3><ul>
+<li>当对MIB变量进行操作，如查询和设置变量的值时，必须对MIB的每个变量进行标识。首先，只有叶子结点是可操作的。SNMP没法处理表格的一整行或一整列。mib、udp、udpTable和udpEntry就不是叶子结点。udpTable里面的数据是叶子节点。</li>
+</ul>
+<h1 id="二十六-Telnet和Rlogin-远程登录"><a href="#二十六-Telnet和Rlogin-远程登录" class="headerlink" title="二十六 Telnet和Rlogin:远程登录"></a>二十六 Telnet和Rlogin:远程登录</h1><h3 id="1-引言-23"><a href="#1-引言-23" class="headerlink" title="1. 引言"></a>1. 引言</h3><ul>
+<li>远程登录（Remote Login）是Internet上最广泛的应用之一。我们可以先登录（即注册）到一台主机然后再通过网络远程登录到任何其他一台网络主机上去，而不需要为每一台主机连接一个硬件终端（当然必须有登录帐号）。</li>
+<li>在TCP/IP网络上，有两种应用提供远程登录功能。<ol>
+<li>Telnet是标准的提供远程登录功能的应用，几乎每个TCP/IP的实现都提供这个功能。它能够运行在不同操作系统的主机之间。Telnet通过客户进程和服务器进程之间的选项协商机制，从而确定通信双方可以提供的功能特性。</li>
+<li>Rlogin起源于伯克利Unix，开始它只能工作在Unix系统之间，现在已经可以在其他操作系统上运行。</li>
+</ol>
+</li>
+<li>远程登录采用客户-服务器模式。下图显示的是一个Telnet客户和服务器的典型连接图（对于Rlogin的客户和服务器连接图，我们可以画得更加简单）。  <!-- ![Telnet登录](./img/Telnet登录.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/Telnet%E7%99%BB%E5%BD%95.png" class="" title="Telnet登录.png">
+<ol>
+<li>Telnet客户进程同时和终端用户和TCP/IP协议模块进行交互。通常我们所键入的任何信息的传输是通过TCP连接，连接的任何返回信息都输出到终端上。</li>
+<li>Telnet服务器进程经常要和一种叫做“伪终端设备”（pseudo-terminal device）打交道，至少在Unix系统下是这样的。<ul>
+<li>这就使得对于登录外壳(shell)进程来讲，它是被Telnet服务器进程直接调用的，而且任何运行在登录外壳进程处的程序都感觉是直接和一个终端进行交互。</li>
+<li>对于像满屏编辑器这样的应用来讲，就像直接在和终端打交道一样。</li>
+<li>实际上，如何对服务器进程的登录外壳进程进行处理，使得它好像在直接和终端交互，往往是编写远程登录服务器进程程序中最困难的方面之一。</li>
+</ul>
+</li>
+<li>仅仅使用了一条TCP连接。由于客户进程必须多次和服务器进程进行通信（反之亦然），这就必然需要某些方法，来描绘在连接上传输的命令和用户数据。我们在后面的内容中会介绍Telnet和Rlogin是如何处理这个问题的。</li>
+<li>注意在上图中，我们用虚线框把终端驱动进程和伪终端驱动进程框了起来。在TCP/IP实现中，虚线框的内容一般是操作系统内核的一部分。Telnet客户进程和服务器进程一般只是属于用户应用程序。</li>
+<li>把服务器进程的登录外壳进程画出来的目的是为了说明：当我们想登录到系统的时候，必须要有一个帐号，Telnet和Rlogin都是如此。</li>
+</ol>
+</li>
+<li>现在，不断有新的Telnet选项被添加到Telnet中去，这就使得Telnet实现的源代码数量大大增加，而Rlogin依然变化不大，还是比较简单。</li>
+<li>远程登录不是那种有大量数据报传输的应用。正如我们前面讲到的一样，客户进程和服务器进程交互的分组大多比较小。[Paxson 1993]发现客户进程发出的字节数（用户在终端上键入的信息）和服务器进程端发出的字节数的数量之比是 1:20。这是因为我们在终端上键入的一条短命令往往令服务器进程端产生很多输出。</li>
+</ul>
+<h3 id="2-Rlogin协议"><a href="#2-Rlogin协议" class="headerlink" title="2. Rlogin协议"></a>2. Rlogin协议</h3><h5 id="1-应用进程的启动"><a href="#1-应用进程的启动" class="headerlink" title="1. 应用进程的启动"></a>1. 应用进程的启动</h5><ul>
+<li>Rlogin的客户进程和服务器进程使用一个TCP连接。当普通的TCP连接建立完毕之后，客户进程和服务器进程之间将发生下面所述的动作。<ul>
+<li>客户进程给服务器进程发送4个字符串：<br>  （a）一个字节的0；<br>  （b）用户登录进客户进程主机的登录名，以一个字节的0结束；<br>  （c）登录服务器进程端主机的登录名，以一个字节的0结束；<br>  （d）用户终端类型名，紧跟一个正斜杠“/”，然后是终端速率，以一个字节的0结束。<ul>
+<li>在这里需要两个登录名字，这是因为用户登录客户和服务器的名称有可能不一样。由于大多满屏应用程序需要知道终端类型，所以终端类型也必须发送到服务器进程。发送终端速率的原因是因为有些应用随着速率的改变，它的操作也有所变化。例如vi编辑器，当速率比较小的时候，它的工作窗口也变小。所以它不能永远保持同样大小的窗口。</li>
+</ul>
+</li>
+<li>服务器进程返回一个字节的0。</li>
+<li>服务器进程可以选择是否要求用户输入口令。这个步骤的数据交互没有什么特别的协议，而被当作是普通的数据进行传输。服务器进程给客户进程发送一个字符串（显示在客户进程的屏幕上），通常是password:。如果在一定的限定时间内（通常是60秒）客户进程没有输入口令，服务器进程将关闭该连接。</li>
+<li>通常可以在服务器进程的主目录(home directory)下生成一个文件（通常叫 .rhosts），该文件的某些行记录了一个主机名和用户名。如果从该文件中已经记录的主机上用已经记录的用户名进行登录，服务器进程将不提示我们输入口令。但是很多关于安全性的文献，如[Curry 1992]，强烈建议不要采用这种方法，因为这存在安全漏洞。</li>
+<li>如果提示输入口令，那么我们输入的口令将以明文的形式发送到服务器进程。我们所键入的每个字符都是以明文的格式传输的。所以某人只要能够截取网络上的原始传输的分组，他就可以截获用户口令。针对这个问题，新版本的Rlogin客户程序，例如4.4BSD版本的客户程序，第一次采用了Kerberos安全模型。Kerberos安全模型可以避免用户口令以明文的形式在网络上传输。当然，这要求服务器进程也支持Kerberos（[Curry 1992]详细描述了Kerberos安全模型）。</li>
+<li>服务器进程通常要给客户进程发送请求，询问终端的窗口大小（将在后面解释）。</li>
+</ul>
+</li>
+<li>客户进程每次给服务器进程发送一个字节的内容，并且接收服务器进程的所有返回信息。同样我们也采用了Nagle算法，该算法可以保证在速率较低的网络上，若干输入字节以单个TCP报文段传输。操作其实很简单：用户键入的所有东西被发送到服务器，服务器发送给客户的任何信息返回到用户的屏幕上。</li>
+</ul>
+<h5 id="2-流量控制"><a href="#2-流量控制" class="headerlink" title="2. 流量控制"></a>2. 流量控制</h5><ul>
+<li>默认情况下，流量控制是由Rlogin的客户进程完成的。客户进程能够识别用户键入的STO P和STA RT的ASCII字符（Control_S和Control_Q），并且终止或启动终端的输出。</li>
+<li>如果不是这样，每次我们为终止终端输出而键入的Control_S字符将沿网络传输到服务器进程，这时服务器进程将停止往网络上写数据。但是在写操作终止之前，服务器进程可能已经往网络上写了一窗口的输出数据。也就是说，在输出停止之前，成千上万的数据字节还将在屏幕上显示。  <!-- ![Rlogin流量控制](./img/Rlogin流量控制.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/Rlogin%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6.png" class="" title="Rlogin流量控制.png"></li>
+<li>对于一个交互式用户来讲，Control_S字符的响应延时是较大的。</li>
+</ul>
+<h3 id="3-Telnet协议"><a href="#3-Telnet协议" class="headerlink" title="3. Telnet协议"></a>3. Telnet协议</h3><ul>
+<li>Telnet协议可以工作在任何主机（例如，任何操作系统）或任何终端之间。</li>
+<li>定义了一种通用字符终端叫做网络虚拟终端NVT（Network Virtual Terminal）。NVT是虚拟设备，连接的双方，即客户机和服务器，都必须把它们的物理终端和NVT进行相互转换。也就是说，不管客户进程终端是什么类型，操作系统必须把它转换为NVT格式。同时，不管服务器进程的终端是什么类型，操作系统必须能够把NVT格式转换为终端所能够支持的格式。</li>
+</ul>
+<!-- ![rlogin和telnet的不同特性](./img/rlogin和telnet的不同特性.png) -->
+<img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/rlogin%E5%92%8Ctelnet%E7%9A%84%E4%B8%8D%E5%90%8C%E7%89%B9%E6%80%A7.png" class="" title="rlogin和telnet的不同特性.png">
+
+<h1 id="二十七-FTP-文件传送协议"><a href="#二十七-FTP-文件传送协议" class="headerlink" title="二十七 FTP:文件传送协议"></a>二十七 FTP:文件传送协议</h1><h3 id="1-引言-24"><a href="#1-引言-24" class="headerlink" title="1. 引言"></a>1. 引言</h3><ul>
+<li>FTP是另一个常见的应用程序。它是用于文件传输的Internet标准。</li>
+<li>我们必须分清文件传送（file transfer）和文件存取(file access)之间的区别，前者是FTP提供的，后者是如NFS（Sun的网络文件系统）等应用系统提供的。</li>
+<li>由FTP提供的文件传送是将一个完整的文件从一个系统复制到另一个系统中。要使用FTP，就需要有登录服务器的注册帐号，或者通过允许匿名FTP的服务器来使用</li>
+<li>与Telnet类似，FTP最早的设计是用于两台不同的主机，这两个主机可能运行在不同的操作系统下、使用不同的文件结构、并可能使用不同字符集。但不同的是，Telnet获得异构性是强制两端都采用同一个标准：使用7比特ASCII码的NVT。而FTP是采用另一种方法来处理不同系统间的差异。FTP支持有限数量的文件类型（ASCII，二进制，等等）和文件结构（面向字节流或记录）。</li>
+</ul>
+<h3 id="2-FTP协议"><a href="#2-FTP协议" class="headerlink" title="2. FTP协议"></a>2. FTP协议</h3><ul>
+<li>FTP与我们已描述的另一种应用不同，它采用两个TCP连接来传输一个文件。<ul>
+<li>控制连接以通常的客户服务器方式建立。服务器以被动方式打开众所周知的用于FTP的端口（21），等待客户的连接。客户则以主动方式打开TCP端口21，来建立连接。控制连接始终等待客户与服务器之间的通信。该连接将命令从客户传给服务器，并传回服务器的应答。</li>
+<li>由于命令通常是由用户键入的，所以IP对控制连接的服务类型就是“最大限度地减小迟延”。</li>
+<li>每当一个文件在客户与服务器之间传输时，就创建一个数据连接。（其他时间也可以创建，后面我们将说到）。</li>
+<li>由于该连接用于传输目的，所以IP对数据连接的服务特点就是“最大限度提高吞吐量”。</li>
+</ul>
+</li>
+</ul>
+<h5 id="客户与服务器以及它们之间的连接情况。"><a href="#客户与服务器以及它们之间的连接情况。" class="headerlink" title="客户与服务器以及它们之间的连接情况。"></a>客户与服务器以及它们之间的连接情况。</h5><!-- ![FTP文件传输](./img/FTP文件传输.png) -->
+<img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/FTP%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93.png" class="" title="FTP文件传输.png">
+<ul>
+<li>从图中可以看出，交互式用户通常不处理在控制连接中转换的命令和应答。这些细节均由两个协议解释器来完成。</li>
+<li>标有“用户接口”的方框功能是按用户所需提供各种交互界面（全屏幕菜单选择，逐行输入命令，等等），并把它们转换成在控制连接上发送的FTP命令。</li>
+</ul>
+<h5 id="数据表示"><a href="#数据表示" class="headerlink" title="数据表示"></a>数据表示</h5><ul>
+<li>FTP协议规范提供了控制文件传送与存储的多种选择。在以下四个方面中每一个方面都必须作出一个选择。</li>
+</ul>
+<ol>
+<li><p>文件类型</p>
+<ul>
+<li>ASCII码文件类型（默认选择）文本文件以NVT ASCII码形式在数据连接中传输。这要求发方将本地文本文件转换成NVT ASCII码形式，而收方则将NVT ASCII码再还原成本地文本文件。其中，用NVT ASCII码传输的每行都带有一个回车，而后是一个换行。这意味着收方必须扫描每个字节，查找CR、LF对（我们在第15.2节见过的关于TFIP的ASCII码文件传输情况与此相同）。</li>
+<li>EBCDIC文件类型该文本文件传输方式要求两端都是EBCDIC系统。</li>
+<li>图像文件类型（也称为二进制文件类型）数据发送呈现为一个连续的比特流。通常用于传输二进制文件。</li>
+<li>本地文件类型该方式在具有不同字节大小的主机间传输二进制文件。每一字节的比特数由发方规定。对使用8bit字节的系统来说，本地文件以8bit字节传输就等同于图像文件传输。</li>
+</ul>
+</li>
+<li><p>格式控制，该选项只对ASCII和EBCDIC文件类型有效。</p>
+<ul>
+<li>非打印（默认选择）文件中不含有垂直格式信息。</li>
+<li>远程登录格式控制文件含有向打印机解释的远程登录垂直格式控制。</li>
+<li>Fortran回车控制每行首字符是Fortran格式控制符。</li>
+</ul>
+</li>
+<li><p>结构</p>
+<ul>
+<li>文件结构（默认选择）文件被认为是一个连续的字节流。不存在内部的文件结构。</li>
+<li>记录结构该结构只用于文本文件（ASCII或EBCDIC）。</li>
+<li>页结构每页都带有页号发送，以便收方能随机地存储各页。该结构由TO PS-20操作系统提供（主机需求RFC不提倡采用该结构）。</li>
+</ul>
+</li>
+<li><p>传输方式，它规定文件在数据连接中如何传输。</p>
+<ul>
+<li>流方式（默认选择）文件以字节流的形式传输。对于文件结构，发方在文件尾提示关闭数据连接。对于记录结构，有专用的两字节序列码标志记录结束和文件结束。</li>
+<li>块方式文件以一系列块来传输，每块前面都带有一个或多个首部字节。</li>
+<li>压缩方式一个简单的全长编码压缩方法，压缩连续出现的相同字节。在文本文件中常用来压缩空白串，在二进制文件中常用来压缩0字节（这种方式很少使用，也不受支持。现在有一些更好的文件压缩方法来支持FTP）。</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li>通常由Unix实现的FTP客户和服务器把我们的选择限制如下：<ul>
+<li>类型：ASCII或图像。</li>
+<li>格式控制：只允许非打印。</li>
+<li>结构：只允许文件结构。</li>
+<li>传输方式：只允许流方式。</li>
+</ul>
+</li>
+</ul>
+<h5 id="FTP命令"><a href="#FTP命令" class="headerlink" title="FTP命令"></a>FTP命令</h5><ul>
+<li>命令和应答在客户和服务器的控制连接上以NVT ASCII码形式传送。这就要求在每行结尾都要返回CR、LF对（也就是每个命令或每个应答）。</li>
+<li>常见的FTP命令  <!-- ![常见的FTP命令](./img/常见的FTP命令.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/%E5%B8%B8%E8%A7%81%E7%9A%84FTP%E5%91%BD%E4%BB%A4.png" class="" title="常见的FTP命令.png">
+
+</li>
+</ul>
+<h5 id="FTP应答"><a href="#FTP应答" class="headerlink" title="FTP应答"></a>FTP应答</h5><ul>
+<li>应答都是ASCII码形式的3位数字，并跟有报文选项。类似于HTTP的应答</li>
+<li>应答代码第1位和第2位的含义。  <!-- ![FTP应答代码](./img/FTP应答代码.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/FTP%E5%BA%94%E7%AD%94%E4%BB%A3%E7%A0%81.png" class="" title="FTP应答代码.png"></li>
+<li>第3位数字给出差错报文的附加含义。例如，这里是一些典型的应答，都带有一个可能的报文串。<ul>
+<li>125   数据连接已经打开;传输开始。</li>
+<li>200   就绪命令。</li>
+<li>214   帮助报文(面向用户)。</li>
+<li>331   用户名就绪,要求输入口令。</li>
+<li>425   不能打开数据连接。</li>
+<li>452   错写文件。</li>
+<li>500   语法错误(未认可的命令)。</li>
+<li>501   语法错误(无效参数)。</li>
+<li>502   未实现的 MODE ( 方式命令 ) 类型。</li>
+</ul>
+</li>
+</ul>
+<h5 id="连接管理"><a href="#连接管理" class="headerlink" title="连接管理"></a>连接管理</h5><ul>
+<li>数据连接有以下三大用途：<ol>
+<li>从客户向服务器发送一个文件。</li>
+<li>从服务器向客户发送一个文件。</li>
+<li>从服务器向客户发送文件或目录列表。<!-- ![FTP连接](./img/FTP连接.png) -->
+<img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/FTP%E8%BF%9E%E6%8E%A5.png" class="" title="FTP连接.png"></li>
+</ol>
+</li>
+<li>服务器总是执行数据连接的主动打开。通常服务器也执行数据连接的主动关闭，除非当客户向服务器发送流形式的文件时，需要客户来关闭连接（它给服务器一个文件结束的通知）。</li>
+</ul>
+<h1 id="二十八-SMTP-简单邮件传送协议"><a href="#二十八-SMTP-简单邮件传送协议" class="headerlink" title="二十八 SMTP:简单邮件传送协议"></a>二十八 SMTP:简单邮件传送协议</h1><h3 id="1-引言-25"><a href="#1-引言-25" class="headerlink" title="1. 引言"></a>1. 引言</h3><ul>
+<li>一个用TCP/IP交换电子邮件的示意图。  <!-- ![TCPIP交换电子邮件](./img/TCPIP交换电子邮件.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/TCPIP%E4%BA%A4%E6%8D%A2%E7%94%B5%E5%AD%90%E9%82%AE%E4%BB%B6.png" class="" title="TCPIP交换电子邮件.png"></li>
+<li>用户与用户代理（user agent）打交道，可能会有多个用户代理可供选择。常用的Unix上的用户代理包括MH，Berkeley Mail,Elm和Mush。</li>
+<li>用TCP进行的邮件交换是由报文传送代理MTA（Message Transfer Agent）完成的。最普通的Unix系统中的MTA是Sendmail。用户通常不和MTA打交道，由系统管理员负责设置本地的MTA。通常，用户可以选择它们自己的用户代理。</li>
+<li>本章研究在两个MTA之间如何用TCP交换邮件。我们不考虑用户代理的运行或实现。</li>
+</ul>
+<h3 id="2-SMTP协议"><a href="#2-SMTP协议" class="headerlink" title="2. SMTP协议"></a>2. SMTP协议</h3><ul>
+<li>两个MTA之间用NVT ASCII进行通信。客户向服务器发出命令，服务器用数字应答码和可选的人可读字符串进行响应。这与上一章的FTP类似。</li>
+<li>客户只能向服务器发送很少的命令：不到12个（相比较而言，FTP超过40个）。</li>
+<li>电子邮件包括在两端（发送方和接收方）都有的一个用户代理以及两个或多个报文传送代理。</li>
+<li>可以把一个邮件报文分成三个部分：信封、首部和正文。</li>
+</ul>
+<h1 id="二十九-网络文件系统"><a href="#二十九-网络文件系统" class="headerlink" title="二十九 网络文件系统"></a>二十九 网络文件系统</h1><h3 id="1-引言-26"><a href="#1-引言-26" class="headerlink" title="1. 引言"></a>1. 引言</h3><ul>
+<li>NFS（网络文件系统），它为客户程序提供透明的文件访问。</li>
+<li>NFS的基础是Sun RPC：远程过程调用。我们首先必须描述一下RPC。</li>
+<li>客户程序使用NFS不需要做什么特别的工作，当NFS内核检测到被访问的文件位于一个NFS服务器时，就会自动产生一个访问该文件的RPC调用。</li>
+<li>我们对NFS如何访问文件的细节并不感兴趣，只对它如何使用Internet的协议，尤其是UDP协议，感兴趣。</li>
+</ul>
+<h3 id="2-Sun远程过程调用"><a href="#2-Sun远程过程调用" class="headerlink" title="2. Sun远程过程调用"></a>2. Sun远程过程调用</h3><ul>
+<li>般来说，客户发送命令给服务器，服务器向客户发送应答。目前为止，我们讨论过的所有应用程序—Ping，Traceroute，选路守护程序、以及DNS、TFTP、BOOTP、SNMP、Telnet、FTP和SMTP的客户和服务器—都是采用这种方式实现的。</li>
+<li>远程过程调用RPC(Remote Procedure Call)是一种不同的网络程序设计方法。客户程序编写时只是调用了服务器程序提供的函数。这只是程序员所感觉到的，实际上发生了下面一些动作。<ol>
+<li>当客户程序调用远程的过程时，它实际上只是调用了一个位于本机上的、由RPC程序包生成的函数。这个函数被称为客户残桩（stub）。客户残桩将过程的参数封装成一个网络报文，并且将这个报文发送给服务器程序。</li>
+<li>服务器主机上的一个服务器残桩负责接收这个网络报文。它从网络报文中提取参数，然后调用应用程序员编写的服务器过程。</li>
+<li>当服务器函数返回时，它返回到服务器残桩。服务器残桩提取返回值，把返回值封装成一个网络报文，然后将报文发送给客户残桩。</li>
+<li>客户残桩从接收到的网络报文中取出返回值，将其返回给客户程序。</li>
+</ol>
+</li>
+<li>网络程序设计是通过残桩和使用诸如插口或TLI的某个API的RPC库例程来实现的，但是用户程序—客户程序和被客户程序调用的服务器过程—不会和这个API打交道。客户应用程序只是调用服务器的过程，所有网络程序设计的细节都被RPC程序包、客户残桩和服务器残桩所隐藏。</li>
+<li>一个RPC程序包提供了很多好处。<ol>
+<li>程序设计更加容易，因为很少或几乎没有涉及网络编程。应用程序设计员只需要编写一个客户程序和客户程序调用的服务器过程。</li>
+<li>如果使用了一个不可靠的协议，如UDP，像超时和重传等细节就由RPC程序包来处理。这就简化了用户应用程序。</li>
+<li>RPC库为参数和返回值的传输提供任何需要的数据转换。例如，如果参数是由整数和浮点数组成的，RPC程序包处理整数和浮点数在客户机和服务器主机上存储的不同形式。这个功能简化了在异构环境中的客户和服务器的编码问题。</li>
+</ol>
+</li>
+<li>下图显示的是使用UDP时，一个RPC过程调用报文的格式。  <!-- ![RPC过程调用报文](./img/RPC过程调用报文.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/RPC%E8%BF%87%E7%A8%8B%E8%B0%83%E7%94%A8%E6%8A%A5%E6%96%87.png" class="" title="RPC过程调用报文.png"></li>
+<li>RPC应答报文的格式。当远程过程返回时，服务器残桩将这个报文发送给客户残桩。  <!-- ![RPC应答报文](./img/RPC应答报文.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/RPC%E5%BA%94%E7%AD%94%E6%8A%A5%E6%96%87.png" class="" title="RPC应答报文.png">
+
+</li>
+</ul>
+<h3 id="3-XDR-外部数据表示"><a href="#3-XDR-外部数据表示" class="headerlink" title="3. XDR:外部数据表示"></a>3. XDR:外部数据表示</h3><ul>
+<li>外部数据表示XDR(eXternal Data Representation)是一个标准，用来对RPC调用报文和应答报文中的值进行编码。这些值包括RPC首部字段（XID、程序号、接受状态等）、过程参数和过程结果。采用标准化的方法对这些值进行编码使得一个系统中的客户可以调用另一个不同架构的系统中的一个过程。</li>
+<li>XDR定义了很多数据类型以及它们如何在一个RPC报文中传输的具体形式（如比特顺序，字节顺序等）。发送者必须采用XDR格式构造一个RPC报文，然后接收者将XDR格式的报文转换为本机的表示形式。</li>
+</ul>
+<h3 id="4-端口映射器"><a href="#4-端口映射器" class="headerlink" title="4. 端口映射器"></a>4. 端口映射器</h3><ul>
+<li>包含远程过程的RPC服务器程序使用的是临时端口，而不是知名端口。这就需要某种形式的“注册”程序来跟踪哪一个RPC程序使用了哪一个临时端口。在Sun RPC中，这个注册程序被称为端口映射器(port mapper)。</li>
+<li>很自然地，端口映射器本身必须有一个知名端口：UDP端口111和TCP端口111。端口映射器也就是一个RPC服务器程序。它有一个程序号（100000）、一个版本号（2）、一个TCP端口111和一个UDP端口111。服务器程序使用RPC调用向端口映射器注册自身，客户程序使用RPC调用向端口映射器查询。</li>
+<li>端口映射器提供四个服务过程：<ol>
+<li>PMAPPROC_SET。一个RPC服务器启动时调用这个过程，注册一个程序号、版本号和带有一个端口号的协议。</li>
+<li>PMAPPROC_UNSET。RPC服务器调用此过程来删除一个已经注册的映射。</li>
+<li>PMAPPROC_GETPORT。一个RPC客户启动时调用此过程。根据一个给定的程序号、版本号和协议来获得注册的端口号。</li>
+<li>PMAPPROC_DUMP。返回端口映射器数据库中所有的记录（每个记录包括程序号、版本号、协议和端口号）。</li>
+</ol>
+</li>
+</ul>
+<h3 id="5-NFS协议"><a href="#5-NFS协议" class="headerlink" title="5. NFS协议"></a>5. NFS协议</h3><ul>
+<li>使用NFS，客户可以透明地访问服务器上的文件和文件系统。这不同于提供文件传输的FTP</li>
+<li>FTP会产生文件一个完整的副本。NFS只访问一个进程引用文件的那一部分，并且NFS的一个目的就是使得这种访问透明。这就意味着任何能够访问一个本地文件的客户程序不需要做任何修改，就应该能够访问一个NFS文件。</li>
+<li>NFS是一个使用Sun RPC构造的客户服务器应用程序。NFS客户通过向一个NFS服务器发送RPC请求来访问其上的文件。</li>
+<li>一个NFS客户和一个NFS服务器的典型配置  <!-- ![NFS客户服务器](./img/NFS客户服务器.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/NFS%E5%AE%A2%E6%88%B7%E6%9C%8D%E5%8A%A1%E5%99%A8.png" class="" title="NFS客户服务器.png"></li>
+<li>大多数的Unix主机可以作为一个NFS客户，一个NFS服务器，或者两者都是。大多数PC机的实现（MS-DOS）只提供了NFS客户实现。大多数的IBM大型机只提供了NFS服务器功能。</li>
+</ul>
+<h5 id="文件句柄"><a href="#文件句柄" class="headerlink" title="文件句柄"></a>文件句柄</h5><ul>
+<li>NFS中一个基本概念是文件句柄(file handle)。它是一个不透明(opaque)的对象，用来引用服务器上的一个文件或目录。</li>
+<li>不透明指的是服务器创建文件句柄，把它传递给客户，然后客户访问文件时，使用对应的文件句柄。客户不会查看文件句柄的内容—它的内容只对服务器有意义。</li>
+<li>每次一个客户进程打开一个实际上位于一个NFS服务器上的文件时，NFS客户就会从NFS服务器那里获得该文件的一个文件句柄。每次NFS客户为用户进程读或写文件时，文件句柄就会传给服务器以指定被访问的文件。</li>
+<li>一般情况下，用户进程不会和文件句柄打交道—只有NFS客户和NFS服务器将文件句柄传来传去。</li>
+</ul>
+<h5 id="安装协议"><a href="#安装协议" class="headerlink" title="安装协议"></a>安装协议</h5><ul>
+<li>一个NFS的安装过程。  <!-- ![NFS安装](./img/NFS安装.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/NFS%E5%AE%89%E8%A3%85.png" class="" title="NFS安装.png">
+
+</li>
+</ul>
+<h5 id="UDP还是TCP"><a href="#UDP还是TCP" class="headerlink" title="UDP还是TCP"></a>UDP还是TCP</h5><ul>
+<li>NFS最初是用UDP写的，所有的厂商都提供了这种实现。最新的一些实现也支持TCP。TCP支持主要用于广域网，它可以使文件操作更快。NFS已经不再局限于局域网的使用。</li>
+<li>当从LAN转换到WAN时，网络的动态特征变化得非常大。往返时间（round-trip time）变动范围大，拥塞经常发生。WAN的这些特征使得我们考虑使用具有TCP属性的算法——慢启动，但是可以避免拥塞。既然UDP没有提供任何类似的东西，那么在NFS客户和服务器上加进同样的算法或者使用TCP。</li>
+</ul>
+<h1 id="三十-其他的TCP-IP应用程序"><a href="#三十-其他的TCP-IP应用程序" class="headerlink" title="三十 其他的TCP/IP应用程序"></a>三十 其他的TCP/IP应用程序</h1><h3 id="1-引言-27"><a href="#1-引言-27" class="headerlink" title="1. 引言"></a>1. 引言</h3><ul>
+<li>本章中我们描述了另外一些很多实现都支持的TCP/IP应用程序。</li>
+<li>简单的：Finger，Whois</li>
+<li>复杂的：X窗口系统</li>
+</ul>
+<h3 id="2-Finger协议"><a href="#2-Finger协议" class="headerlink" title="2. Finger协议"></a>2. Finger协议</h3><ul>
+<li>Finger协议返回一个指定主机上一个或多个用户的信息。它常被用来检查某个人是否登录了，或者搞清一个人的登录名以便给他发送邮件。</li>
+<li>很多站点不支持一个Finger服务器。</li>
+<li>从一个协议的角度来看，Finger服务器有一个知名的端口79。客户对这个端口做一个主动打开，然后发送一个在线的请求。服务器处理这个请求，把输出发送回去，然后关闭连接。查询和响应都是采用NVT ASCII，类似于我们在FTP和SMTP协议中所看到的。</li>
+</ul>
+<h3 id="3-Whois协议"><a href="#3-Whois协议" class="headerlink" title="3. Whois协议"></a>3. Whois协议</h3><ul>
+<li>从协议的角度来看，Whois服务器有一个知名的TCP端口43。它接受客户的连接请求，客户向服务器发送一个在线的查询。服务器响应以任何可用的信息，然后关闭连接。请求和应答都以NVT ASCII来传输。除了请求和应答所包含的信息不一样，Whois服务器和Finger服务器几乎是一样的。</li>
+<li>讲真的，本地的whois程序知道一些，不太明白这个协议是干嘛的</li>
+</ul>
+<h3 id="4-Archie、WAIS、Gopher、Veronica和WWW"><a href="#4-Archie、WAIS、Gopher、Veronica和WWW" class="headerlink" title="4. Archie、WAIS、Gopher、Veronica和WWW"></a>4. Archie、WAIS、Gopher、Veronica和WWW</h3><ul>
+<li><p>前两节我们讨论的工具—Finger、Whois和一个白页服务—是用来查找人的信息的。还有一些工具是用来定位文件和文档的，本节中对这些工具给出了一个概述。</p>
+</li>
+<li><p>Archie提供了Internet上几千个FTP服务器的目录。我们可以通过登录进一个Archie服务器，搜索那些名字中包含了一个指定的常规表达式的文件。</p>
+</li>
+<li><p>其他。。。略，也不懂是干嘛的</p>
+</li>
+</ul>
+<h3 id="5-X窗口系统"><a href="#5-X窗口系统" class="headerlink" title="5. X窗口系统"></a>5. X窗口系统</h3><ul>
+<li><p>X窗口系统(XWindow System)，或简称为X，是一种客户-服务器应用程序。它可以使得多个客户（应用）使用由一个服务器管理的位映射显示器。</p>
+</li>
+<li><p>服务器是一个软件，用来管理显示器、键盘和鼠标。</p>
+</li>
+<li><p>客户是一个应用程序，它与服务器在同一台主机上或者在不同的主机上。在后一种情况下，客户与服务器之间通信的通用形式是TCP，尽管也可以使用诸如DECNET的其他协议。</p>
+<ul>
+<li>在有些场合，服务器是与其他主机上客户通信的一个专门的硬件（一个X终端）。</li>
+<li>在另一种场合，一个独立的工作站，客户与服务器位于同一台主机，使用那台主机上的进程间通信机制进行通信，而根本不涉及任何网络操作。在这两种极端情况之间，是一台既支持同一台主机上的客户又支持不同主机上的客户的工作站。</li>
+</ul>
+</li>
+<li><p>在一个Unix系统中，当X客户和X服务器在同一台主机上时，一般使用Unix系统的本地协议，而不使用TCP协议，因为这样比使用TCP的情况减少了协议处理时间。Unix系统的本地协议是同一台主机上的客户和服务器之间可以使用的一种进程间通信的形式。</p>
+</li>
+<li><p>下图显示了三个客户使用一个显示器的可能的脚本。一个客户与服务器在同一台主机上，使用Unix系统的本地协议。另外两个位于不同的主机上，使用TCP。</p>
+</li>
+<li><p>一般来说，其中一个客户是一个窗口管理程序(window manager)，它有权限管理显示器上窗口的布局。例如，窗口管理程序允许我们在屏幕上移动窗口，或者改变窗口的大小。</p>
+  <!-- ![xwindow](./img/xwindow.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/xwindow.png" class="" title="xwindow.png">
+</li>
+<li><p>在这里客户和服务器这两个词猛一看含义相反了。对于Telnet和FTP的应用，我们把客户看作是在键盘和显示器上的交互式用户。但是对于X，键盘和显示器是属于服务器的。服务器被认为是提供服务的一方。X提供的服务是对窗口、键盘和鼠标的访问。对于Telnet，服务是登录远程的主机。对于FTP，服务是服务器上的文件系统。</p>
+</li>
+<li><p>当一个客户在另一台主机上启动时，它创建一个TCP端点，对服务器上的端口6000+n做一个主动打开。每个客户都得到了一个自己与服务器的连接。服务器负责对所有的客户请求进行复用。从这点开始，客户通过TCP连接向服务器发送请求（例如，创建一个窗口），服务器返回应答，服务器也发送事件给客户（鼠标按钮按下，键盘键按下，窗口暴露，窗口大小改变，等等）。</p>
+  <!-- ![x服务器进程](./img/x服务器进程.png) -->
+  <img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/x%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%9B%E7%A8%8B.png" class="" title="x服务器进程.png">
+</li>
+<li><p>Xscope程序</p>
+<ul>
+<li>Xscope是检查X客户与它的服务器之间交换的信息的一个方便的程序。</li>
+<li>它处在客户与服务器之间，双向传输所有的数据，同时解析所有的客户请求和服务器应答。<!-- ![xscope](./img/xscope.png) -->
+<img src="/%E3%80%8ATCPIP%E8%AF%A6%E8%A7%A3%E3%80%8B/xscope.png" class="" title="xscope.png"></li>
+<li>首先，我们在服务器所在的主机上启动xscope进程，但是xscope不是在端口6000而是在端口6001上监听TCP的连接请求。然后我们在另一台主机上启动一个客户，指明显示器号为1，而不是0，使得客户与xscope相连，而不直接与服务器相连。当客户的连接请求到达时，xscope创建与端口6000上的真正的服务器的一个TCP连接，在客户与服务器之间复制所有的数据，同时生成请求与应答的一个可读的描述。</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/tcp/" rel="tag"><i class="fa fa-tag">tcp</i></a>
+              <a href="/tags/ip/" rel="tag"><i class="fa fa-tag">ip</i></a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E3%80%8A%E5%9B%BE%E8%A7%A3HTTP%E3%80%8B/" rel="prev" title="《图解HTTP》">
+      <i class="fa fa-chevron-left"></i> 《图解HTTP》
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E3%80%8A%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%B2%BE%E9%AB%93%E4%B8%8E%E8%AE%BE%E8%AE%A1%E5%8E%9F%E7%90%86%E3%80%8B/" rel="next" title="《操作系统精髓与设计原理》">
+      《操作系统精髓与设计原理》 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BD%AE%E9%A1%B6"><span class="nav-text">置顶</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%EF%BC%9A%E6%A6%82%E8%BF%B0"><span class="nav-text">一：概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E5%B8%B8%E8%AF%86"><span class="nav-text">网络常识</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%EF%BC%9A%E9%93%BE%E8%B7%AF%E5%B1%82"><span class="nav-text">二：链路层</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80"><span class="nav-text">1. 引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%92%8CIEEE-802%E5%B0%81%E8%A3%85"><span class="nav-text">2. 以太网和IEEE 802封装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-SLIP%EF%BC%9A%E4%B8%B2%E8%A1%8C%E7%BA%BF%E8%B7%AFIP"><span class="nav-text">3. SLIP：串行线路IP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-PPP%EF%BC%9A%E7%82%B9%E5%AF%B9%E7%82%B9%E5%8D%8F%E8%AE%AE"><span class="nav-text">4. PPP：点对点协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E7%8E%AF%E5%9B%9E%E6%8E%A5%E5%8F%A3"><span class="nav-text">5. 环回接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E6%9C%80%E5%A4%A7%E4%BC%A0%E8%BE%93%E5%8D%95%E5%85%83MTU"><span class="nav-text">6. 最大传输单元MTU</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E8%B7%AF%E5%BE%84MTU"><span class="nav-text">7. 路径MTU</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-%E4%B8%B2%E8%A1%8C%E7%BA%BF%E8%B7%AF%E5%90%9E%E5%90%90%E9%87%8F%E8%AE%A1%E7%AE%97-%E5%A6%82%E4%BD%95%E4%B8%BA%E4%B8%B2%E8%A1%8C%E7%BA%BF%E8%B7%AF%E9%80%89%E6%8B%A9MTU"><span class="nav-text">8. 串行线路吞吐量计算(如何为串行线路选择MTU)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%EF%BC%9AIP-%E7%BD%91%E9%99%85%E5%8D%8F%E8%AE%AE"><span class="nav-text">三：IP:网际协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80-1"><span class="nav-text">1. 引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-IP%E9%A6%96%E9%83%A8"><span class="nav-text">2. IP首部</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-IP%E8%B7%AF%E7%94%B1%E9%80%89%E6%8B%A9"><span class="nav-text">3. IP路由选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%AD%90%E7%BD%91%E5%AF%BB%E5%9D%80%E5%92%8C%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81"><span class="nav-text">4. 子网寻址和子网掩码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-ifconfig%E5%92%8Cnetstat"><span class="nav-text">5. ifconfig和netstat</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B%EF%BC%9AARP-%E5%9C%B0%E5%9D%80%E8%A7%A3%E6%9E%90%E5%8D%8F%E8%AE%AE"><span class="nav-text">四：ARP:地址解析协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80-2"><span class="nav-text">1. 引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90"><span class="nav-text">2. 一个例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-ARP%E9%AB%98%E9%80%9F%E7%BC%93%E5%AD%98"><span class="nav-text">3. ARP高速缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-ARP%E7%9A%84%E5%88%86%E7%BB%84%E6%A0%BC%E5%BC%8F"><span class="nav-text">4. ARP的分组格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-ARP%E4%BB%A3%E7%90%86"><span class="nav-text">5. ARP代理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E5%85%8D%E8%B4%B9ARP"><span class="nav-text">6. 免费ARP</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%94-RARP-%E9%80%86%E5%9C%B0%E5%9D%80%E8%A7%A3%E6%9E%90%E5%8D%8F%E8%AE%AE"><span class="nav-text">五 RARP:逆地址解析协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80-3"><span class="nav-text">1. 引言</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%AD-ICMP-Internet%E6%8E%A7%E5%88%B6%E6%8A%A5%E6%96%87%E5%8D%8F%E8%AE%AE"><span class="nav-text">六 ICMP:Internet控制报文协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80-4"><span class="nav-text">1. 引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-ICMP%E6%8A%A5%E6%96%87%E7%B1%BB%E5%9E%8B"><span class="nav-text">2. ICMP报文类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-ICMP%E5%9C%B0%E5%9D%80%E6%8E%A9%E7%A0%81%E8%AF%B7%E6%B1%82%E4%B8%8E%E5%BA%94%E7%AD%94"><span class="nav-text">3. ICMP地址掩码请求与应答</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-ICMP%E6%97%B6%E9%97%B4%E6%88%B3%E8%AF%B7%E6%B1%82%E4%B8%8E%E5%BA%94%E7%AD%94"><span class="nav-text">4. ICMP时间戳请求与应答</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-ICMP%E7%AB%AF%E5%8F%A3%E4%B8%8D%E5%8F%AF%E8%BE%BE%E5%B7%AE%E9%94%99"><span class="nav-text">5. ICMP端口不可达差错</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%83-Ping%E7%A8%8B%E5%BA%8F"><span class="nav-text">七 Ping程序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80-5"><span class="nav-text">1. 引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Ping%E7%A8%8B%E5%BA%8F"><span class="nav-text">2. Ping程序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-IP%E8%AE%B0%E5%BD%95%E8%B7%AF%E7%94%B1%E9%80%89%E9%A1%B9"><span class="nav-text">3. IP记录路由选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%B0%8F%E7%BB%93"><span class="nav-text">4. 小结</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%AB-Traceroute%E7%A8%8B%E5%BA%8F"><span class="nav-text">八 Traceroute程序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80-6"><span class="nav-text">1. 引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Traceroute%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%93%8D%E4%BD%9C"><span class="nav-text">2. Traceroute程序的操作</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%9D-IP%E9%80%89%E8%B7%AF"><span class="nav-text">九 IP选路</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80-7"><span class="nav-text">1. 引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E9%80%89%E8%B7%AF%E7%9A%84%E5%8E%9F%E7%90%86"><span class="nav-text">2. 选路的原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-ICMP%E4%B8%BB%E6%9C%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E4%B8%8D%E5%8F%AF%E8%BE%BE%E5%B7%AE%E9%94%99"><span class="nav-text">3. ICMP主机与网络不可达差错</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E8%BD%AC%E5%8F%91%E6%88%96%E4%B8%8D%E8%BD%AC%E5%8F%91"><span class="nav-text">4. 转发或不转发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-ICMP%E9%87%8D%E5%AE%9A%E5%90%91%E5%B7%AE%E9%94%99"><span class="nav-text">5. ICMP重定向差错</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-ICMP%E8%B7%AF%E7%94%B1%E5%99%A8%E5%8F%91%E7%8E%B0%E6%8A%A5%E6%96%87"><span class="nav-text">6. ICMP路由器发现报文</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%81-%E5%8A%A8%E6%80%81%E9%80%89%E8%B7%AF%E5%8D%8F%E8%AE%AE"><span class="nav-text">十 动态选路协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80-8"><span class="nav-text">1. 引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%8A%A8%E6%80%81%E9%80%89%E8%B7%AF"><span class="nav-text">2. 动态选路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Unix%E9%80%89%E8%B7%AF%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B"><span class="nav-text">3. Unix选路守护进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-RIP%EF%BC%9A%E9%80%89%E8%B7%AF%E4%BF%A1%E6%81%AF%E5%8D%8F%E8%AE%AE"><span class="nav-text">4. RIP：选路信息协议</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F"><span class="nav-text">1. 报文格式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E6%AD%A3%E5%B8%B8%E8%BF%90%E8%A1%8C"><span class="nav-text">2. 正常运行</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-RIP%E7%89%88%E6%9C%AC2"><span class="nav-text">3. RIP版本2</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-OSPF%EF%BC%9A%E5%BC%80%E6%94%BE%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E4%BC%98%E5%85%88"><span class="nav-text">5. OSPF：开放最短路径优先</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-BGP%EF%BC%9A%E8%BE%B9%E7%95%8C%E7%BD%91%E5%85%B3%E5%8D%8F%E8%AE%AE"><span class="nav-text">6. BGP：边界网关协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-CIDR%EF%BC%9A%E6%97%A0%E7%B1%BB%E5%9E%8B%E5%9F%9F%E9%97%B4%E9%80%89%E8%B7%AF"><span class="nav-text">7. CIDR：无类型域间选路</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%81%E4%B8%80-UDP-%E7%94%A8%E6%88%B7%E6%95%B0%E6%8D%AE%E6%8A%A5%E5%8D%8F%E8%AE%AE"><span class="nav-text">十一 UDP:用户数据报协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80-9"><span class="nav-text">1. 引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-UDP%E9%A6%96%E9%83%A8"><span class="nav-text">2. UDP首部</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-UDP%E6%A3%80%E9%AA%8C%E5%92%8C"><span class="nav-text">3. UDP检验和</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-IP%E5%88%86%E7%89%87"><span class="nav-text">4. IP分片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-ICMP%E4%B8%8D%E5%8F%AF%E8%BE%BE%E5%B7%AE%E9%94%99%EF%BC%88%E9%9C%80%E8%A6%81%E5%88%86%E7%89%87%EF%BC%89"><span class="nav-text">5. ICMP不可达差错（需要分片）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E7%94%A8Traceroute%E7%A1%AE%E5%AE%9A%E8%B7%AF%E5%BE%84MTU"><span class="nav-text">6. 用Traceroute确定路径MTU</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E9%87%87%E7%94%A8UDP%E7%9A%84%E8%B7%AF%E5%BE%84MTU%E5%8F%91%E7%8E%B0"><span class="nav-text">7. 采用UDP的路径MTU发现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-UDP%E5%92%8CARP%E4%B9%8B%E9%97%B4%E7%9A%84%E4%BA%A4%E4%BA%92%E4%BD%9C%E7%94%A8"><span class="nav-text">8. UDP和ARP之间的交互作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-%E6%9C%80%E5%A4%A7UDP%E6%95%B0%E6%8D%AE%E6%8A%A5%E9%95%BF%E5%BA%A6"><span class="nav-text">9. 最大UDP数据报长度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-UDP%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E8%AE%BE%E8%AE%A1"><span class="nav-text">10. UDP服务器的设计</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%81%E4%BA%8C-%E5%B9%BF%E6%92%AD%E5%92%8C%E5%A4%9A%E6%92%AD"><span class="nav-text">十二 广播和多播</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80-10"><span class="nav-text">1. 引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%B9%BF%E6%92%AD"><span class="nav-text">2. 广播</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-ping-255-255-255-255"><span class="nav-text">3. ping 255.255.255.255</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%81%E4%B8%89-IGMP-Internet%E7%BB%84%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE"><span class="nav-text">十三 IGMP:Internet组管理协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80-11"><span class="nav-text">1. 引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-IGMP%E6%8A%A5%E6%96%87"><span class="nav-text">2. IGMP报文</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%81%E5%9B%9B-DNS-%E5%9F%9F%E5%90%8D%E7%B3%BB%E7%BB%9F"><span class="nav-text">十四 DNS:域名系统</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80-12"><span class="nav-text">1. 引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-DNS%E5%9F%BA%E7%A1%80"><span class="nav-text">2. DNS基础</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-DNS%E7%9A%84%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F"><span class="nav-text">3. DNS的报文格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%90%8D%E5%AD%97%E8%A7%A3%E6%9E%90%E5%99%A8%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-etc-resolv-conf"><span class="nav-text">4. 名字解析器的配置文件&#x2F;etc&#x2F;resolv.conf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-DNS%E7%9A%84%E4%BC%98%E5%8C%96%E6%8E%AA%E6%96%BD"><span class="nav-text">5. DNS的优化措施</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E7%94%A8-UDP-%E8%BF%98%E6%98%AF-TCP"><span class="nav-text">6. 用 UDP 还是 TCP</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%81%E4%BA%94-TFTP-%E7%AE%80%E5%8D%95%E6%96%87%E4%BB%B6%E4%BC%A0%E9%80%81%E5%8D%8F%E8%AE%AE"><span class="nav-text">十五 TFTP:简单文件传送协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80-13"><span class="nav-text">1. 引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%8D%8F%E8%AE%AE"><span class="nav-text">2. 协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%AE%89%E5%85%A8%E6%80%A7"><span class="nav-text">3. 安全性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%80%BB%E7%BB%93"><span class="nav-text">4. 总结</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%81%E5%85%AD-BOOTP-%E5%BC%95%E5%AF%BC%E7%A8%8B%E5%BA%8F%E5%8D%8F%E8%AE%AE"><span class="nav-text">十六 BOOTP:引导程序协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80-14"><span class="nav-text">1. 引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-BOOTP%E7%9A%84%E5%88%86%E7%BB%84%E6%A0%BC%E5%BC%8F"><span class="nav-text">2. BOOTP的分组格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-BOOTP%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E8%AE%BE%E8%AE%A1"><span class="nav-text">3. BOOTP服务器的设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%80%BB%E7%BB%93-1"><span class="nav-text">4. 总结</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%81%E4%B8%83-TCP%EF%BC%9A%E4%BC%A0%E8%BE%93%E6%8E%A7%E5%88%B6%E5%8D%8F%E8%AE%AE"><span class="nav-text">十七 TCP：传输控制协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80-15"><span class="nav-text">1. 引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-TCP%E7%9A%84%E6%9C%8D%E5%8A%A1"><span class="nav-text">2. TCP的服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-TCP%E7%9A%84%E9%A6%96%E9%83%A8"><span class="nav-text">3. TCP的首部</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-TCP-%E4%BF%9D%E8%AF%81%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9A%84%E7%AE%80%E5%8D%95%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-text">4. TCP 保证可靠性的简单工作原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%B0%8F%E7%BB%93"><span class="nav-text">5. 小结</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%81%E5%85%AB-TCP%E8%BF%9E%E6%8E%A5%E7%9A%84%E5%BB%BA%E7%AB%8B%E4%B8%8E%E7%BB%88%E6%AD%A2"><span class="nav-text">十八 TCP连接的建立与终止</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%BF%9E%E6%8E%A5%E7%9A%84%E5%BB%BA%E7%AB%8B%E4%B8%8E%E7%BB%88%E6%AD%A2"><span class="nav-text">1. 连接的建立与终止</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B%E7%9A%84%E8%B6%85%E6%97%B6"><span class="nav-text">2. 连接建立的超时</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%9C%80%E5%A4%A7%E6%8A%A5%E6%96%87%E6%AE%B5%E9%95%BF%E5%BA%A6"><span class="nav-text">3. 最大报文段长度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-TCP%E7%9A%84%E5%8D%8A%E5%85%B3%E9%97%AD"><span class="nav-text">4. TCP的半关闭</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-TCP%E7%9A%84%E7%8A%B6%E6%80%81%E5%8F%98%E8%BF%81%E5%9B%BE"><span class="nav-text">5. TCP的状态变迁图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E5%A4%8D%E4%BD%8D%E6%8A%A5%E6%96%87%E6%AE%B5"><span class="nav-text">6. 复位报文段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E5%90%8C%E6%97%B6%E6%89%93%E5%BC%80%E3%80%81%E5%90%8C%E6%97%B6%E5%85%B3%E9%97%AD"><span class="nav-text">7. 同时打开、同时关闭</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%81%E4%B9%9D-TCP%E7%9A%84%E4%BA%A4%E4%BA%92%E6%95%B0%E6%8D%AE%E6%B5%81"><span class="nav-text">十九 TCP的交互数据流</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80-16"><span class="nav-text">1. 引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E4%BA%A4%E4%BA%92%E5%BC%8F%E8%BE%93%E5%85%A5"><span class="nav-text">2. 交互式输入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%BB%8F%E5%8F%97%E6%97%B6%E5%BB%B6%E7%9A%84%E7%A1%AE%E8%AE%A4"><span class="nav-text">3. 经受时延的确认</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Nagle%E7%AE%97%E6%B3%95-%E4%B8%80%E6%AC%A1%E5%B0%BD%E9%87%8F%E5%A4%9A%E7%9A%84%E5%8F%91%E6%95%B0%E6%8D%AE"><span class="nav-text">4. Nagle算法(一次尽量多的发数据)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%B0%8F%E7%BB%93-1"><span class="nav-text">5. 小结</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E5%8D%81-TCP%E7%9A%84%E6%88%90%E5%9D%97%E6%95%B0%E6%8D%AE%E6%B5%81"><span class="nav-text">二十 TCP的成块数据流</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80-17"><span class="nav-text">1. 引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3"><span class="nav-text">2. 滑动窗口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%AA%97%E5%8F%A3%E5%A4%A7%E5%B0%8F"><span class="nav-text">3. 窗口大小</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-PUSH%E6%A0%87%E5%BF%97"><span class="nav-text">4. PUSH标志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E6%85%A2%E5%90%AF%E5%8A%A8"><span class="nav-text">5. 慢启动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E6%88%90%E5%9D%97%E6%95%B0%E6%8D%AE%E7%9A%84%E5%90%9E%E5%90%90%E9%87%8F"><span class="nav-text">6. 成块数据的吞吐量</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B8%A6%E5%AE%BD%E6%97%B6%E5%BB%B6%E4%B9%98%E7%A7%AF"><span class="nav-text">带宽时延乘积</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8B%A5%E5%A1%9E"><span class="nav-text">拥塞</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E7%B4%A7%E6%80%A5%E6%96%B9%E5%BC%8F"><span class="nav-text">7. 紧急方式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E5%8D%81%E4%B8%80-TCP%E7%9A%84%E8%B6%85%E6%97%B6%E4%B8%8E%E9%87%8D%E4%BC%A0"><span class="nav-text">二十一 TCP的超时与重传</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80-18"><span class="nav-text">1. 引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%B6%85%E6%97%B6%E4%B8%8E%E9%87%8D%E4%BC%A0%E7%9A%84%E7%AE%80%E5%8D%95%E4%BE%8B%E5%AD%90"><span class="nav-text">2. 超时与重传的简单例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%BE%80%E8%BF%94%E6%97%B6%E9%97%B4%E6%B5%8B%E9%87%8F"><span class="nav-text">3. 往返时间测量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%8B%A5%E5%A1%9E%E9%81%BF%E5%85%8D%E7%AE%97%E6%B3%95"><span class="nav-text">4. 拥塞避免算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%BF%AB%E9%80%9F%E9%87%8D%E4%BC%A0%E4%B8%8E%E5%BF%AB%E9%80%9F%E6%81%A2%E5%A4%8D%E7%AE%97%E6%B3%95"><span class="nav-text">5. 快速重传与快速恢复算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E9%87%8D%E6%96%B0%E5%88%86%E7%BB%84"><span class="nav-text">6. 重新分组</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E5%8D%81%E4%BA%8C-TCP%E7%9A%84%E5%9D%9A%E6%8C%81%E5%AE%9A%E6%97%B6%E5%99%A8"><span class="nav-text">二十二 TCP的坚持定时器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80-19"><span class="nav-text">1. 引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E7%AA%97%E5%8F%A3%E6%8E%A2%E6%9F%A5"><span class="nav-text">2. 窗口探查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%B3%8A%E6%B6%82%E7%AA%97%E5%8F%A3%E7%BB%BC%E5%90%88%E7%97%87"><span class="nav-text">3. 糊涂窗口综合症</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E5%8D%81%E4%B8%89-TCP%E7%9A%84%E4%BF%9D%E6%B4%BB%E5%AE%9A%E6%97%B6%E5%99%A8"><span class="nav-text">二十三 TCP的保活定时器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80-20"><span class="nav-text">1. 引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%8F%8F%E8%BF%B0"><span class="nav-text">2. 描述</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E5%8D%81%E5%9B%9B-TCP%E7%9A%84%E6%9C%AA%E6%9D%A5%E5%92%8C%E6%80%A7%E8%83%BD"><span class="nav-text">二十四 TCP的未来和性能</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80-21"><span class="nav-text">1. 引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%B7%AF%E5%BE%84MTU%E5%8F%91%E7%8E%B0"><span class="nav-text">2. 路径MTU发现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E9%95%BF%E8%82%A5%E7%AE%A1%E9%81%93"><span class="nav-text">3. 长肥管道</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E7%AA%97%E5%8F%A3%E6%89%A9%E5%A4%A7%E9%80%89%E9%A1%B9"><span class="nav-text">4. 窗口扩大选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E6%97%B6%E9%97%B4%E6%88%B3%E9%80%89%E9%A1%B9"><span class="nav-text">5. 时间戳选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-T-TCP%EF%BC%9A%E4%B8%BA%E4%BA%8B%E5%8A%A1%E7%94%A8%E7%9A%84TCP%E6%89%A9%E5%B1%95"><span class="nav-text">6. T&#x2F;TCP：为事务用的TCP扩展</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E5%8D%81%E4%BA%94-SNMP-%E7%AE%80%E5%8D%95%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE"><span class="nav-text">二十五 SNMP:简单网络管理协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80-22"><span class="nav-text">1. 引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%8D%8F%E8%AE%AE-1"><span class="nav-text">2. 协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%AE%A1%E7%90%86%E4%BF%A1%E6%81%AF%E7%BB%93%E6%9E%84"><span class="nav-text">3. 管理信息结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%AF%B9%E8%B1%A1%E6%A0%87%E8%AF%86%E7%AC%A6"><span class="nav-text">4. 对象标识符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E7%AE%A1%E7%90%86%E4%BF%A1%E6%81%AF%E5%BA%93%E4%BB%8B%E7%BB%8D"><span class="nav-text">5. 管理信息库介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E5%AE%9E%E4%BE%8B%E6%A0%87%E8%AF%86"><span class="nav-text">6. 实例标识</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E5%8D%81%E5%85%AD-Telnet%E5%92%8CRlogin-%E8%BF%9C%E7%A8%8B%E7%99%BB%E5%BD%95"><span class="nav-text">二十六 Telnet和Rlogin:远程登录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80-23"><span class="nav-text">1. 引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Rlogin%E5%8D%8F%E8%AE%AE"><span class="nav-text">2. Rlogin协议</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E5%BA%94%E7%94%A8%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%90%AF%E5%8A%A8"><span class="nav-text">1. 应用进程的启动</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6"><span class="nav-text">2. 流量控制</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Telnet%E5%8D%8F%E8%AE%AE"><span class="nav-text">3. Telnet协议</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E5%8D%81%E4%B8%83-FTP-%E6%96%87%E4%BB%B6%E4%BC%A0%E9%80%81%E5%8D%8F%E8%AE%AE"><span class="nav-text">二十七 FTP:文件传送协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80-24"><span class="nav-text">1. 引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-FTP%E5%8D%8F%E8%AE%AE"><span class="nav-text">2. FTP协议</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E4%B8%8E%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%BB%A5%E5%8F%8A%E5%AE%83%E4%BB%AC%E4%B9%8B%E9%97%B4%E7%9A%84%E8%BF%9E%E6%8E%A5%E6%83%85%E5%86%B5%E3%80%82"><span class="nav-text">客户与服务器以及它们之间的连接情况。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E8%A1%A8%E7%A4%BA"><span class="nav-text">数据表示</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#FTP%E5%91%BD%E4%BB%A4"><span class="nav-text">FTP命令</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#FTP%E5%BA%94%E7%AD%94"><span class="nav-text">FTP应答</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E7%AE%A1%E7%90%86"><span class="nav-text">连接管理</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E5%8D%81%E5%85%AB-SMTP-%E7%AE%80%E5%8D%95%E9%82%AE%E4%BB%B6%E4%BC%A0%E9%80%81%E5%8D%8F%E8%AE%AE"><span class="nav-text">二十八 SMTP:简单邮件传送协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80-25"><span class="nav-text">1. 引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-SMTP%E5%8D%8F%E8%AE%AE"><span class="nav-text">2. SMTP协议</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E5%8D%81%E4%B9%9D-%E7%BD%91%E7%BB%9C%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="nav-text">二十九 网络文件系统</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80-26"><span class="nav-text">1. 引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Sun%E8%BF%9C%E7%A8%8B%E8%BF%87%E7%A8%8B%E8%B0%83%E7%94%A8"><span class="nav-text">2. Sun远程过程调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-XDR-%E5%A4%96%E9%83%A8%E6%95%B0%E6%8D%AE%E8%A1%A8%E7%A4%BA"><span class="nav-text">3. XDR:外部数据表示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E7%AB%AF%E5%8F%A3%E6%98%A0%E5%B0%84%E5%99%A8"><span class="nav-text">4. 端口映射器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-NFS%E5%8D%8F%E8%AE%AE"><span class="nav-text">5. NFS协议</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E5%8F%A5%E6%9F%84"><span class="nav-text">文件句柄</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%8D%8F%E8%AE%AE"><span class="nav-text">安装协议</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#UDP%E8%BF%98%E6%98%AFTCP"><span class="nav-text">UDP还是TCP</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E5%8D%81-%E5%85%B6%E4%BB%96%E7%9A%84TCP-IP%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F"><span class="nav-text">三十 其他的TCP&#x2F;IP应用程序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80-27"><span class="nav-text">1. 引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Finger%E5%8D%8F%E8%AE%AE"><span class="nav-text">2. Finger协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Whois%E5%8D%8F%E8%AE%AE"><span class="nav-text">3. Whois协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Archie%E3%80%81WAIS%E3%80%81Gopher%E3%80%81Veronica%E5%92%8CWWW"><span class="nav-text">4. Archie、WAIS、Gopher、Veronica和WWW</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-X%E7%AA%97%E5%8F%A3%E7%B3%BB%E7%BB%9F"><span class="nav-text">5. X窗口系统</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="愚昧之巅"
+      src="/images/head.jpeg">
+  <p class="site-author-name" itemprop="name">愚昧之巅</p>
+  <div class="site-description" itemprop="description">以阅读为生是一件很酷的事，以写作为生是一件更酷的事。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+    <!--
+    <div id="music163player">
+      <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=110 src="//music.163.com/outchain/player?type=0&id=5445280661&auto=0&height=90"></iframe>
+       </div>
+    -->
+  </aside>
+  
+  
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">愚昧之巅</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">138k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">2:06</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='200' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : true,
+      appId      : 'Dv4yd2JUuvVhLBe640B6m1jw-gzGzoHsz',
+      appKey     : 'sNdrMuVcw6jJzlz0HpXBNhdB',
+      placeholder: "来交流交流吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+    </div>
+  
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/miku.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":true},"react":{"opacity":1},"log":false});</script></body>
+</html>
+
+
+

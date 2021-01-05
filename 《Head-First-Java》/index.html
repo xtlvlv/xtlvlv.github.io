@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head.jpeg">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xtlvlv.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":2,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="[toc] 置顶 在写这个笔记的时候已经有了一定的java基础，所以一些极其基础的东西就没有记录 这本书不推荐入门看，说的花里胡哨的。。。没有按照书目录整理笔记，自己按照知识点整理的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《Head First Java》">
+<meta property="og:url" content="https://xtlvlv.github.io/%E3%80%8AHead-First-Java%E3%80%8B/index.html">
+<meta property="og:site_name" content="愚昧之巅">
+<meta property="og:description" content="[toc] 置顶 在写这个笔记的时候已经有了一定的java基础，所以一些极其基础的东西就没有记录 这本书不推荐入门看，说的花里胡哨的。。。没有按照书目录整理笔记，自己按照知识点整理的。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8AHead-First-Java%E3%80%8B/1.%E5%8F%96%E6%B6%88%E5%BA%8F%E5%88%97%E5%8C%96.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8AHead-First-Java%E3%80%8B/2.Client.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8AHead-First-Java%E3%80%8B/3.%E9%83%A8%E7%BD%B2%E7%9A%84%E9%80%89%E6%8B%A9.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8AHead-First-Java%E3%80%8B/4.%E5%8F%AF%E6%89%A7%E8%A1%8Cjar.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8AHead-First-Java%E3%80%8B/img/5.Web%E9%83%A8%E7%BD%B2.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8AHead-First-Java%E3%80%8B/5.Web%E9%83%A8%E7%BD%B2.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8AHead-First-Java%E3%80%8B/6.%E5%88%9B%E5%BB%BA%E8%BF%9C%E7%A8%8B%E6%9C%8D%E5%8A%A1.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8AHead-First-Java%E3%80%8B/7.%E5%88%9B%E5%BB%BA%E8%BF%9C%E7%A8%8B%E6%8E%A5%E5%8F%A3.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8AHead-First-Java%E3%80%8B/8.%E5%AE%9E%E7%8E%B0%E8%BF%9C%E7%A8%8B%E6%8E%A5%E5%8F%A3.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8AHead-First-Java%E3%80%8B/9.%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8AHead-First-Java%E3%80%8B/10.client.png">
+<meta property="og:image" content="https://xtlvlv.github.io/%E3%80%8AHead-First-Java%E3%80%8B/11.error.png">
+<meta property="article:published_time" content="2021-01-05T12:45:30.000Z">
+<meta property="article:modified_time" content="2021-01-05T12:58:08.489Z">
+<meta property="article:author" content="愚昧之巅">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xtlvlv.github.io/%E3%80%8AHead-First-Java%E3%80%8B/1.%E5%8F%96%E6%B6%88%E5%BA%8F%E5%88%97%E5%8C%96.png">
+
+<link rel="canonical" href="https://xtlvlv.github.io/%E3%80%8AHead-First-Java%E3%80%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>《Head First Java》 | 愚昧之巅</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<!-- require MetingJS-->
+
+<script src="https://cdn.jsdelivr.net/npm/meting@2.0.1/dist/Meting.min.js"></script> 
+
+  <!--pjax：防止跳转页面音乐暂停-->
+ <script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.js"></script>
+  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">愚昧之巅</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">27</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">22</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xtlvlv.github.io/%E3%80%8AHead-First-Java%E3%80%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpeg">
+      <meta itemprop="name" content="愚昧之巅">
+      <meta itemprop="description" content="以阅读为生是一件很酷的事，以写作为生是一件更酷的事。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="愚昧之巅">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《Head First Java》
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-01-05 20:45:30 / 修改时间：20:58:08" itemprop="dateCreated datePublished" datetime="2021-01-05T20:45:30+08:00">2021-01-05</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/%E3%80%8AHead-First-Java%E3%80%8B/" class="post-meta-item leancloud_visitors" data-flag-title="《Head First Java》" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论数：</span>
+    
+    <a title="valine" href="/%E3%80%8AHead-First-Java%E3%80%8B/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/%E3%80%8AHead-First-Java%E3%80%8B/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>[toc]</p>
+<h1 id="置顶"><a href="#置顶" class="headerlink" title="置顶"></a>置顶</h1><ol>
+<li>在写这个笔记的时候已经有了一定的java基础，所以一些极其基础的东西就没有记录</li>
+<li>这本书不推荐入门看，说的花里胡哨的。。。没有按照书目录整理笔记，自己按照知识点整理的。<a id="more"></a>
+<h1 id="一、基本概念"><a href="#一、基本概念" class="headerlink" title="一、基本概念"></a>一、基本概念</h1></li>
+</ol>
+<h3 id="1-编译运行"><a href="#1-编译运行" class="headerlink" title="1. 编译运行"></a>1. 编译运行</h3><ul>
+<li>代码<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">class Test&#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        System.out.println(&quot;hello!&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>编译运行<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">javac test.java &#x2F;&#x2F;编译，生成Test.class</span><br><span class="line">java Test   &#x2F;&#x2F;运行，输出hello</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="2-基本语句"><a href="#2-基本语句" class="headerlink" title="2. 基本语句"></a>2. 基本语句</h3><ul>
+<li>顺序选择循环，略</li>
+</ul>
+<h3 id="3-原始数据类型"><a href="#3-原始数据类型" class="headerlink" title="3. 原始数据类型"></a>3. 原始数据类型</h3><ul>
+<li>这些是非引用的<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>位数</th>
+<th>值域</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>boolean</td>
+<td>java虚拟机决定</td>
+<td>true/false</td>
+</tr>
+<tr>
+<td>char</td>
+<td>16</td>
+<td>0~65535</td>
+</tr>
+<tr>
+<td>byte</td>
+<td>8</td>
+<td>-128~127</td>
+</tr>
+<tr>
+<td>short</td>
+<td>16</td>
+<td>-32768~32767</td>
+</tr>
+<tr>
+<td>int</td>
+<td>32</td>
+<td>-2147483648~2147483647</td>
+</tr>
+<tr>
+<td>long</td>
+<td>64</td>
+<td>-很大～很大</td>
+</tr>
+<tr>
+<td>float</td>
+<td>32</td>
+<td>范围规模可变</td>
+</tr>
+<tr>
+<td>double</td>
+<td>64</td>
+<td>范围规模可变</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<h3 id="4-引用"><a href="#4-引用" class="headerlink" title="4. 引用"></a>4. 引用</h3><ol>
+<li>new的对象都是引用，和C++指针类似</li>
+<li>引用占字节大小由java虚拟机决定</li>
+<li>把一个对象赋值给另一个同对象变量，增加引用数，不创建新对象</li>
+<li>数组也是对象，传数组就是传引用</li>
+</ol>
+<h3 id="5-静态-static"><a href="#5-静态-static" class="headerlink" title="5. 静态 static"></a>5. 静态 static</h3><ul>
+<li>和C++类似</li>
+<li>Math类全是静态函数，且它的构造是私有的，不能创建Math实例</li>
+<li>静态方法不能调用非静态方法</li>
+</ul>
+<h3 id="6-常量-final"><a href="#6-常量-final" class="headerlink" title="6. 常量 final"></a>6. 常量 final</h3><ul>
+<li>和C++ const类似，必须初始化赋值</li>
+<li>final 修饰的方法不能被覆盖，C++的final和这个功能基本一样</li>
+<li>final 的类不能被继承</li>
+</ul>
+<h3 id="7-primitive数据类型的包装"><a href="#7-primitive数据类型的包装" class="headerlink" title="7. primitive数据类型的包装"></a>7. primitive数据类型的包装</h3><ul>
+<li>把primitive数据类型当对象来处理<table>
+<thead>
+<tr>
+<th>类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>Character</td>
+</tr>
+<tr>
+<td>Byte</td>
+</tr>
+<tr>
+<td>Short</td>
+</tr>
+<tr>
+<td>Integer</td>
+</tr>
+<tr>
+<td>Long</td>
+</tr>
+<tr>
+<td>Float</td>
+</tr>
+<tr>
+<td>Double</td>
+</tr>
+</tbody></table>
+</li>
+<li>java5 以后自动装箱</li>
+<li>利用上述对象可以实现类型转化  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Double.toString(2.2);</span><br><span class="line">Integer.parseInt(&quot;123&quot;);</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="8-数字格式化"><a href="#8-数字格式化" class="headerlink" title="8. 数字格式化"></a>8. 数字格式化</h3><ul>
+<li>String.format(“asd,%d”,1230);</li>
+</ul>
+<h1 id="二、类与对象"><a href="#二、类与对象" class="headerlink" title="二、类与对象"></a>二、类与对象</h1><h3 id="1-访问权限"><a href="#1-访问权限" class="headerlink" title="1. 访问权限"></a>1. 访问权限</h3><ul>
+<li>java的访问权限有下面四种：<ul>
+<li>public–都可访问(公有)</li>
+<li>protected–包内和子类可访问（保护）</li>
+<li>不写(default)–包内可访问 （默认）</li>
+<li>private–类内可访问（私有）</li>
+</ul>
+</li>
+<li>和C++不同，每个变量前都要加private或public声明</li>
+</ul>
+<h3 id="2-对象方法"><a href="#2-对象方法" class="headerlink" title="2. 对象方法"></a>2. 对象方法</h3><ol>
+<li>java方法是通过值传递的，也就是拷贝传递<ul>
+<li>对基本类型直接拷贝传递</li>
+<li>对引用，传递的是远程控制的拷贝</li>
+</ul>
+</li>
+</ol>
+<h3 id="3-实例变量和局部变量"><a href="#3-实例变量和局部变量" class="headerlink" title="3. 实例变量和局部变量"></a>3. 实例变量和局部变量</h3><ul>
+<li>实例变量是属于类的，局部变量是方法中的</li>
+<li>实例变量有默认值，局部变量没有，必须初始化或赋值</li>
+</ul>
+<h3 id="3-封装继承多态"><a href="#3-封装继承多态" class="headerlink" title="3. 封装继承多态"></a>3. 封装继承多态</h3><h5 id="封装"><a href="#封装" class="headerlink" title="封装"></a>封装</h5><ol>
+<li>emmm没啥说的，主要是注意访问权限</li>
+</ol>
+<h5 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h5><ol>
+<li>extends父类</li>
+<li>函数重载：参数列表数量和类型不同，权限可以改变，和多态无关</li>
+<li>java的继承和C++不一样，不分公有私有保护</li>
+</ol>
+<h5 id="多态"><a href="#多态" class="headerlink" title="多态"></a>多态</h5><ol>
+<li>基类对象变量可以被赋值为它的子类</li>
+<li>函数覆盖：子类覆盖父类方法，参数列表要相同，返回值类型兼容，函数权限不能改变</li>
+</ol>
+<h3 id="4-接口和抽象类"><a href="#4-接口和抽象类" class="headerlink" title="4. 接口和抽象类"></a>4. 接口和抽象类</h3><ol>
+<li>抽象类<ul>
+<li>abstract关键字声明：abstract class student{}</li>
+<li>不能初始化，类似于C++的pure virtual</li>
+<li>子类可以再被声明为abstract</li>
+<li>抽象类的方法无实体</li>
+<li>必须实现所有的抽象方法，抽象类也有非抽象方法</li>
+</ul>
+</li>
+<li>具体类<ul>
+<li>不是抽象类的就是具体类</li>
+<li>调用父类的方法用super.function()</li>
+</ul>
+</li>
+<li>接口<ul>
+<li>interface关键字声明接口</li>
+<li>implements关键字使用接口</li>
+<li>所有接口的方法都是抽象的</li>
+<li>接口里方法没有实体，只是定义一种“规则”，使用接口并不是多重继承</li>
+<li>不同继承树的类可以使用相同的接口</li>
+</ul>
+</li>
+<li>抽象和接口的主要区别是，子类只能继承一个抽象类，但可以实现很多接口</li>
+</ol>
+<h3 id="5-构造函数"><a href="#5-构造函数" class="headerlink" title="5. 构造函数"></a>5. 构造函数</h3><ul>
+<li>和C++类似</li>
+<li>调用父类构造函数:<ul>
+<li>super();</li>
+</ul>
+</li>
+<li>java没有析构，把对象置为null，垃圾回收器会自动释放</li>
+</ul>
+<h1 id="三、Java-API"><a href="#三、Java-API" class="headerlink" title="三、Java API"></a>三、Java API</h1><h3 id="1-ArrayList"><a href="#1-ArrayList" class="headerlink" title="1. ArrayList"></a>1. ArrayList</h3><ul>
+<li>动态数组</li>
+</ul>
+<h3 id="2-Calendar"><a href="#2-Calendar" class="headerlink" title="2. Calendar"></a>2. Calendar</h3><ul>
+<li>日期类</li>
+<li>Date类基本被舍弃不用了</li>
+</ul>
+<h3 id="3-Math"><a href="#3-Math" class="headerlink" title="3. Math"></a>3. Math</h3><ul>
+<li>各种数学函数</li>
+<li>构造函数是私有，不能实例化</li>
+<li>所有方法都是static</li>
+</ul>
+<h3 id="4-各种数据结构"><a href="#4-各种数据结构" class="headerlink" title="4. 各种数据结构"></a>4. 各种数据结构</h3><ol>
+<li>TreeSet<ul>
+<li>有序无重复</li>
+</ul>
+</li>
+<li>HashMap<ul>
+<li>键值对</li>
+</ul>
+</li>
+<li>LinkedList<ul>
+<li>链表结构</li>
+</ul>
+</li>
+<li>HashSet<ul>
+<li>无重复，快速查找</li>
+</ul>
+</li>
+<li>LinkedHashMap<ul>
+<li>类似HashMap,但可记住元素的插入顺序</li>
+</ul>
+</li>
+</ol>
+<h1 id="四、异常处理"><a href="#四、异常处理" class="headerlink" title="四、异常处理"></a>四、异常处理</h1><h3 id="1-基本使用"><a href="#1-基本使用" class="headerlink" title="1. 基本使用"></a>1. 基本使用</h3><ul>
+<li>捕获异常<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">try&#123;</span><br><span class="line">    &#x2F;&#x2F;可能产生异常的代码</span><br><span class="line">&#125;catch(异常种类，Exception类对象)&#123;</span><br><span class="line">    &#x2F;&#x2F;处理</span><br><span class="line">&#125;finally&#123;</span><br><span class="line">    &#x2F;&#x2F;无论如何都执行</span><br><span class="line">    &#x2F;&#x2F; 有finally的try必须要声明异常，就是在函数名后面加 throws ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>抛出异常<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public void test() throws BadException&#123;</span><br><span class="line">    if(aaa)&#123;</span><br><span class="line">        throw new BadException();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>由上一级处理异常<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public void test() throws BadException&#123;</span><br><span class="line">    &#x2F;&#x2F;...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h1 id="五、图形用户接口"><a href="#五、图形用户接口" class="headerlink" title="五、图形用户接口"></a>五、图形用户接口</h1><h3 id="1-基本框架"><a href="#1-基本框架" class="headerlink" title="1. 基本框架"></a>1. 基本框架</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">import javax.swing.*;</span><br><span class="line"></span><br><span class="line">public class helloJFrame&#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        JFrame frame&#x3D;new JFrame();</span><br><span class="line">        JButton b1&#x3D;new JButton(&quot;Hello&quot;);</span><br><span class="line">        &#x2F;&#x2F;设置退出窗口时，程序结束</span><br><span class="line">        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);</span><br><span class="line"></span><br><span class="line">        frame.getContentPane().add(b1);</span><br><span class="line"></span><br><span class="line">        frame.setSize(300,300);</span><br><span class="line">        frame.setVisible(true);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-事件监听"><a href="#2-事件监听" class="headerlink" title="2. 事件监听"></a>2. 事件监听</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">import java.awt.event.*;</span><br><span class="line">import javax.swing.*;</span><br><span class="line"></span><br><span class="line">public class Listen&#123;</span><br><span class="line">    JButton b1;</span><br><span class="line">    &#x2F;&#x2F; JFrame frame;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        Listen l&#x3D;new Listen();</span><br><span class="line">        l.init();</span><br><span class="line">    &#125;</span><br><span class="line">    public void init()&#123;</span><br><span class="line">        JFrame frame&#x3D;new JFrame();</span><br><span class="line">        b1&#x3D;new JButton(&quot;Hello&quot;);</span><br><span class="line">        b1.addActionListener(new ActionListener()&#123;</span><br><span class="line">        </span><br><span class="line">            @Override</span><br><span class="line">            public void actionPerformed(ActionEvent e) &#123;</span><br><span class="line">                b1.setText(&quot;new&quot;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        &#x2F;&#x2F;设置退出窗口时，程序结束</span><br><span class="line">        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);</span><br><span class="line"></span><br><span class="line">        frame.getContentPane().add(b1);</span><br><span class="line"></span><br><span class="line">        frame.setSize(300,300);</span><br><span class="line">        frame.setVisible(true);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="3-swing"><a href="#3-swing" class="headerlink" title="3. swing"></a>3. swing</h1><ul>
+<li>布局管理器和各种控件略</li>
+</ul>
+<h1 id="六、序列化和文件输入输出"><a href="#六、序列化和文件输入输出" class="headerlink" title="六、序列化和文件输入输出"></a>六、序列化和文件输入输出</h1><h3 id="1-让类可序列化"><a href="#1-让类可序列化" class="headerlink" title="1. 让类可序列化"></a>1. 让类可序列化</h3><ul>
+<li>实现Serializable接口  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public class test() implements Serializable&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="2-把序列化对象写入文件"><a href="#2-把序列化对象写入文件" class="headerlink" title="2. 把序列化对象写入文件"></a>2. 把序列化对象写入文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">try&#123;</span><br><span class="line">    FileOutputStream fs&#x3D;new FileOutputStream(&quot;foo.ser&quot;);</span><br><span class="line">    ObjectOutputStream os&#x3D;new ObjectOutputStream(fs);</span><br><span class="line">    os.writeObject(myObj);</span><br><span class="line">    os.close();</span><br><span class="line">&#125;catch(Exception ex)&#123;</span><br><span class="line">    ex.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-取消某些变量的序列化"><a href="#3-取消某些变量的序列化" class="headerlink" title="3. 取消某些变量的序列化"></a>3. 取消某些变量的序列化</h3><ul>
+<li>使用transient关键字  <!-- ![1.取消序列化.png](./img/1.取消序列化.png) -->
+  <img src="/%E3%80%8AHead-First-Java%E3%80%8B/1.%E5%8F%96%E6%B6%88%E5%BA%8F%E5%88%97%E5%8C%96.png" class="" title="1.取消序列化.png"></li>
+<li>transient的引用实例会以null返回</li>
+</ul>
+<h3 id="4-解序列化-Deserializations"><a href="#4-解序列化-Deserializations" class="headerlink" title="4. 解序列化(Deserializations)"></a>4. 解序列化(Deserializations)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">try&#123;</span><br><span class="line">    FileInputStream fs&#x3D;new FileInputStream(&quot;foo.ser&quot;);</span><br><span class="line">    ObjectInputStream is&#x3D;new ObjectInputStream(fs);</span><br><span class="line"></span><br><span class="line">    GameCharacter a1&#x3D;(GameCharacter)is.readObject();</span><br><span class="line">    GameCharacter a2&#x3D;(GameCharacter)is.readObject();</span><br><span class="line">    GameCharacter a3&#x3D;(GameCharacter)is.readObject();</span><br><span class="line">    os.close();</span><br><span class="line">&#125;catch(Exception ex)&#123;</span><br><span class="line">    ex.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>每次调用readObject()会读出一个对象，读出顺序和存入顺序相同，次数超过会报异常</li>
+</ul>
+<h3 id="5-序列化的识别：Version-ID"><a href="#5-序列化的识别：Version-ID" class="headerlink" title="5. 序列化的识别：Version ID"></a>5. 序列化的识别：Version ID</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">static final long serialVersionUID&#x3D;546655...651L;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>略</li>
+</ul>
+<h3 id="6-文件操作"><a href="#6-文件操作" class="headerlink" title="6. 文件操作"></a>6. 文件操作</h3><ul>
+<li>java.io.file</li>
+<li>略</li>
+</ul>
+<h1 id="七、网络与线程"><a href="#七、网络与线程" class="headerlink" title="七、网络与线程"></a>七、网络与线程</h1><h3 id="1-服务器端"><a href="#1-服务器端" class="headerlink" title="1. 服务器端"></a>1. 服务器端</h3><ul>
+<li>比Linux原生函数简便很多<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ServerSocket server&#x3D;new ServerSocket(12345);</span><br><span class="line">server.accept();</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="2-客户端"><a href="#2-客户端" class="headerlink" title="2. 客户端"></a>2. 客户端</h3><ul>
+<li>把socket绑定到输入输出流上，更方便的操作  <!-- ![2.Client.png](./img/2.Client.png) -->
+  <img src="/%E3%80%8AHead-First-Java%E3%80%8B/2.Client.png" class="" title="2.Client.png">
+
+</li>
+</ul>
+<h3 id="3-线程"><a href="#3-线程" class="headerlink" title="3. 线程"></a>3. 线程</h3><ul>
+<li>启动线程<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Runable threadJob&#x3D;new MyRunable();</span><br><span class="line">Thread myThread&#x3D;new Thread(threadJob);</span><br><span class="line">myThread.start();</span><br></pre></td></tr></table></figure></li>
+<li>MyRunable是自己写的类，实现Runable接口</li>
+<li>Runable只有一个run()接口</li>
+</ul>
+<h3 id="4-同步"><a href="#4-同步" class="headerlink" title="4. 同步"></a>4. 同步</h3><ul>
+<li>synchronized</li>
+</ul>
+<h1 id="八、集合与泛型"><a href="#八、集合与泛型" class="headerlink" title="八、集合与泛型"></a>八、集合与泛型</h1><h3 id="1-集合"><a href="#1-集合" class="headerlink" title="1. 集合"></a>1. 集合</h3><ul>
+<li>就是各种数据结构，上面有说</li>
+</ul>
+<h3 id="2-排序"><a href="#2-排序" class="headerlink" title="2. 排序"></a>2. 排序</h3><ol>
+<li>set自动排序</li>
+<li>Collections.sort();</li>
+<li>Comparator</li>
+</ol>
+<h3 id="3-泛型"><a href="#3-泛型" class="headerlink" title="3. 泛型"></a>3. 泛型</h3><ul>
+<li>和C++的模板差不多吧</li>
+</ul>
+<h1 id="九、包、jar存档文件和部署"><a href="#九、包、jar存档文件和部署" class="headerlink" title="九、包、jar存档文件和部署"></a>九、包、jar存档文件和部署</h1><h3 id="1-部署的选择"><a href="#1-部署的选择" class="headerlink" title="1. 部署的选择"></a>1. 部署的选择</h3><!-- ![3.部署的选择.png](./img/3.部署的选择.png) -->
+<img src="/%E3%80%8AHead-First-Java%E3%80%8B/3.%E9%83%A8%E7%BD%B2%E7%9A%84%E9%80%89%E6%8B%A9.png" class="" title="3.部署的选择.png">
+
+<h3 id="2-本地部署jar"><a href="#2-本地部署jar" class="headerlink" title="2. 本地部署jar"></a>2. 本地部署jar</h3><ol>
+<li>javac -d … 可以指定编译生成文件的路径</li>
+<li>创建可执行的jar <!-- ![4.可执行jar.png](./img/4.可执行jar.png) -->
+ <img src="/%E3%80%8AHead-First-Java%E3%80%8B/4.%E5%8F%AF%E6%89%A7%E8%A1%8Cjar.png" class="" title="4.可执行jar.png">
+
+</li>
+</ol>
+<h3 id="3-创建与部署Java-Web-Start"><a href="#3-创建与部署Java-Web-Start" class="headerlink" title="3. 创建与部署Java Web Start"></a>3. 创建与部署Java Web Start</h3><p><img src="./img/5.Web%E9%83%A8%E7%BD%B2.png" alt="5.Web部署.png"></p>
+<img src="/%E3%80%8AHead-First-Java%E3%80%8B/5.Web%E9%83%A8%E7%BD%B2.png" class="" title="5.Web部署.png">
+
+<h1 id="十、远程部署RMI"><a href="#十、远程部署RMI" class="headerlink" title="十、远程部署RMI"></a>十、远程部署RMI</h1><h3 id="1-RMI"><a href="#1-RMI" class="headerlink" title="1. RMI"></a>1. RMI</h3><ul>
+<li>调用远程机器上的方法</li>
+<li>创建远程服务步骤  <!-- ![6.创建远程服务.png](./img/6.创建远程服务.png) -->
+  <img src="/%E3%80%8AHead-First-Java%E3%80%8B/6.%E5%88%9B%E5%BB%BA%E8%BF%9C%E7%A8%8B%E6%9C%8D%E5%8A%A1.png" class="" title="6.创建远程服务.png"></li>
+<li>创建远程接口  <!-- ![7.创建远程接口.png](./img/7.创建远程接口.png) -->
+  <img src="/%E3%80%8AHead-First-Java%E3%80%8B/7.%E5%88%9B%E5%BB%BA%E8%BF%9C%E7%A8%8B%E6%8E%A5%E5%8F%A3.png" class="" title="7.创建远程接口.png"></li>
+<li>实现远程接口  <!-- ![8.实现远程接口.png](./img/8.实现远程接口.png) -->
+  <img src="/%E3%80%8AHead-First-Java%E3%80%8B/8.%E5%AE%9E%E7%8E%B0%E8%BF%9C%E7%A8%8B%E6%8E%A5%E5%8F%A3.png" class="" title="8.实现远程接口.png"></li>
+<li>产生stub和skeleton,启动服务  <!-- ![9.启动服务.png](./img/9.启动服务.png) -->
+  <img src="/%E3%80%8AHead-First-Java%E3%80%8B/9.%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1.png" class="" title="9.启动服务.png"></li>
+<li>客户端  <!-- ![10.client.png](./img/10.client.png) -->
+  <img src="/%E3%80%8AHead-First-Java%E3%80%8B/10.client.png" class="" title="10.client.png"></li>
+<li>常见错误  <!-- ![11.error.png](./img/11.error.png) -->
+  <img src="/%E3%80%8AHead-First-Java%E3%80%8B/11.error.png" class="" title="11.error.png">
+
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"><i class="fa fa-tag">java</i></a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E3%80%8AMySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A%E3%80%8B/" rel="prev" title="《MySQL必知必会》">
+      <i class="fa fa-chevron-left"></i> 《MySQL必知必会》
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BD%AE%E9%A1%B6"><span class="nav-text">置顶</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-text">一、基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E7%BC%96%E8%AF%91%E8%BF%90%E8%A1%8C"><span class="nav-text">1. 编译运行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%9F%BA%E6%9C%AC%E8%AF%AD%E5%8F%A5"><span class="nav-text">2. 基本语句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%8E%9F%E5%A7%8B%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-text">3. 原始数据类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%BC%95%E7%94%A8"><span class="nav-text">4. 引用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E9%9D%99%E6%80%81-static"><span class="nav-text">5. 静态 static</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E5%B8%B8%E9%87%8F-final"><span class="nav-text">6. 常量 final</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-primitive%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%8C%85%E8%A3%85"><span class="nav-text">7. primitive数据类型的包装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-%E6%95%B0%E5%AD%97%E6%A0%BC%E5%BC%8F%E5%8C%96"><span class="nav-text">8. 数字格式化</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E7%B1%BB%E4%B8%8E%E5%AF%B9%E8%B1%A1"><span class="nav-text">二、类与对象</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%AE%BF%E9%97%AE%E6%9D%83%E9%99%90"><span class="nav-text">1. 访问权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%AF%B9%E8%B1%A1%E6%96%B9%E6%B3%95"><span class="nav-text">2. 对象方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%AE%9E%E4%BE%8B%E5%8F%98%E9%87%8F%E5%92%8C%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F"><span class="nav-text">3. 实例变量和局部变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%B0%81%E8%A3%85%E7%BB%A7%E6%89%BF%E5%A4%9A%E6%80%81"><span class="nav-text">3. 封装继承多态</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B0%81%E8%A3%85"><span class="nav-text">封装</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%BB%A7%E6%89%BF"><span class="nav-text">继承</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%A4%9A%E6%80%81"><span class="nav-text">多态</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%8E%A5%E5%8F%A3%E5%92%8C%E6%8A%BD%E8%B1%A1%E7%B1%BB"><span class="nav-text">4. 接口和抽象类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="nav-text">5. 构造函数</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81Java-API"><span class="nav-text">三、Java API</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-ArrayList"><span class="nav-text">1. ArrayList</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Calendar"><span class="nav-text">2. Calendar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Math"><span class="nav-text">3. Math</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%90%84%E7%A7%8D%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-text">4. 各种数据结构</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86"><span class="nav-text">四、异常处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8"><span class="nav-text">1. 基本使用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E5%9B%BE%E5%BD%A2%E7%94%A8%E6%88%B7%E6%8E%A5%E5%8F%A3"><span class="nav-text">五、图形用户接口</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%9F%BA%E6%9C%AC%E6%A1%86%E6%9E%B6"><span class="nav-text">1. 基本框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E4%BA%8B%E4%BB%B6%E7%9B%91%E5%90%AC"><span class="nav-text">2. 事件监听</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-swing"><span class="nav-text">3. swing</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E5%BA%8F%E5%88%97%E5%8C%96%E5%92%8C%E6%96%87%E4%BB%B6%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA"><span class="nav-text">六、序列化和文件输入输出</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%AE%A9%E7%B1%BB%E5%8F%AF%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-text">1. 让类可序列化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%8A%8A%E5%BA%8F%E5%88%97%E5%8C%96%E5%AF%B9%E8%B1%A1%E5%86%99%E5%85%A5%E6%96%87%E4%BB%B6"><span class="nav-text">2. 把序列化对象写入文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%8F%96%E6%B6%88%E6%9F%90%E4%BA%9B%E5%8F%98%E9%87%8F%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-text">3. 取消某些变量的序列化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E8%A7%A3%E5%BA%8F%E5%88%97%E5%8C%96-Deserializations"><span class="nav-text">4. 解序列化(Deserializations)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%BA%8F%E5%88%97%E5%8C%96%E7%9A%84%E8%AF%86%E5%88%AB%EF%BC%9AVersion-ID"><span class="nav-text">5. 序列化的识别：Version ID</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C"><span class="nav-text">6. 文件操作</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%83%E3%80%81%E7%BD%91%E7%BB%9C%E4%B8%8E%E7%BA%BF%E7%A8%8B"><span class="nav-text">七、网络与线程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF"><span class="nav-text">1. 服务器端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-text">2. 客户端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%BA%BF%E7%A8%8B"><span class="nav-text">3. 线程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%90%8C%E6%AD%A5"><span class="nav-text">4. 同步</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%AB%E3%80%81%E9%9B%86%E5%90%88%E4%B8%8E%E6%B3%9B%E5%9E%8B"><span class="nav-text">八、集合与泛型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%9B%86%E5%90%88"><span class="nav-text">1. 集合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%8E%92%E5%BA%8F"><span class="nav-text">2. 排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%B3%9B%E5%9E%8B"><span class="nav-text">3. 泛型</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%9D%E3%80%81%E5%8C%85%E3%80%81jar%E5%AD%98%E6%A1%A3%E6%96%87%E4%BB%B6%E5%92%8C%E9%83%A8%E7%BD%B2"><span class="nav-text">九、包、jar存档文件和部署</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%83%A8%E7%BD%B2%E7%9A%84%E9%80%89%E6%8B%A9"><span class="nav-text">1. 部署的选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2jar"><span class="nav-text">2. 本地部署jar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%88%9B%E5%BB%BA%E4%B8%8E%E9%83%A8%E7%BD%B2Java-Web-Start"><span class="nav-text">3. 创建与部署Java Web Start</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%81%E3%80%81%E8%BF%9C%E7%A8%8B%E9%83%A8%E7%BD%B2RMI"><span class="nav-text">十、远程部署RMI</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-RMI"><span class="nav-text">1. RMI</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="愚昧之巅"
+      src="/images/head.jpeg">
+  <p class="site-author-name" itemprop="name">愚昧之巅</p>
+  <div class="site-description" itemprop="description">以阅读为生是一件很酷的事，以写作为生是一件更酷的事。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+    <!--
+    <div id="music163player">
+      <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=110 src="//music.163.com/outchain/player?type=0&id=5445280661&auto=0&height=90"></iframe>
+       </div>
+    -->
+  </aside>
+  
+  
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">愚昧之巅</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">138k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">2:06</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='200' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : true,
+      appId      : 'Dv4yd2JUuvVhLBe640B6m1jw-gzGzoHsz',
+      appKey     : 'sNdrMuVcw6jJzlz0HpXBNhdB',
+      placeholder: "来交流交流吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+    </div>
+  
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/miku.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":true},"react":{"opacity":1},"log":false});</script></body>
+</html>
+
+
+
