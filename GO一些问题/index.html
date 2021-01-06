@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head.jpeg">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xtlvlv.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":2,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="1. 基础篇1. 如何高效的拼接字符串">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GO一些问题">
+<meta property="og:url" content="https://xtlvlv.github.io/GO%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:site_name" content="不知自己不知">
+<meta property="og:description" content="1. 基础篇1. 如何高效的拼接字符串">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-01-06T12:20:28.000Z">
+<meta property="article:modified_time" content="2021-01-06T12:21:16.012Z">
+<meta property="article:author" content="不知自己不知">
+<meta property="article:tag" content="go">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://xtlvlv.github.io/GO%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>GO一些问题 | 不知自己不知</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<!-- require MetingJS-->
+
+<script src="https://cdn.jsdelivr.net/npm/meting@2.0.1/dist/Meting.min.js"></script> 
+
+  <!--pjax：防止跳转页面音乐暂停-->
+ <script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.js"></script>
+  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">不知自己不知</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">59</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">70</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xtlvlv.github.io/GO%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpeg">
+      <meta itemprop="name" content="不知自己不知">
+      <meta itemprop="description" content="以阅读为生是一件很酷的事，以写作为生是一件更酷的事。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不知自己不知">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          GO一些问题
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-01-06 20:20:28 / 修改时间：20:21:16" itemprop="dateCreated datePublished" datetime="2021-01-06T20:20:28+08:00">2021-01-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/go/" itemprop="url" rel="index"><span itemprop="name">go</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论数：</span>
+    
+    <a title="valine" href="/GO%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/GO%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="1-基础篇"><a href="#1-基础篇" class="headerlink" title="1. 基础篇"></a>1. 基础篇</h1><h3 id="1-如何高效的拼接字符串"><a href="#1-如何高效的拼接字符串" class="headerlink" title="1. 如何高效的拼接字符串"></a>1. 如何高效的拼接字符串</h3><a id="more"></a>
+<ul>
+<li>Go 语言中，字符串是只读的，也就意味着每次修改操作都会创建一个新的字符串。如果需要拼接多次，应使用 strings.Builder，最小化内存拷贝次数。  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var str strings.Builder</span><br><span class="line">for i :&#x3D; 0; i &lt; 1000; i++ &#123;</span><br><span class="line">    str.WriteString(&quot;a&quot;)</span><br><span class="line">&#125;</span><br><span class="line">fmt.Println(str.String())</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="2-Go-支持默认参数或可选参数吗"><a href="#2-Go-支持默认参数或可选参数吗" class="headerlink" title="2. Go 支持默认参数或可选参数吗"></a>2. Go 支持默认参数或可选参数吗</h3><ul>
+<li>都不支持</li>
+</ul>
+<h3 id="3-defer-的执行顺序"><a href="#3-defer-的执行顺序" class="headerlink" title="3. defer 的执行顺序"></a>3. defer 的执行顺序</h3><ul>
+<li>栈型，先进后出</li>
+</ul>
+<h3 id="4-Go-语言-tag-的用处"><a href="#4-Go-语言-tag-的用处" class="headerlink" title="4. Go 语言 tag 的用处"></a>4. Go 语言 tag 的用处</h3><ul>
+<li>tag 可以理解为 struct 字段的注解，可以用来定义字段的一个或多个属性。框架/工具可以通过反射获取到某个字段定义的属性，采取相应的处理方式。tag 丰富了代码的语义，增强了灵活性。</li>
+<li>下面这个例子使用 tag 定义了结构体字段与 json 字段的转换关系，Name -&gt; stu_name, ID -&gt; stu_id，忽略 Age 字段。很方便地实现了 Go 结构体与不同规范的 json 文本之间的转换。  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line">  import &quot;fmt&quot;</span><br><span class="line">  import &quot;encoding&#x2F;json&quot;</span><br><span class="line"></span><br><span class="line">  type Stu struct &#123;</span><br><span class="line">    Name string &#96;json:&quot;stu_name&quot;&#96;</span><br><span class="line">    ID   string &#96;json:&quot;stu_id&quot;&#96;</span><br><span class="line">    Age  int    &#96;json:&quot;-&quot;&#96;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  func main() &#123;</span><br><span class="line">    buf, _ :&#x3D; json.Marshal(Stu&#123;&quot;Tom&quot;, &quot;t001&quot;, 18&#125;)</span><br><span class="line">    fmt.Printf(&quot;%s\n&quot;, buf)</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="5-如何判断-2-个字符串切片（slice-是相等的"><a href="#5-如何判断-2-个字符串切片（slice-是相等的" class="headerlink" title="5. 如何判断 2 个字符串切片（slice) 是相等的"></a>5. 如何判断 2 个字符串切片（slice) 是相等的</h3><ul>
+<li>遍历一个个比较</li>
+<li>通过反射reflect.DeepEqual(a, b)，但是性能较低，不推荐。</li>
+</ul>
+<h3 id="6-字符串打印时，-v-和-v-的区别"><a href="#6-字符串打印时，-v-和-v-的区别" class="headerlink" title="6. 字符串打印时，%v 和 %+v 的区别"></a>6. 字符串打印时，%v 和 %+v 的区别</h3><ul>
+<li>%v 和 %+v 都可以用来打印 struct 的值，区别在于 %v 仅打印各个字段的值，%+v 还会打印各个字段的名称。</li>
+</ul>
+<h3 id="7-Go-语言中如何表示枚举值-enums"><a href="#7-Go-语言中如何表示枚举值-enums" class="headerlink" title="7. Go 语言中如何表示枚举值(enums)"></a>7. Go 语言中如何表示枚举值(enums)</h3><ul>
+<li>通常使用常量(const) 来表示枚举值。  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">const (</span><br><span class="line">    Type1 StuType &#x3D; iota</span><br><span class="line">    Type2</span><br><span class="line">    Type3</span><br><span class="line">    Type4</span><br><span class="line">  )</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="8-空-struct-的用途"><a href="#8-空-struct-的用途" class="headerlink" title="8. 空 struct{} 的用途"></a>8. 空 struct{} 的用途</h3><ul>
+<li>使用空结构体 struct{} 可以节省内存，一般作为占位符使用，表明这里并不需要一个值。</li>
+</ul>
+<ol>
+<li>比如使用 map 表示集合时，只关注 key，value 可以使用 struct{} 作为占位符。如果使用其他类型作为占位符，例如 int，bool，不仅浪费了内存，而且容易引起歧义。 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">type Set map[string]struct&#123;&#125;</span><br><span class="line"></span><br><span class="line">  func main() &#123;</span><br><span class="line">    set :&#x3D; make(Set)</span><br><span class="line"></span><br><span class="line">    for _, item :&#x3D; range []string&#123;&quot;A&quot;, &quot;A&quot;, &quot;B&quot;, &quot;C&quot;&#125; &#123;</span><br><span class="line">      set[item] &#x3D; struct&#123;&#125;&#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    fmt.Println(len(set)) &#x2F;&#x2F; 3</span><br><span class="line">    if _, ok :&#x3D; set[&quot;A&quot;]; ok &#123;</span><br><span class="line">      fmt.Println(&quot;A exists&quot;) &#x2F;&#x2F; A exists</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></li>
+<li>使用信道(channel)控制并发时，我们只是需要一个信号，但并不需要传递值，这个时候，也可以使用 struct{} 代替。</li>
+<li>声明只包含方法的结构体。</li>
+</ol>
+<h3 id="9-map多键索引"><a href="#9-map多键索引" class="headerlink" title="9. map多键索引"></a>9. map多键索引</h3><ul>
+<li>map类型的key可以是个对象，支持对对象中每个字段的多键索引。</li>
+</ul>
+<h1 id="2-进阶（实现原理）"><a href="#2-进阶（实现原理）" class="headerlink" title="2. 进阶（实现原理）"></a>2. 进阶（实现原理）</h1><h3 id="1-init-函数是什么时候执行的"><a href="#1-init-函数是什么时候执行的" class="headerlink" title="1. init() 函数是什么时候执行的"></a>1. init() 函数是什么时候执行的</h3><ol>
+<li>Go 程序初始化先于 main 函数，由 runtime 初始化每个导入的包，初始化顺序不是按照从上到下的导入顺序，而是按照解析的依赖关系，没有依赖的包最先初始化。</li>
+<li>每个包首先初始化包作用域的常量和变量（常量优先于变量），然后执行包的 init() 函数。</li>
+<li>同一个包，甚至是同一个源文件可以有多个 init() 函数。init() 函数没有入参和返回值，不能被其他函数调用，同一个包内多个 init() 函数的执行顺序不作保证。</li>
+<li>执行顺序：import –&gt; const –&gt; var –&gt; init() –&gt; main()。其中不被依赖的包的init()最先执行，同一个包中的多个init()执行顺序没有保证。</li>
+</ol>
+<h3 id="2-Go-语言的局部变量分配在栈上还是堆上（逃逸分析）"><a href="#2-Go-语言的局部变量分配在栈上还是堆上（逃逸分析）" class="headerlink" title="2. Go 语言的局部变量分配在栈上还是堆上（逃逸分析）"></a>2. Go 语言的局部变量分配在栈上还是堆上（逃逸分析）</h3><ol>
+<li>由编译器决定。Go 语言编译器会自动决定把一个变量放在栈还是放在堆，编译器会做逃逸分析(escape analysis)，当发现变量的作用域没有超出函数范围，就可以在栈上，反之则必须分配在堆上。</li>
+</ol>
+<h3 id="3-2-个-interface-可以比较吗"><a href="#3-2-个-interface-可以比较吗" class="headerlink" title="3. 2 个 interface 可以比较吗"></a>3. 2 个 interface 可以比较吗</h3><ol>
+<li>Go 语言中，interface 的内部实现包含了 2 个字段，类型 T 和 值 V，interface 可以使用 == 或 != 比较。2 个 interface 相等有以下 2 种情况：<ol>
+<li>两个 interface 均等于 nil（此时 V 和 T 都处于 unset 状态）</li>
+<li>类型 V 相同，且对应的值 V 相等。</li>
+</ol>
+</li>
+</ol>
+<h3 id="4-接口与非接口的比较"><a href="#4-接口与非接口的比较" class="headerlink" title="4. 接口与非接口的比较"></a>4. 接口与非接口的比较</h3><ol>
+<li><p>接口(interface) 是对非接口值(例如指针，struct等)的封装，内部实现包含 2 个字段，类型 T 和 值 V。一个接口等于 nil，当且仅当 T 和 V 处于 unset 状态（T=nil，V is unset）：</p>
+<ul>
+<li>两个接口值比较时，会先比较 T，再比较 V。</li>
+<li>接口值与非接口值比较时，会先将非接口值尝试转换为接口值，再比较。</li>
+</ul>
+</li>
+<li><p>下面这个例子中，将一个 nil 非接口值 p 赋值给接口 i，此时，i 的内部字段为(T=*int, V=nil)，i 与 p 作比较时，将 p 转换为接口后再比较，因此 i == p，p 与 nil 比较，直接比较值，所以 p == nil。但是当 i 与 nil 比较时，会将 nil 转换为接口 (T=nil, V=nil)，与i (T=*int, V=nil) 不相等，因此 i != nil。因此 V 为 nil ，但 T 不为 nil 的接口不等于 nil。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">func main() &#123;</span><br><span class="line">  var p *int &#x3D; nil</span><br><span class="line">  var i interface&#123;&#125; &#x3D; p</span><br><span class="line">  fmt.Println(i &#x3D;&#x3D; p) &#x2F;&#x2F; true</span><br><span class="line">  fmt.Println(p &#x3D;&#x3D; nil) &#x2F;&#x2F; true</span><br><span class="line">  fmt.Println(i &#x3D;&#x3D; nil) &#x2F;&#x2F; false</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="5-Go-语言GC-垃圾回收-的工作原理"><a href="#5-Go-语言GC-垃圾回收-的工作原理" class="headerlink" title="5. Go 语言GC(垃圾回收)的工作原理"></a>5. Go 语言GC(垃圾回收)的工作原理</h3><ol>
+<li><p>最常见的垃圾回收算法有标记清除(Mark-Sweep) 和引用计数(Reference Count)，Go 语言采用的是标记清除算法。并在此基础上使用了三色标记法和写屏障技术，提高了效率。</p>
+</li>
+<li><p>标记清除收集器是跟踪式垃圾收集器，其执行过程可以分成标记（Mark）和清除（Sweep）两个阶段：</p>
+<ol>
+<li>标记阶段 — 从根对象出发查找并标记堆中所有存活的对象</li>
+<li>清除阶段 — 遍历堆中的全部对象，回收未被标记的垃圾对象并将回收的内存加入空闲链表</li>
+</ol>
+</li>
+<li><p>标记清除算法的一大问题是在标记期间，需要暂停程序（Stop the world，STW），标记结束之后，用户程序才可以继续执行。为了能够异步执行，减少 STW 的时间，Go 语言采用了三色标记法。</p>
+</li>
+<li><p>三色标记法：</p>
+<ol>
+<li>三色标记算法将程序中的对象分成白色、黑色和灰色三类。<ul>
+<li>白色：不确定对象。</li>
+<li>灰色：存活对象，子对象待处理。</li>
+<li>黑色：存活对象。</li>
+</ul>
+</li>
+<li>标记开始时，所有对象加入白色集合（这一步需 STW ）。首先将根对象标记为灰色，加入灰色集合，垃圾搜集器取出一个灰色对象，将其标记为黑色，并将其指向的对象标记为灰色，加入灰色集合。重复这个过程，直到灰色集合为空为止，标记阶段结束。那么白色对象即可需要清理的对象，而黑色对象均为根可达的对象，不能被清理。</li>
+<li>三色标记法因为多了一个白色的状态来存放不确定对象，所以后续的标记阶段可以并发地执行。当然并发执行的代价是可能会造成一些遗漏，因为那些早先被标记为黑色的对象可能目前已经是不可达的了。所以三色标记法是一个 false negative（假阴性）的算法。</li>
+<li>三色标记法并发执行仍存在一个问题，即在 GC 过程中，对象指针发生了改变。比如下面的例子：正常情况下，D 对象最终会被标记为黑色，不应被回收。但在标记和用户程序并发执行过程中，用户程序删除了 C 对 D 的引用，而 A 获得了 D 的引用。标记继续进行，D 就没有机会被标记为黑色了（A 已经处理过，这一轮不会再被处理）。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">A (黑) -&gt; B (灰) -&gt; C (白) -&gt; D (白)</span><br><span class="line"></span><br><span class="line">A (黑) -&gt; B (灰) -&gt; C (白) </span><br><span class="line">    ↓</span><br><span class="line">   D (白)</span><br></pre></td></tr></table></figure></li>
+<li>为了解决这个问题，Go 使用了内存屏障技术。</li>
+</ol>
+</li>
+<li><p>内存屏障技术：</p>
+</li>
+<li><p>它是在用户程序读取对象、创建新对象以及更新对象指针时执行的一段代码，类似于一个钩子。垃圾收集器使用了写屏障（Write Barrier）技术，当对象新增或更新时，会将其着色为灰色。这样即使与用户程序并发执行，对象的引用发生改变时，垃圾收集器也能正确处理了。</p>
+</li>
+<li><p>一次完整的 GC 分为四个阶段：</p>
+<ol>
+<li>标记准备(Mark Setup，需 STW)，打开写屏障(Write Barrier)</li>
+<li>使用三色标记法标记（Marking, 并发）</li>
+<li>标记结束(Mark Termination，需 STW)，关闭写屏障。</li>
+<li>清理(Sweeping, 并发)</li>
+</ol>
+</li>
+</ol>
+<h3 id="6-函数返回局部变量的指针是否安全"><a href="#6-函数返回局部变量的指针是否安全" class="headerlink" title="6. 函数返回局部变量的指针是否安全"></a>6. 函数返回局部变量的指针是否安全</h3><ol>
+<li>这在 Go 中是安全的，Go 编译器将会对每个局部变量进行逃逸分析。如果发现局部变量的作用域超出该函数，则不会将内存分配在栈上，而是分配在堆上。</li>
+</ol>
+<h3 id="7-非接口的任意类型-T都能够调用-T-的方法吗？反过来呢？"><a href="#7-非接口的任意类型-T都能够调用-T-的方法吗？反过来呢？" class="headerlink" title="7. 非接口的任意类型 T都能够调用 *T 的方法吗？反过来呢？"></a>7. 非接口的任意类型 T都能够调用 *T 的方法吗？反过来呢？</h3><ol>
+<li><p>一个T类型的值可以调用为<em>T类型声明的方法，但是仅当此T的值是可寻址(addressable) 的情况下。编译器在调用指针属主方法前，会自动取此T值的地址。因为不是任何T值都是可寻址的，所以并非任何T值都能够调用为类型</em>T声明的方法。</p>
+</li>
+<li><p>反过来，一个<em>T类型的值可以调用为类型T声明的方法，这是因为解引用指针总是合法的。事实上，你可以认为对于每一个为类型 T 声明的方法，编译器都会为类型</em>T自动隐式声明一个同名和同签名的方法。</p>
+</li>
+<li><p>哪些值是不可寻址的</p>
+<ol>
+<li>字符串中的字节；</li>
+<li>map 对象中的元素（slice 对象中的元素是可寻址的，slice的底层是数组）；</li>
+<li>常量；</li>
+<li>包级别的函数等。</li>
+</ol>
+</li>
+<li><p>举一个例子，定义类型 T，并为类型 *T 声明一个方法 hello()，变量 t1 可以调用该方法，但是常量 t2 调用该方法时，会产生编译错误。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">type T string</span><br><span class="line"></span><br><span class="line">  func (t *T) hello() &#123;</span><br><span class="line">    fmt.Println(&quot;hello&quot;)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  func main() &#123;</span><br><span class="line">    var t1 T &#x3D; &quot;ABC&quot;</span><br><span class="line">    t1.hello() &#x2F;&#x2F; hello</span><br><span class="line">    const t2 T &#x3D; &quot;ABC&quot;</span><br><span class="line">    t2.hello() &#x2F;&#x2F; error: cannot call pointer method on t</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="8-go-在defer中修改return的内容会生效吗"><a href="#8-go-在defer中修改return的内容会生效吗" class="headerlink" title="8. go 在defer中修改return的内容会生效吗"></a>8. go 在defer中修改return的内容会生效吗</h3></li>
+<li><p>执行顺序：defer在return赋值之后</p>
+</li>
+<li><p>分为无名返回值、有名返回值、返回指针</p>
+</li>
+<li><p>如果是无名返回值，在defer中的修改不影响返回值，有名返回值和返回指针，return的内容会修改</p>
+</li>
+</ol>
+<h3 id="9-append扩容"><a href="#9-append扩容" class="headerlink" title="9. append扩容"></a>9. append扩容</h3><ol>
+<li>   切片append()的时候，如果容量不够会扩容，重新分配空间，所以指针地址就变化了，在函数中修改slice显得外面没有变，应该返回这个新的slice，不过它复制的是指针地址，所以开销也不大</li>
+</ol>
+<h3 id="10-协程："><a href="#10-协程：" class="headerlink" title="10. 协程："></a>10. 协程：</h3><ol>
+<li>协程是程序层面的，不由操作系统控制。比如python的yield</li>
+<li>线程调度是这个线程让出cpu使用权，下次还能抢到。协程是程序真正的暂停，等到对方执行完自己才会继续执行。</li>
+<li>一个线程里可以有多个协程，一个协成阻塞了，就全部阻塞了。但是goruntine通过一个逻辑处理器解决了这个问题。</li>
+</ol>
+<h3 id="11-Go语言逻辑处理器（GPM）"><a href="#11-Go语言逻辑处理器（GPM）" class="headerlink" title="11. Go语言逻辑处理器（GPM）"></a>11. Go语言逻辑处理器（GPM）</h3><ol>
+<li>每个线程有一个逻辑处理器，一个逻辑处理器管理很多协程，如果这个协程需要阻塞（比如IO操作），就把这个协程从逻辑处理器中剔除，新建一个线程管理这个逻辑处理器。</li>
+<li>Go也有一个goruntime来进行内存管理垃圾回收等操作，只是生成可执行文件的时候包含进去了，所以可执行文件比较大。</li>
+</ol>
+<h1 id="3-并发"><a href="#3-并发" class="headerlink" title="3. 并发"></a>3. 并发</h1><h3 id="1-无缓冲的-channel-和-有缓冲的-channel"><a href="#1-无缓冲的-channel-和-有缓冲的-channel" class="headerlink" title="1. 无缓冲的 channel 和 有缓冲的 channel"></a>1. 无缓冲的 channel 和 有缓冲的 channel</h3><ol>
+<li>对于无缓冲的 channel，发送方将阻塞该信道，直到接收方从该信道接收到数据为止，而接收方也将阻塞该信道，直到发送方将数据发送到该信道中为止。</li>
+<li>对于有缓存的 channel，发送方在没有空插槽（缓冲区使用完）的情况下阻塞，而接收方在信道为空的情况下阻塞。</li>
+</ol>
+<h3 id="2-什么是协程泄露-Goroutine-Leak"><a href="#2-什么是协程泄露-Goroutine-Leak" class="headerlink" title="2. 什么是协程泄露(Goroutine Leak)"></a>2. 什么是协程泄露(Goroutine Leak)</h3><ol>
+<li>协程泄露是指协程创建后，长时间得不到释放，并且还在不断地创建新的协程，最终导致内存耗尽，程序崩溃。</li>
+<li>常见的导致协程泄露的场景有以下几种：<ol>
+<li>缺少接收器，导致发送阻塞</li>
+<li>缺少发送器，导致接收阻塞</li>
+<li>死锁(dead lock)</li>
+<li>无限循环(infinite loops)</li>
+</ol>
+</li>
+</ol>
+<h3 id="3-Go-限制运行时操作系统线程的数量"><a href="#3-Go-限制运行时操作系统线程的数量" class="headerlink" title="3. Go 限制运行时操作系统线程的数量"></a>3. Go 限制运行时操作系统线程的数量</h3><ol>
+<li><p>可以使用环境变量 GOMAXPROCS 或 runtime.GOMAXPROCS(num int) 设置。</p>
+<ul>
+<li>runtime.GOMAXPROCS(1) // 限制同时执行Go代码的操作系统线程数为 1</li>
+</ul>
+</li>
+<li><p>GOMAXPROCS 限制的是同时执行用户态 Go 代码的操作系统线程的数量，但是对于被系统调用阻塞的线程数量是没有限制的。GOMAXPROCS 的默认值等于 CPU 的逻辑核数，同一时间，一个核只能绑定一个线程，然后运行被调度的协程。因此对于 CPU 密集型的任务，若该值过大，例如设置为 CPU 逻辑核数的 2 倍，会增加线程切换的开销，降低性能。对于 I/O 密集型应用，适当地调大该值，可以提高 I/O 吞吐率。</p>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/go/" rel="tag"><i class="fa fa-tag">go</i></a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/GO%E7%89%B9%E6%80%A7/" rel="prev" title="GO特性">
+      <i class="fa fa-chevron-left"></i> GO特性
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/GO%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83/" rel="next" title="GO编码规范">
+      GO编码规范 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E5%9F%BA%E7%A1%80%E7%AF%87"><span class="nav-text">1. 基础篇</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%A6%82%E4%BD%95%E9%AB%98%E6%95%88%E7%9A%84%E6%8B%BC%E6%8E%A5%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-text">1. 如何高效的拼接字符串</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Go-%E6%94%AF%E6%8C%81%E9%BB%98%E8%AE%A4%E5%8F%82%E6%95%B0%E6%88%96%E5%8F%AF%E9%80%89%E5%8F%82%E6%95%B0%E5%90%97"><span class="nav-text">2. Go 支持默认参数或可选参数吗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-defer-%E7%9A%84%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F"><span class="nav-text">3. defer 的执行顺序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Go-%E8%AF%AD%E8%A8%80-tag-%E7%9A%84%E7%94%A8%E5%A4%84"><span class="nav-text">4. Go 语言 tag 的用处</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD-2-%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%88%87%E7%89%87%EF%BC%88slice-%E6%98%AF%E7%9B%B8%E7%AD%89%E7%9A%84"><span class="nav-text">5. 如何判断 2 个字符串切片（slice) 是相等的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%89%93%E5%8D%B0%E6%97%B6%EF%BC%8C-v-%E5%92%8C-v-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-text">6. 字符串打印时，%v 和 %+v 的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-Go-%E8%AF%AD%E8%A8%80%E4%B8%AD%E5%A6%82%E4%BD%95%E8%A1%A8%E7%A4%BA%E6%9E%9A%E4%B8%BE%E5%80%BC-enums"><span class="nav-text">7. Go 语言中如何表示枚举值(enums)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-%E7%A9%BA-struct-%E7%9A%84%E7%94%A8%E9%80%94"><span class="nav-text">8. 空 struct{} 的用途</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-map%E5%A4%9A%E9%94%AE%E7%B4%A2%E5%BC%95"><span class="nav-text">9. map多键索引</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E8%BF%9B%E9%98%B6%EF%BC%88%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%EF%BC%89"><span class="nav-text">2. 进阶（实现原理）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-init-%E5%87%BD%E6%95%B0%E6%98%AF%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E6%89%A7%E8%A1%8C%E7%9A%84"><span class="nav-text">1. init() 函数是什么时候执行的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Go-%E8%AF%AD%E8%A8%80%E7%9A%84%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E5%88%86%E9%85%8D%E5%9C%A8%E6%A0%88%E4%B8%8A%E8%BF%98%E6%98%AF%E5%A0%86%E4%B8%8A%EF%BC%88%E9%80%83%E9%80%B8%E5%88%86%E6%9E%90%EF%BC%89"><span class="nav-text">2. Go 语言的局部变量分配在栈上还是堆上（逃逸分析）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E4%B8%AA-interface-%E5%8F%AF%E4%BB%A5%E6%AF%94%E8%BE%83%E5%90%97"><span class="nav-text">3. 2 个 interface 可以比较吗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%8E%A5%E5%8F%A3%E4%B8%8E%E9%9D%9E%E6%8E%A5%E5%8F%A3%E7%9A%84%E6%AF%94%E8%BE%83"><span class="nav-text">4. 接口与非接口的比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-Go-%E8%AF%AD%E8%A8%80GC-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6-%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-text">5. Go 语言GC(垃圾回收)的工作原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E5%87%BD%E6%95%B0%E8%BF%94%E5%9B%9E%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E7%9A%84%E6%8C%87%E9%92%88%E6%98%AF%E5%90%A6%E5%AE%89%E5%85%A8"><span class="nav-text">6. 函数返回局部变量的指针是否安全</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E9%9D%9E%E6%8E%A5%E5%8F%A3%E7%9A%84%E4%BB%BB%E6%84%8F%E7%B1%BB%E5%9E%8B-T%E9%83%BD%E8%83%BD%E5%A4%9F%E8%B0%83%E7%94%A8-T-%E7%9A%84%E6%96%B9%E6%B3%95%E5%90%97%EF%BC%9F%E5%8F%8D%E8%BF%87%E6%9D%A5%E5%91%A2%EF%BC%9F"><span class="nav-text">7. 非接口的任意类型 T都能够调用 *T 的方法吗？反过来呢？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-go-%E5%9C%A8defer%E4%B8%AD%E4%BF%AE%E6%94%B9return%E7%9A%84%E5%86%85%E5%AE%B9%E4%BC%9A%E7%94%9F%E6%95%88%E5%90%97"><span class="nav-text">8. go 在defer中修改return的内容会生效吗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-append%E6%89%A9%E5%AE%B9"><span class="nav-text">9. append扩容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-%E5%8D%8F%E7%A8%8B%EF%BC%9A"><span class="nav-text">10. 协程：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11-Go%E8%AF%AD%E8%A8%80%E9%80%BB%E8%BE%91%E5%A4%84%E7%90%86%E5%99%A8%EF%BC%88GPM%EF%BC%89"><span class="nav-text">11. Go语言逻辑处理器（GPM）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E5%B9%B6%E5%8F%91"><span class="nav-text">3. 并发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%97%A0%E7%BC%93%E5%86%B2%E7%9A%84-channel-%E5%92%8C-%E6%9C%89%E7%BC%93%E5%86%B2%E7%9A%84-channel"><span class="nav-text">1. 无缓冲的 channel 和 有缓冲的 channel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%8F%E7%A8%8B%E6%B3%84%E9%9C%B2-Goroutine-Leak"><span class="nav-text">2. 什么是协程泄露(Goroutine Leak)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Go-%E9%99%90%E5%88%B6%E8%BF%90%E8%A1%8C%E6%97%B6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%BA%BF%E7%A8%8B%E7%9A%84%E6%95%B0%E9%87%8F"><span class="nav-text">3. Go 限制运行时操作系统线程的数量</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="不知自己不知"
+      src="/images/head.jpeg">
+  <p class="site-author-name" itemprop="name">不知自己不知</p>
+  <div class="site-description" itemprop="description">以阅读为生是一件很酷的事，以写作为生是一件更酷的事。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">70</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">59</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+    <!--
+    <div id="music163player">
+      <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=110 src="//music.163.com/outchain/player?type=0&id=5445280661&auto=0&height=90"></iframe>
+       </div>
+    -->
+  </aside>
+  
+  
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不知自己不知</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">412k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">6:14</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='200' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : true,
+      appId      : 'Dv4yd2JUuvVhLBe640B6m1jw-gzGzoHsz',
+      appKey     : 'sNdrMuVcw6jJzlz0HpXBNhdB',
+      placeholder: "来交流交流吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+    </div>
+  
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/miku.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":true},"react":{"opacity":1},"log":false});</script></body>
+</html>
+
+
+

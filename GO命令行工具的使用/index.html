@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head.jpeg">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xtlvlv.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":2,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="0. go交叉编译1. mac下编译linux程序 GOOS&#x3D;linux GOARCH&#x3D;amd64 go build hello.go">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GO命令行工具的使用">
+<meta property="og:url" content="https://xtlvlv.github.io/GO%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E7%9A%84%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="不知自己不知">
+<meta property="og:description" content="0. go交叉编译1. mac下编译linux程序 GOOS&#x3D;linux GOARCH&#x3D;amd64 go build hello.go">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-01-06T12:10:44.000Z">
+<meta property="article:modified_time" content="2021-01-06T12:11:28.399Z">
+<meta property="article:author" content="不知自己不知">
+<meta property="article:tag" content="go">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://xtlvlv.github.io/GO%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E7%9A%84%E4%BD%BF%E7%94%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>GO命令行工具的使用 | 不知自己不知</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<!-- require MetingJS-->
+
+<script src="https://cdn.jsdelivr.net/npm/meting@2.0.1/dist/Meting.min.js"></script> 
+
+  <!--pjax：防止跳转页面音乐暂停-->
+ <script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.js"></script>
+  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">不知自己不知</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">59</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">70</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xtlvlv.github.io/GO%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E7%9A%84%E4%BD%BF%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpeg">
+      <meta itemprop="name" content="不知自己不知">
+      <meta itemprop="description" content="以阅读为生是一件很酷的事，以写作为生是一件更酷的事。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不知自己不知">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          GO命令行工具的使用
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-01-06 20:10:44 / 修改时间：20:11:28" itemprop="dateCreated datePublished" datetime="2021-01-06T20:10:44+08:00">2021-01-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/go/" itemprop="url" rel="index"><span itemprop="name">go</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论数：</span>
+    
+    <a title="valine" href="/GO%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E7%9A%84%E4%BD%BF%E7%94%A8/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/GO%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E7%9A%84%E4%BD%BF%E7%94%A8/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="0-go交叉编译"><a href="#0-go交叉编译" class="headerlink" title="0. go交叉编译"></a>0. go交叉编译</h3><h5 id="1-mac下编译linux程序"><a href="#1-mac下编译linux程序" class="headerlink" title="1. mac下编译linux程序"></a>1. mac下编译linux程序</h5><ul>
+<li>GOOS=linux GOARCH=amd64 go build hello.go<a id="more"></a>
+
+</li>
+</ul>
+<h3 id="1-go-version"><a href="#1-go-version" class="headerlink" title="1. go version"></a>1. go version</h3><ol>
+<li><p>看go语言版本</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ go version</span><br><span class="line">  go version go1.14.4 darwin&#x2F;amd64</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看go文件的构建版本信息</p>
+<ul>
+<li>文件路径可以要加绝对路径</li>
+<li>可以看多个文件，也可以直接指定目录<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ go version &#x2F;Users&#x2F;dxm&#x2F;go&#x2F;src&#x2F;beeserver&#x2F;beeserver</span><br><span class="line">   &#x2F;Users&#x2F;dxm&#x2F;go&#x2F;src&#x2F;beeserver&#x2F;beeserver: go1.14.4</span><br><span class="line">   </span><br><span class="line">   &#x2F;&#x2F; 目录</span><br><span class="line">  $ go version &#x2F;Users&#x2F;dxm&#x2F;go&#x2F;src&#x2F;beeserver</span><br><span class="line">   &#x2F;Users&#x2F;dxm&#x2F;go&#x2F;src&#x2F;beeserver&#x2F;beeserver: go1.14.4</span><br><span class="line">   &#x2F;Users&#x2F;dxm&#x2F;go&#x2F;src&#x2F;beeserver&#x2F;go_build_main_go: go1.14.4</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>查看go可执行文件的包依赖信息(查看go mod信息)</p>
+<ul>
+<li><p>加个-m参数就行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">$ go version -m &#x2F;Users&#x2F;dxm&#x2F;go&#x2F;src&#x2F;beeserver&#x2F;beeserver</span><br><span class="line">  &#x2F;Users&#x2F;dxm&#x2F;go&#x2F;src&#x2F;beeserver&#x2F;beeserver: go1.14.4</span><br><span class="line">   path	beeserver</span><br><span class="line">   mod	beeserver	(devel)</span><br><span class="line">   dep	github.com&#x2F;astaxie&#x2F;beego	v1.12.2	h1:CajUexhSX5ONWDiSCpeQBNVfTzOtPb9e9d+3vuU5FuU&#x3D;</span><br><span class="line">   dep	github.com&#x2F;beorn7&#x2F;perks	v1.0.1	h1:VlbKKnNfV8bJzeqoa4cOKqO6bYr3WgKZxO8Z16+hsOM&#x3D;</span><br><span class="line">   dep	github.com&#x2F;cespare&#x2F;xxhash&#x2F;v2	v2.1.1	h1:6MnRN8NT7+YBpUIWxHtefFZOKTAPgGjpQSxqLNn0+qY&#x3D;</span><br><span class="line">   dep	github.com&#x2F;go-sql-driver&#x2F;mysql	v1.5.0	h1:ozyZYNQW3x3HtqT1jira07DN2PArx2v7&#x2F;mN66gGcHOs&#x3D;</span><br><span class="line">   dep	github.com&#x2F;golang&#x2F;protobuf	v1.4.2	h1:+Z5KGCizgyZCbGh1KZqA0fcLLkwbsjIzS4aV2v7wJX0&#x3D;</span><br><span class="line">   dep	github.com&#x2F;hashicorp&#x2F;golang-lru	v0.5.4	h1:YDjusn29QI&#x2F;Das2iO9M0BHnIbxPeyuCHsjMW+lJfyTc&#x3D;</span><br><span class="line">   dep	github.com&#x2F;matttproud&#x2F;golang_protobuf_extensions	v1.0.1	h1:4hp9jkHxhMHkqkrB3Ix0jegS5sx&#x2F;RkqARlsWZ6pIwiU&#x3D;</span><br><span class="line">   dep	github.com&#x2F;prometheus&#x2F;client_golang	v1.7.0	h1:wCi7urQOGBsYcQROHqpUUX4ct84xp40t9R9JX0FuA&#x2F;U&#x3D;</span><br><span class="line">   dep	github.com&#x2F;prometheus&#x2F;client_model	v0.2.0	h1:uq5h0d+GuxiXLJLNABMgp2qUWDPiLvgCzz2dUR+&#x2F;W&#x2F;M&#x3D;</span><br><span class="line">   dep	github.com&#x2F;prometheus&#x2F;common	v0.10.0	h1:RyRA7RzGXQZiW+tGMr7sxa85G1z0yOpM1qq5c8lNawc&#x3D;</span><br><span class="line">   dep	github.com&#x2F;prometheus&#x2F;procfs	v0.1.3	h1:F0+tqvhOksq22sc6iCHF5WGlWjdwj92p0udFh1VFBS8&#x3D;</span><br><span class="line">   dep	github.com&#x2F;shiena&#x2F;ansicolor	v0.0.0-20151119151921-a422bbe96644	h1:X+yvsM2yrEktyI+b2qND5gpH8YhURn0k8OCaeRnkINo&#x3D;</span><br><span class="line">   dep	golang.org&#x2F;x&#x2F;crypto	v0.0.0-20191011191535-87dc89f01550	h1:ObdrDkeb4kJdCP557AjRjq69pTHfNouLtWZG7j9rPN8&#x3D;</span><br><span class="line">   dep	golang.org&#x2F;x&#x2F;net	v0.0.0-20190620200207-3b0461eec859	h1:R&#x2F;3boaszxrf1GEUWTVDzSKVwLmSJpwZ1yqXm8j0v2QI&#x3D;</span><br><span class="line">   dep	golang.org&#x2F;x&#x2F;sys	v0.0.0-20200615200032-f1bc736245b1	h1:ogLJMz+qpzav7lGMh10LMvAkM&#x2F;fAoGlaiiHYiFYdm80&#x3D;</span><br><span class="line">   dep	golang.org&#x2F;x&#x2F;text	v0.3.0	h1:g61tztE5qeGQ89tm6NTjjM9VPIm088od1l6aSorWRWg&#x3D;</span><br><span class="line">   dep	google.golang.org&#x2F;protobuf	v1.23.0	h1:4MY060fB1DLGMB&#x2F;7MBTLnwQUY6+F09GEiz6SsrNqyzM&#x3D;</span><br><span class="line">   dep	gopkg.in&#x2F;yaml.v2	v2.2.8	h1:obN1ZagJSUGI0Ek&#x2F;LBmuj4SNLPfIny3KsKFopxRdj10&#x3D;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>注意只能查看Go语言编译生成的可执行文件</p>
+</li>
+</ol>
+<h3 id="2-go-run"><a href="#2-go-run" class="headerlink" title="2. go run"></a>2. go run</h3><ol>
+<li><p>go run命令包含了两个动作：编译命令源码文件和运行对应的可执行文件。</p>
+</li>
+<li><p>go run命令只接受Go源码文件作为参数，而不接受代码包。与go build命令和go install命令一样，go run命令也不允许多个命令源码文件作为参数，即使它们在同一个代码包中也是如此。而原因也是一致的，多个命令源码文件都有相同的main函数声明。</p>
+</li>
+<li><p>go run -n test.go 只打印相关命令而不执行</p>
+</li>
+<li><p>go run -x -work test.go 既打印相关命令又执行</p>
+<ul>
+<li>-work 是打印临时工作目录的名称，并在退出时不删除它（少用）。</li>
+</ul>
+</li>
+</ol>
+<h3 id="3-go-build"><a href="#3-go-build" class="headerlink" title="3. go build"></a>3. go build</h3><pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go build [-o 输出名] [-i] [编译标记] [包名]</span><br></pre></td></tr></table></figure></code></pre>
+<ol>
+<li><p>编译规则</p>
+<ul>
+<li>如果参数为***.go文件或文件列表，则编译为一个个单独的包。</li>
+<li>当编译单个main包（文件），则生成可执行文件。</li>
+<li>当编译单个或多个包非主包时，只构建编译包，但丢弃生成的对象（.a），仅用作检查包可以构建。即最后不会生成可执行文件。</li>
+<li>当编译包时，会自动忽略’_test.go’的测试文件。</li>
+</ul>
+</li>
+<li><p>主要作用</p>
+<ul>
+<li>用于测试编译包，在项目目录下生成可执行文件（有main包）。</li>
+</ul>
+</li>
+<li><p>go build指令会调用所有引用包的源码，重新编译，而不是直接使用pkg里的编译后文件，如果在【$GOROOT】与【$GOPATH】下没有找到import引入包的项目源码，就会报错。</p>
+</li>
+</ol>
+<h3 id="4-go-install"><a href="#4-go-install" class="headerlink" title="4. go install"></a>4. go install</h3><ol>
+<li><p>主要作用</p>
+<ul>
+<li>主要用来生成库和工具。一是编译包文件（无main包），将编译后的包文件放到 pkg 目录下（$GOPATH/pkg）。二是编译生成可执行文件（有main包），将可执行文件放到 bin 目录（$GOPATH/bin）。</li>
+</ul>
+</li>
+<li><p>和go build的不同点</p>
+<ul>
+<li>go build 不能生成包文件, go install 可以生成包文件</li>
+<li>go build 生成可执行文件在当前目录下， go install 生成可执行文件在bin目录下（$GOPATH/bin），这样就可以使项目可执行文件能被方便的全局调用。</li>
+<li>go install 输出目录始终为 GOPATH 下的 bin 目录，无法使用-o附加参数进行自定义。</li>
+</ul>
+</li>
+<li><p>GOPATH 下的 pkg 目录放置的是编译期间的中间文件。（.a）</p>
+<ul>
+<li>每个package都会生成对应的.a文件，Go在install的时候先判断package是否有改动，如果没有就不再编译.a文件，加快编译速度。</li>
+<li>build的话强制全部编译</li>
+<li>只把.a文件给别人，别人是用不了的，必须得要源码。</li>
+</ul>
+</li>
+</ol>
+<h3 id="5-go-get"><a href="#5-go-get" class="headerlink" title="5. go get"></a>5. go get</h3><ol>
+<li><p>go get 可以暂时理解为git clone 到 $GOPATH/src  + go install</p>
+</li>
+<li><p>用法：</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go get [-d] [-f] [-t] [-u] [-fix] [-insecure] [build flags] [packages]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>标记名称 描述</p>
+</li>
+</ol>
+<p>-d 让命令程序只执行下载动作，而不执行安装动作。<br>-f 仅在使用-u标记时才有效。该标记会让命令程序忽略掉对已下载代码包的导入路径的检查。如果下载并安装的代码包所属的项目是你从别人那里Fork过来的，那么这样做就尤为重要了。<br>-fix 让命令程序在下载代码包后先执行修正动作，而后再进行编译和安装。<br>-insecure 允许命令程序使用非安全的scheme（如HTTP）去下载指定的代码包。如果你用的代码仓库（如公司内部的Gitlab）没有HTTPS支持，可以添加此标记。请在确定安全的情况下使用它。<br>-t 让命令程序同时下载并安装指定的代码包中的测试源码文件中依赖的代码包。<br>-u 让命令利用网络来更新已有代码包及其依赖包。默认情况下，该命令只会从网络上下载本地不存在的代码包，而不会更新已有的代码包。<br>-v 打印出被构建的代码包的名字<br>-x 打印出用到的命令</p>
+<h3 id="6-go-mod"><a href="#6-go-mod" class="headerlink" title="6. go mod"></a>6. go mod</h3><ol>
+<li>自从 Go 官方从去年推出 1.11 之后，增加新的依赖管理模块并且更加易于管理项目中所需要的模块。模块是存储在文件树中的 Go 包的集合，其根目录中包含 go.mod 文件。 go.mod 文件定义了模块的模块路径，它也是用于根目录的导入路径，以及它的依赖性要求。每个依赖性要求都被写为模块路径和特定语义版本。</li>
+</ol>
+<h5 id="1-使用module的前置工作"><a href="#1-使用module的前置工作" class="headerlink" title="1. 使用module的前置工作"></a>1. 使用module的前置工作</h5><pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">	export GO111MODULE&#x3D;on</span><br><span class="line">export GOPROXY&#x3D;https:&#x2F;&#x2F;goproxy.io &#x2F;&#x2F; 设置代理</span><br></pre></td></tr></table></figure></code></pre>
+<h5 id="2-常见操作"><a href="#2-常见操作" class="headerlink" title="2. 常见操作"></a>2. 常见操作</h5><ol>
+<li><p>创建一个新模块</p>
+<ul>
+<li>go mod init hello 初始化一个module名字为 hello 的模块，生成一个go.mod文件。</li>
+</ul>
+</li>
+<li><p>添加依赖</p>
+<ul>
+<li>在代码中直接import，go build后会自动添加</li>
+</ul>
+</li>
+</ol>
+<ol start="3">
+<li><p>升级依赖项</p>
+<ul>
+<li>查看使用的依赖列表：go list -m all</li>
+<li>go tidy 下载更新依赖</li>
+</ul>
+</li>
+<li><p>删除未使用的依赖项</p>
+<ul>
+<li>go mod tidy</li>
+</ul>
+</li>
+</ol>
+<h5 id="3-go-mod参数"><a href="#3-go-mod参数" class="headerlink" title="3. go mod参数"></a>3. go mod参数</h5><pre><code>        download    download modules to local cache
+    edit        edit go.mod from tools or scripts
+    graph       print module requirement graph
+    init        initialize new module in current directory
+    tidy        add missing and remove unused modules
+    vendor      make vendored copy of dependencies
+    verify      verify dependencies have expected content
+    why         explain why packages or modules are needed</code></pre>
+<h3 id="7-go-test"><a href="#7-go-test" class="headerlink" title="7. go test"></a>7. go test</h3><h5 id="1-测试文件"><a href="#1-测试文件" class="headerlink" title="1. 测试文件"></a>1. 测试文件</h5><h6 id="1-测试目录所有文件"><a href="#1-测试目录所有文件" class="headerlink" title="1. 测试目录所有文件"></a>1. 测试目录所有文件</h6><ul>
+<li>go的test一般以xxx_test.go为文件名，xxx并没有特别要求是要实测的文件名</li>
+<li>在当前目录下使用 go test 会运行当前目录下所有的 test 文件。</li>
+</ul>
+<h6 id="2-测试单个文件"><a href="#2-测试单个文件" class="headerlink" title="2. 测试单个文件"></a>2. 测试单个文件</h6><ul>
+<li>测试单个文件，一定要带上被测试的原文件</li>
+<li>go test -v  wechat_test.go wechat.go </li>
+</ul>
+<h6 id="3-测试单个函数"><a href="#3-测试单个函数" class="headerlink" title="3. 测试单个函数"></a>3. 测试单个函数</h6><ul>
+<li>go test -v -test.run TestRefreshAccessToken</li>
+</ul>
+<h5 id="2-四种测试用例"><a href="#2-四种测试用例" class="headerlink" title="2. 四种测试用例"></a>2. 四种测试用例</h5><ol>
+<li><p>TestXxxx(t *testing.T) // 基本测试用例</p>
+<ul>
+<li>go test 不会按照顺序执行多个 test case。若想要顺序执行，需要用到 subtests 。用 t.Run 来执行 subtests 可以做到控制顺序的作用。</li>
+</ul>
+</li>
+<li><p>BenchmarkXxxx(b *testing.B) // 压力测试的测试用例</p>
+<ul>
+<li>执行命令 go test -bench=.  输入该命令后，go test 只会测试 Benchmark 开头的函数</li>
+<li>benchmark 的 case 一般会跑 b.N 次，而且每次执行都会如此</li>
+<li>在执行过程中会根据实际 case 的执行时间是否稳定会增加 b.N 的次数以达到稳态</li>
+</ul>
+</li>
+</ol>
+<ol start="3">
+<li>Example_Xxx() // 测试控制台输出的例子</li>
+</ol>
+<ol start="4">
+<li>TestMain(m *testing.M) // 测试Main函数<ul>
+<li>TestMain 作为初始化 test。作为入口 test。可以在 m.Run() 之前初始化一些东西，比如数据库连接、文件打开。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">func TestMain(m *testing.M) &#123;</span><br><span class="line">    fmt.Println(&quot;test main first&quot;)</span><br><span class="line">    m.Run()</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+</li>
+</ol>
+<h5 id="3-test两种运行模式"><a href="#3-test两种运行模式" class="headerlink" title="3. test两种运行模式"></a>3. test两种运行模式</h5><ol>
+<li>本地目录模式，在没有包参数（例如 go test 或 go test -v ）调用时发生。在此模式下， go test 编译当前目录中找到的包和测试，然后运行测试二进制文件。在这种模式下，caching 是禁用的。在包测试完成后，go test 打印一个概要行，显示测试状态、包名和运行时间。</li>
+<li>包列表模式，在使用显示包参数调用 go test 时发生（例如 go test math ， go test ./… 甚至是 go test . ）。在此模式下，go 测试编译并测试在命令上列出的每个包。如果一个包测试通过， go test 只打印最终的 ok 总结行。如果一个包测试失败， go test 将输出完整的测试输出。如果使用 -bench 或 -v 标志，则 go test 会输出完整的输出，甚至是通过包测试，以显示所请求的基准测试结果或详细日志记录。</li>
+</ol>
+<h3 id="8-go-env"><a href="#8-go-env" class="headerlink" title="8. go env"></a>8. go env</h3><ol>
+<li>命令go env用于打印Go语言的环境信息。</li>
+</ol>
+<h3 id="9-go-fix"><a href="#9-go-fix" class="headerlink" title="9. go fix"></a>9. go fix</h3><ol>
+<li><p>命令go fix会把指定代码包的所有Go语言源码文件中的旧版本代码修正为新版本的代码。这里所说的版本即Go语言的版本。代码包的所有Go语言源码文件不包括其子代码包（如果有的话）中的文件。修正操作包括把对旧程序调用的代码更换为对新程序调用的代码、把旧的语法更换为新的语法，等等。</p>
+</li>
+<li><p>命令go fix其实是命令go tool fix的简单封装。这甚至比go fmt命令对gofmt命令的封装更简单。像其它的Go命令一样，go fix命令会先对作为参数的代码包导入路径进行验证，以确保它是正确有效的。像在本小节开始处描述的那样，go fix命令会把有效代码包中的所有Go语言源码文件作为多个参数传递给go tool fix命令。实际上，go fix命令本身不接受任何标记，它会把加入的所有标记都原样传递给go tool fix命令。</p>
+</li>
+<li><p>go tool fix命令可接受的标记如下表</p>
+<p> 标记名称    标记描述<br> -diff    不将修正后的内容写入文件，而只打印修正前后的内容的对比信息到标准输出。<br> -r    只对目标源码文件做有限的修正操作。该标记的值即为允许的修正操作的名称。多个名称之间用英文半角逗号分隔。<br> -force    使用此标记后，即使源码文件中的代码已经与Go语言的最新版本相匹配了，也会强行执行指定的修正操作。该标记的值就是需要强行执行的修正操作的名称，多个名称之间用英文半角逗号分隔。</p>
+</li>
+</ol>
+<h3 id="10-go-fmt"><a href="#10-go-fmt" class="headerlink" title="10. go fmt"></a>10. go fmt</h3><ol>
+<li><p>go fmt命令会按照Go语言代码规范格式化指定代码包中的所有Go语言源码文件的代码，所有Go语言源码文件即包括命令源码文件、库源码文件和测试源码文件。注意，当代码包还有子代码包时，子代码包中的Go语言源码文件是不包含在内的。也就是说，go fmt命令只会格式化被直接保存在指定代码包对应目录下的Go语言源码文件。</p>
+</li>
+<li><p>与go doc命令和godoc命令的关系类似，go fmt命令是gofmt命令的简单封装。go fmt命令本身可以接受两个标记。标记-n可以让命令程序仅打印出内部使用的gofmt命令及其标记和参数而不真正执行它。标记-x则会使命令程序既打印又执行这个命令。在go fmt命令程序内部，会在其调用的gofmt命令后面加上标记-l和-w，并以指定代码包中的所有Go语言源码文件的路径作为参数，就像这样：</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ go fmt -n pkgtool</span><br><span class="line">  gofmt -l -w golang&#x2F;goc2p&#x2F;src&#x2F;pkgtool&#x2F;envir.go golang&#x2F;goc2p&#x2F;src pkgtoolenvir_test.go golang&#x2F;goc2p&#x2F;src&#x2F;pkgtool&#x2F;fpath.go golang&#x2F;goc2p&#x2F;src&#x2F;pkgtool ipath.go golang&#x2F;goc2p&#x2F;src&#x2F;pkgtool&#x2F;pnode.go golang&#x2F;goc2p&#x2F;src&#x2F;pkgtool&#x2F;util.go golang&#x2F;goc2p&#x2F;src&#x2F;pkgtool&#x2F;util_test.go</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ol>
+<h3 id="11-go-doc"><a href="#11-go-doc" class="headerlink" title="11. go doc"></a>11. go doc</h3><ol>
+<li><p>go doc fmt</p>
+<ul>
+<li>用于展示指定代码包fmt的文档</li>
+</ul>
+</li>
+<li><p>godoc -http=localhost:6060 -index </p>
+<ul>
+<li>在本地指定web服务，网页查看文档</li>
+<li>-index是指定搜索功能</li>
+</ul>
+</li>
+</ol>
+<h3 id="12-go-clean"><a href="#12-go-clean" class="headerlink" title="12. go clean"></a>12. go clean</h3><ol>
+<li><p>执行go clean命令会删除掉执行其它命令时产生的一些文件和目录，包括:</p>
+<ul>
+<li>在使用go build命令时在当前代码包下生成的与包名同名或者与Go源码文件同名的可执行文件。在Windows下，则是与包名同名或者Go源码文件同名且带有“.exe”后缀的文件。</li>
+<li>在执行go test命令并加入-c标记时在当前代码包下生成的以包名加“.test”后缀为名的文件。在Windows下，则是以包名加“.test.exe”后缀为名的文件。</li>
+<li>如果执行go clean命令时带有标记-i，则会同时删除安装（执行go install命令）当前代码包时所产生的结果文件。如果当前代码包中只包含库源码文件，则结果文件指的就是在工作区的pkg目录的相应目录下的归档文件。如果当前代码包中只包含一个命令源码文件，则结果文件指的就是在工作区的bin目录下的可执行文件。</li>
+<li>还有一些目录和文件是在编译Go或C源码文件时留在相应目录中的。包括：“_obj”和“_test”目录，名称为“_testmain.go”、“test.out”、“build.out”或“a.out”的文件，名称以“.5”、“.6”、“.8”、“.a”、“.o”或“.so”为后缀的文件。这些目录和文件是在执行go build命令时生成在临时目录中的。</li>
+<li>如果执行go clean命令时带有标记-r，则还包括当前代码包的所有依赖包的上述目录和文件。</li>
+</ul>
+</li>
+</ol>
+<h3 id="13-go-list"><a href="#13-go-list" class="headerlink" title="13. go list"></a>13. go list</h3><ol>
+<li>go list -e -json fmt 查看fmt包的信息</li>
+</ol>
+<h3 id="14-go-vet"><a href="#14-go-vet" class="headerlink" title="14. go vet"></a>14. go vet</h3><ol>
+<li>命令go vet是一个用于检查Go语言源码中静态错误的简单工具。与大多数Go命令一样，go vet命令可以接受-n标记和-x标记。-n标记用于只打印流程中执行的命令而不真正执行它们。-n标记也用于打印流程中执行的命令，但不会取消这些命令的执行。</li>
+<li>go vet命令是go tool vet命令的简单封装。它会首先载入和分析指定的代码包，并把指定代码包中的所有Go语言源码文件和以“.s”结尾的文件的相对路径作为参数传递给go tool vet命令。其中，以“.s”结尾的文件是汇编语言的源码文件。如果go vet命令的参数是Go语言源码文件的路径，则会直接将这些参数传递给go tool vet命令。</li>
+<li>go tool vet命令的作用是检查Go语言源代码并且报告可疑的代码编写问题。比如，在调用Printf函数时没有传入格式化字符串，以及某些不标准的方法签名，等等。该命令使用试探性的手法检查错误，因此并不能保证报告的问题确实需要解决。但是，它确实能够找到一些编译器没有捕捉到的错误。</li>
+</ol>
+<h3 id="15-go-generate"><a href="#15-go-generate" class="headerlink" title="15. go generate"></a>15. go generate</h3><h5 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h5><ol>
+<li>go generate命令是go 1.4版本里面新添加的一个命令，当运行go generate时，它将扫描与当前包相关的源代码文件，找出所有包含”//go:generate”的特殊注释，提取并执行该特殊注释后面的命令，命令为可执行程序，形同shell下面执行。</li>
+</ol>
+<h5 id="2-使用场景"><a href="#2-使用场景" class="headerlink" title="2. 使用场景"></a>2. 使用场景</h5><ol>
+<li>protobufs：从 protocol buffer 定义文件（.proto）生成 .pb.go 文件。</li>
+<li>Unicode：从 UnicodeData.txt 生成 Unicode 表.</li>
+</ol>
+<h5 id="3-例子"><a href="#3-例子" class="headerlink" title="3. 例子"></a>3. 例子</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line"> import &quot;fmt&quot;</span><br><span class="line"></span><br><span class="line"> &#x2F;&#x2F;go:generate echo hello</span><br><span class="line"> &#x2F;&#x2F;go:generate go run main.go</span><br><span class="line"> &#x2F;&#x2F;go:generate  echo file&#x3D;$GOFILE pkg&#x3D;$GOPACKAGE</span><br><span class="line"> func main() &#123;</span><br><span class="line">     fmt.Println(&quot;Hello world!&quot;)</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"> &#x2F;&#x2F; 输出</span><br><span class="line"> $ go generate</span><br><span class="line"> hello</span><br><span class="line"> Hello world!</span><br><span class="line"> file&#x3D;main.go pkg&#x3D;main</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/go/" rel="tag"><i class="fa fa-tag">go</i></a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E8%BF%90%E7%BB%B4%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/" rel="prev" title="运维学习路线">
+      <i class="fa fa-chevron-left"></i> 运维学习路线
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/GO%E7%89%B9%E6%80%A7/" rel="next" title="GO特性">
+      GO特性 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#0-go%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91"><span class="nav-text">0. go交叉编译</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-mac%E4%B8%8B%E7%BC%96%E8%AF%91linux%E7%A8%8B%E5%BA%8F"><span class="nav-text">1. mac下编译linux程序</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-go-version"><span class="nav-text">1. go version</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-go-run"><span class="nav-text">2. go run</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-go-build"><span class="nav-text">3. go build</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-go-install"><span class="nav-text">4. go install</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-go-get"><span class="nav-text">5. go get</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-go-mod"><span class="nav-text">6. go mod</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E4%BD%BF%E7%94%A8module%E7%9A%84%E5%89%8D%E7%BD%AE%E5%B7%A5%E4%BD%9C"><span class="nav-text">1. 使用module的前置工作</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E5%B8%B8%E8%A7%81%E6%93%8D%E4%BD%9C"><span class="nav-text">2. 常见操作</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-go-mod%E5%8F%82%E6%95%B0"><span class="nav-text">3. go mod参数</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-go-test"><span class="nav-text">7. go test</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E6%B5%8B%E8%AF%95%E6%96%87%E4%BB%B6"><span class="nav-text">1. 测试文件</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-%E6%B5%8B%E8%AF%95%E7%9B%AE%E5%BD%95%E6%89%80%E6%9C%89%E6%96%87%E4%BB%B6"><span class="nav-text">1. 测试目录所有文件</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-%E6%B5%8B%E8%AF%95%E5%8D%95%E4%B8%AA%E6%96%87%E4%BB%B6"><span class="nav-text">2. 测试单个文件</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#3-%E6%B5%8B%E8%AF%95%E5%8D%95%E4%B8%AA%E5%87%BD%E6%95%B0"><span class="nav-text">3. 测试单个函数</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E5%9B%9B%E7%A7%8D%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B"><span class="nav-text">2. 四种测试用例</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-test%E4%B8%A4%E7%A7%8D%E8%BF%90%E8%A1%8C%E6%A8%A1%E5%BC%8F"><span class="nav-text">3. test两种运行模式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-go-env"><span class="nav-text">8. go env</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-go-fix"><span class="nav-text">9. go fix</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-go-fmt"><span class="nav-text">10. go fmt</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11-go-doc"><span class="nav-text">11. go doc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-go-clean"><span class="nav-text">12. go clean</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#13-go-list"><span class="nav-text">13. go list</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14-go-vet"><span class="nav-text">14. go vet</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#15-go-generate"><span class="nav-text">15. go generate</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E6%A6%82%E8%BF%B0"><span class="nav-text">1. 概述</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-text">2. 使用场景</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E4%BE%8B%E5%AD%90"><span class="nav-text">3. 例子</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="不知自己不知"
+      src="/images/head.jpeg">
+  <p class="site-author-name" itemprop="name">不知自己不知</p>
+  <div class="site-description" itemprop="description">以阅读为生是一件很酷的事，以写作为生是一件更酷的事。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">70</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">59</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+    <!--
+    <div id="music163player">
+      <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=110 src="//music.163.com/outchain/player?type=0&id=5445280661&auto=0&height=90"></iframe>
+       </div>
+    -->
+  </aside>
+  
+  
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不知自己不知</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">412k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">6:14</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='200' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : true,
+      appId      : 'Dv4yd2JUuvVhLBe640B6m1jw-gzGzoHsz',
+      appKey     : 'sNdrMuVcw6jJzlz0HpXBNhdB',
+      placeholder: "来交流交流吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+    </div>
+  
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/miku.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":true},"react":{"opacity":1},"log":false});</script></body>
+</html>
+
+
+

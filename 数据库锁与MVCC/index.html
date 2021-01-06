@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head.jpeg">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xtlvlv.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":2,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="数据库四个问题 数据丢失 不加锁">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据库锁与MVCC">
+<meta property="og:url" content="https://xtlvlv.github.io/%E6%95%B0%E6%8D%AE%E5%BA%93%E9%94%81%E4%B8%8EMVCC/index.html">
+<meta property="og:site_name" content="不知自己不知">
+<meta property="og:description" content="数据库四个问题 数据丢失 不加锁">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xtlvlv.github.io/%E6%95%B0%E6%8D%AE%E5%BA%93%E9%94%81%E4%B8%8EMVCC/%E9%97%B4%E9%9A%99%E9%94%81%E4%BD%9C%E7%94%A8.png">
+<meta property="article:published_time" content="2021-01-06T09:16:16.000Z">
+<meta property="article:modified_time" content="2021-01-06T11:30:35.807Z">
+<meta property="article:author" content="不知自己不知">
+<meta property="article:tag" content="数据库">
+<meta property="article:tag" content="锁">
+<meta property="article:tag" content="MVCC">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xtlvlv.github.io/%E6%95%B0%E6%8D%AE%E5%BA%93%E9%94%81%E4%B8%8EMVCC/%E9%97%B4%E9%9A%99%E9%94%81%E4%BD%9C%E7%94%A8.png">
+
+<link rel="canonical" href="https://xtlvlv.github.io/%E6%95%B0%E6%8D%AE%E5%BA%93%E9%94%81%E4%B8%8EMVCC/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>数据库锁与MVCC | 不知自己不知</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<!-- require MetingJS-->
+
+<script src="https://cdn.jsdelivr.net/npm/meting@2.0.1/dist/Meting.min.js"></script> 
+
+  <!--pjax：防止跳转页面音乐暂停-->
+ <script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.js"></script>
+  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">不知自己不知</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">59</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">70</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xtlvlv.github.io/%E6%95%B0%E6%8D%AE%E5%BA%93%E9%94%81%E4%B8%8EMVCC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpeg">
+      <meta itemprop="name" content="不知自己不知">
+      <meta itemprop="description" content="以阅读为生是一件很酷的事，以写作为生是一件更酷的事。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不知自己不知">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数据库锁与MVCC
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-01-06 17:16:16 / 修改时间：19:30:35" itemprop="dateCreated datePublished" datetime="2021-01-06T17:16:16+08:00">2021-01-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论数：</span>
+    
+    <a title="valine" href="/%E6%95%B0%E6%8D%AE%E5%BA%93%E9%94%81%E4%B8%8EMVCC/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/%E6%95%B0%E6%8D%AE%E5%BA%93%E9%94%81%E4%B8%8EMVCC/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="数据库四个问题"><a href="#数据库四个问题" class="headerlink" title="数据库四个问题"></a>数据库四个问题</h3><ol>
+<li>数据丢失<ul>
+<li>不加锁<a id="more"></a></li>
+</ul>
+</li>
+<li>脏读<ul>
+<li>脏读/脏数据，读数据的时候不用加锁，但是读到数据后，另一个修改这个数据的进程回滚了，于是现在读到的数据就和真实数据不符合。</li>
+<li>使用共享锁解决</li>
+</ul>
+</li>
+<li>重复读<ul>
+<li>在一个事务中要多次读取某个数据，但是如果期间释放了共享锁，这个数据被其他人修改了，第二次重复读的时候就会和第一次不一样。解决办法就是事务执行期间一直不释放共享锁，直到事务提交。</li>
+</ul>
+</li>
+<li>幻读<ul>
+<li>一个人修改了一批数据，比如把所有年龄18岁的都修改成19岁，修改完一看，还有一个18岁的，好像没有修改。实际是修改的同时，另一个人插入了一个18岁的记录。导致好像是这个18岁的没有修改。</li>
+<li>串行化解决，就是我修改完，你才能插入。</li>
+</ul>
+</li>
+</ol>
+<h3 id="锁的分类"><a href="#锁的分类" class="headerlink" title="锁的分类"></a>锁的分类</h3><h5 id="排它锁"><a href="#排它锁" class="headerlink" title="排它锁"></a>排它锁</h5><ul>
+<li>就普通的锁</li>
+</ul>
+<ol>
+<li>记录锁，又叫行锁，对某行数据操作的时候上锁。</li>
+<li>间隙锁，事务加锁后锁住的是表记录的某一个区间，当表的相邻ID之间出现空隙则会形成一个区间，遵循左开右闭原则。<ul>
+<li>间隙锁作用？防止幻读问题，事务并发的时候，如果没有间隙锁，就会发生如下图的问题，在同一个事务里，A事务的两次查询出的结果会不一样。<img src="/%E6%95%B0%E6%8D%AE%E5%BA%93%E9%94%81%E4%B8%8EMVCC/%E9%97%B4%E9%9A%99%E9%94%81%E4%BD%9C%E7%94%A8.png" class="" title="间隙锁作用.png"></li>
+<li>间隙锁出现的条件：范围查询并且查询未命中记录，查询条件必须命中索引、间隙锁只会出现在REPEATABLE_READ（重复读)的事务级别中。</li>
+</ul>
+</li>
+</ol>
+<h5 id="自旋锁"><a href="#自旋锁" class="headerlink" title="自旋锁"></a>自旋锁</h5><ul>
+<li>旋锁是采用让当前线程不停地的在循环体内执行实现的，当循环的条件被其他线程改变时 才能进入临界区，线程尝试获取锁的过程不会阻塞；但不适应于单核场景。好处就是不用上下文切换，坏处是如果持有锁时间太长，其他线程一直自旋浪费CPU。适用于执行速度快，频繁切换的场景。</li>
+</ul>
+<h5 id="共享锁-读写锁"><a href="#共享锁-读写锁" class="headerlink" title="共享锁/读写锁"></a>共享锁/读写锁</h5><ul>
+<li>读共享，写独占</li>
+<li>当读数据的时候加一个共享锁，如果有读数据就+1，有共享锁就不能有排它锁，这样解决了脏读的问题。</li>
+</ul>
+<h5 id="Innodb引擎特有锁"><a href="#Innodb引擎特有锁" class="headerlink" title="Innodb引擎特有锁"></a>Innodb引擎特有锁</h5><ol>
+<li><p>临键锁</p>
+<ul>
+<li>临键锁是INNODB的行锁默认算法，它是记录锁和间隙锁的组合，临键锁会把查询出来的记录锁住，同时也会把该范围查询内的所有间隙空间也会锁住，再之它会把相邻的下一个区间也会锁住。</li>
+<li>临键锁避免了在范围查询时出现脏读、重复读、幻读问题。加了临键锁之后，在范围区间内数据不允许被修改和插入。</li>
+<li>间隙锁和临键锁的区别：<ul>
+<li>间隙锁在根据索引范围查找失败的时候才锁，而且只锁一个区间。</li>
+<li>临键锁是查找成功也锁，把找到的数据和他们的间隙都锁上。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>行锁：当SQL命中索引的时候才加行锁。</p>
+</li>
+<li><p>表锁：其他时候都是加表锁。</p>
+</li>
+<li><p>意向锁：</p>
+<ul>
+<li>意向共享锁：当一个事务试图对整个表进行加共享锁之前，首先需要获得这个表的意向共享锁。</li>
+<li>意向排它锁：当一个事务试图对整个表进行加排它锁之前，首先需要获得这个表的意向排它锁。</li>
+</ul>
+</li>
+<li><p>为什么我们需要意向锁？</p>
+<ul>
+<li>innodb加锁的方式是基于索引，并且加锁粒度是行锁。</li>
+<li>在事务A的操作过程中，后面的每个需要对表加持表锁的事务都需要遍历整个索引树才能知道自己是否能够进行加锁，太浪费时间和损耗数据库性能了</li>
+<li>所以INNODB就加了意向锁的概念：如果当事务A加锁成功之后就设置一个状态告诉后面的人，已经有人对表里的行加了一个排他锁了，你们不能对整个表加共享锁或排它锁了，那么后面需要对整个表加锁的人只需要获取这个状态就知道自己是不是可以对表加锁，避免了对整个索引树的每个节点扫描是否加锁.</li>
+</ul>
+</li>
+</ol>
+<h3 id="数据库多版本并发控制（MVCC）"><a href="#数据库多版本并发控制（MVCC）" class="headerlink" title="数据库多版本并发控制（MVCC）"></a>数据库多版本并发控制（MVCC）</h3><ol>
+<li>使用锁进行串行化处理虽然解决了一系列问题，但是效率太低，而且无法避免死锁。</li>
+<li>多版本并发控制（MVCC）是一种用来解决读-写冲突的无锁并发控制，也就是为事务分配单向增长的时间戳，为每个修改保存一个版本，版本与事务时间戳关联，读操作只读该事务开始前的数据库的快照。 这样在读操作不用阻塞写操作，写操作不用阻塞读操作的同时，避免了脏读和不可重复读</li>
+<li>MVCC给每个事务一个事务id，和回滚指针。有一个Read View数据结构，记录当前所有活跃事务和活跃事务中的最大事务id和最小事务id。</li>
+<li>在读数据的时候，这个事务有个单独的id，重复读的时候再找这个事务id对应的 数据就行了。</li>
+<li>写数据的时候是一个新的事务id。</li>
+<li>这样在读写的时候就不用互相加锁了，提高读写效率。</li>
+</ol>
+<h3 id="乐观并发控制（OCC）"><a href="#乐观并发控制（OCC）" class="headerlink" title="乐观并发控制（OCC）"></a>乐观并发控制（OCC）</h3><ol>
+<li>乐观并发控制（OCC）是一种用来解决写-写冲突的无锁并发控制，认为事务间争用没有那么多，所以先进行修改，在提交事务前，检查一下事务开始后，有没有新提交改变，如果没有就提交，如果有就放弃并重试。乐观并发控制类似自选锁。乐观并发控制适用于低数据争用，写冲突比较少的环境。</li>
+</ol>
+<h3 id="Undo日志："><a href="#Undo日志：" class="headerlink" title="Undo日志："></a>Undo日志：</h3><ol>
+<li>记录事务执行前的数据，如果事务执行一半需要回滚，就直接回到最初的数据状态。</li>
+<li>Undo日志的写入规则：有个缓冲区，隔一段时间写入硬盘，回滚的时候就看undo日志，如果事务提交了，就不用回滚，否则说明事务没执行完就中断了，直接回滚。</li>
+<li>Undo日志的写入次序，一定要在相关的数据项写入之前。</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"><i class="fa fa-tag">数据库</i></a>
+              <a href="/tags/%E9%94%81/" rel="tag"><i class="fa fa-tag">锁</i></a>
+              <a href="/tags/MVCC/" rel="tag"><i class="fa fa-tag">MVCC</i></a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E7%88%AC%E8%99%AB%E4%B8%8E%E5%8F%8D%E7%88%AC%E8%99%AB/" rel="prev" title="爬虫与反爬虫">
+      <i class="fa fa-chevron-left"></i> 爬虫与反爬虫
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Web%E6%9C%8D%E5%8A%A1%E5%99%A8/" rel="next" title="Web服务器">
+      Web服务器 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9B%9B%E4%B8%AA%E9%97%AE%E9%A2%98"><span class="nav-text">数据库四个问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%94%81%E7%9A%84%E5%88%86%E7%B1%BB"><span class="nav-text">锁的分类</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8E%92%E5%AE%83%E9%94%81"><span class="nav-text">排它锁</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%87%AA%E6%97%8B%E9%94%81"><span class="nav-text">自旋锁</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%85%B1%E4%BA%AB%E9%94%81-%E8%AF%BB%E5%86%99%E9%94%81"><span class="nav-text">共享锁&#x2F;读写锁</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Innodb%E5%BC%95%E6%93%8E%E7%89%B9%E6%9C%89%E9%94%81"><span class="nav-text">Innodb引擎特有锁</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%9A%E7%89%88%E6%9C%AC%E5%B9%B6%E5%8F%91%E6%8E%A7%E5%88%B6%EF%BC%88MVCC%EF%BC%89"><span class="nav-text">数据库多版本并发控制（MVCC）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B9%90%E8%A7%82%E5%B9%B6%E5%8F%91%E6%8E%A7%E5%88%B6%EF%BC%88OCC%EF%BC%89"><span class="nav-text">乐观并发控制（OCC）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Undo%E6%97%A5%E5%BF%97%EF%BC%9A"><span class="nav-text">Undo日志：</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="不知自己不知"
+      src="/images/head.jpeg">
+  <p class="site-author-name" itemprop="name">不知自己不知</p>
+  <div class="site-description" itemprop="description">以阅读为生是一件很酷的事，以写作为生是一件更酷的事。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">70</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">59</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+    <!--
+    <div id="music163player">
+      <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=110 src="//music.163.com/outchain/player?type=0&id=5445280661&auto=0&height=90"></iframe>
+       </div>
+    -->
+  </aside>
+  
+  
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不知自己不知</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">412k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">6:14</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='200' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : true,
+      appId      : 'Dv4yd2JUuvVhLBe640B6m1jw-gzGzoHsz',
+      appKey     : 'sNdrMuVcw6jJzlz0HpXBNhdB',
+      placeholder: "来交流交流吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+    </div>
+  
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/miku.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":true},"react":{"opacity":1},"log":false});</script></body>
+</html>
+
+
+

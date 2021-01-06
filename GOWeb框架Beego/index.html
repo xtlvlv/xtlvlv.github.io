@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head.jpeg">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xtlvlv.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":2,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="1. Beego 主要分为以下两种项目：api项目，web项目">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GOWeb框架Beego">
+<meta property="og:url" content="https://xtlvlv.github.io/GOWeb%E6%A1%86%E6%9E%B6Beego/index.html">
+<meta property="og:site_name" content="不知自己不知">
+<meta property="og:description" content="1. Beego 主要分为以下两种项目：api项目，web项目">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-01-06T12:43:56.000Z">
+<meta property="article:modified_time" content="2021-01-06T12:46:25.935Z">
+<meta property="article:author" content="不知自己不知">
+<meta property="article:tag" content="go">
+<meta property="article:tag" content="beego">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://xtlvlv.github.io/GOWeb%E6%A1%86%E6%9E%B6Beego/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>GOWeb框架Beego | 不知自己不知</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<!-- require MetingJS-->
+
+<script src="https://cdn.jsdelivr.net/npm/meting@2.0.1/dist/Meting.min.js"></script> 
+
+  <!--pjax：防止跳转页面音乐暂停-->
+ <script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.js"></script>
+  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">不知自己不知</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">59</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">70</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xtlvlv.github.io/GOWeb%E6%A1%86%E6%9E%B6Beego/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpeg">
+      <meta itemprop="name" content="不知自己不知">
+      <meta itemprop="description" content="以阅读为生是一件很酷的事，以写作为生是一件更酷的事。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不知自己不知">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          GOWeb框架Beego
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-01-06 20:43:56 / 修改时间：20:46:25" itemprop="dateCreated datePublished" datetime="2021-01-06T20:43:56+08:00">2021-01-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/go/" itemprop="url" rel="index"><span itemprop="name">go</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论数：</span>
+    
+    <a title="valine" href="/GOWeb%E6%A1%86%E6%9E%B6Beego/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/GOWeb%E6%A1%86%E6%9E%B6Beego/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="1-Beego"><a href="#1-Beego" class="headerlink" title="1. Beego"></a>1. Beego</h3><ol>
+<li>主要分为以下两种项目：api项目，web项目<a id="more"></a></li>
+<li>增加CORS支持<ul>
+<li>在main中增加：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 允许跨域</span><br><span class="line">beego.InsertFilter(&quot;*&quot;, beego.BeforeRouter, cors.Allow(&amp;cors.Options&#123;</span><br><span class="line">  AllowAllOrigins:  true,</span><br><span class="line">  AllowMethods:     []string&#123;&quot;GET&quot;, &quot;POST&quot;, &quot;PUT&quot;, &quot;DELETE&quot;, &quot;OPTIONS&quot;&#125;,</span><br><span class="line">  AllowHeaders:     []string&#123;&quot;Origin&quot;, &quot;X-Requested-With&quot;, &quot;Authorization&quot;, &quot;Access-Control-Allow-Origin&quot;, &quot;Access-Control-Allow-Headers&quot;, &quot;Content-Type&quot;&#125;,</span><br><span class="line">  ExposeHeaders:    []string&#123;&quot;Content-Length&quot;, &quot;X-Requested-With&quot;, &quot;Access-Control-Allow-Origin&quot;, &quot;Access-Control-Allow-Headers&quot;, &quot;Content-Type&quot;&#125;,</span><br><span class="line">  AllowCredentials: true,</span><br><span class="line">&#125;))</span><br></pre></td></tr></table></figure></li>
+<li>在函数中增加<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ctx.Output.Header(&quot;Access-Control-Allow-Origin&quot;, &quot;*&quot;)</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="2-restful-api项目"><a href="#2-restful-api项目" class="headerlink" title="2. restful api项目"></a>2. restful api项目</h3><h5 id="1-创建"><a href="#1-创建" class="headerlink" title="1. 创建"></a>1. 创建</h5><ol>
+<li>bee api xxx</li>
+</ol>
+<h5 id="2-路由解析"><a href="#2-路由解析" class="headerlink" title="2. 路由解析"></a>2. 路由解析</h5><ol start="0">
+<li><p>在router.go中配置路由，写法如下。commentsRouter_controllers.go中会根据 controller 里面的注释内容自动生成。</p>
+</li>
+<li><p>目前自动化文档只支持如下的写法的解析，其他写法函数不会自动解析，即 namespace+Include 的写法，而且只支持二级解析，一级版本号，二级分别表示应用模块。/v1/xxx/ 这是遵循了RESTful风格的名字和路径。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; router.go文件</span><br><span class="line">func init() &#123;</span><br><span class="line">    ns :&#x3D; beego.NewNamespace(&quot;&#x2F;v1&quot;,</span><br><span class="line">      beego.NSNamespace(&quot;&#x2F;object&quot;,</span><br><span class="line">        beego.NSInclude(</span><br><span class="line">          &amp;controllers.ObjectController&#123;&#125;,</span><br><span class="line">        ),</span><br><span class="line">      ),</span><br><span class="line">      beego.NSNamespace(&quot;&#x2F;user&quot;,</span><br><span class="line">        beego.NSInclude(</span><br><span class="line">          &amp;controllers.UserController&#123;&#125;,</span><br><span class="line">        ),</span><br><span class="line">      ),</span><br><span class="line">    )</span><br><span class="line">    beego.AddNamespace(ns)</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>应用注释</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; @Title CreateUser</span><br><span class="line">  &#x2F;&#x2F; @Description create users</span><br><span class="line">  &#x2F;&#x2F; @Param	body		body 	models.User	true		&quot;body for user content&quot;</span><br><span class="line">  &#x2F;&#x2F; @Success 200 &#123;int&#125; models.User.Id</span><br><span class="line">  &#x2F;&#x2F; @Failure 403 body is empty</span><br><span class="line">  &#x2F;&#x2F; @router &#x2F; [post]</span><br><span class="line">  func (u *UserController) Post() &#123;</span><br><span class="line">    var user models.User</span><br><span class="line">    json.Unmarshal(u.Ctx.Input.RequestBody, &amp;user)</span><br><span class="line">    uid :&#x3D; models.AddUser(user)</span><br><span class="line">    u.Data[&quot;json&quot;] &#x3D; map[string]string&#123;&quot;uid&quot;: uid&#125;</span><br><span class="line">    u.ServeJSON()</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F; @Title GetAll</span><br><span class="line">  &#x2F;&#x2F; @Description get all Users</span><br><span class="line">  &#x2F;&#x2F; @Success 200 &#123;object&#125; models.User</span><br><span class="line">  &#x2F;&#x2F; @router &#x2F; [get]</span><br><span class="line">  func (u *UserController) GetAll() &#123;</span><br><span class="line">    users :&#x3D; models.GetAllUsers()</span><br><span class="line">    u.Data[&quot;json&quot;] &#x3D; users</span><br><span class="line">    u.ServeJSON()</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>问题</p>
+<ul>
+<li>beego如果发现修改了API，重新bee run -gendoc=true之后而swagger并没有更新改变，请清除浏览器的缓存(或chrome的Ctrl+F5)再试。</li>
+</ul>
+</li>
+</ol>
+<h5 id="使用swagger文档"><a href="#使用swagger文档" class="headerlink" title="使用swagger文档"></a>使用swagger文档</h5><ol>
+<li>swagger是对api的一种汇总。</li>
+<li>需要在 conf/app.conf 打开开关：EnableDocs = true</li>
+<li>运行项目的时候指定：bee run -gendoc=true -downdoc=true</li>
+<li>默认文档路径是：<a target="_blank" rel="noopener" href="http://localhost:8080/swagger/">http://localhost:8080/swagger/</a></li>
+</ol>
+<h3 id="3-web项目"><a href="#3-web项目" class="headerlink" title="3. web项目"></a>3. web项目</h3><h5 id="1-创建-1"><a href="#1-创建-1" class="headerlink" title="1. 创建"></a>1. 创建</h5><ol>
+<li>bee create xxx</li>
+<li>没啥说的，以后估计不常用</li>
+</ol>
+<h5 id="2-路由"><a href="#2-路由" class="headerlink" title="2. 路由"></a>2. 路由</h5><ol>
+<li>直接在router中修改</li>
+</ol>
+<h5 id="3-视图"><a href="#3-视图" class="headerlink" title="3. 视图"></a>3. 视图</h5><ol>
+<li>view中编写，使用模板</li>
+</ol>
+<h5 id="4-MC"><a href="#4-MC" class="headerlink" title="4. MC"></a>4. MC</h5><ol>
+<li>model里写业务逻辑</li>
+<li>controlers中写处理get post等的逻辑</li>
+</ol>
+<h3 id="4-特性模块说明"><a href="#4-特性模块说明" class="headerlink" title="4. 特性模块说明"></a>4. 特性模块说明</h3><h5 id="4-1-session模块"><a href="#4-1-session模块" class="headerlink" title="4.1 session模块"></a>4.1 session模块</h5><h5 id="4-2-grace模块"><a href="#4-2-grace模块" class="headerlink" title="4.2 grace模块"></a>4.2 grace模块</h5><h5 id="4-3-cache模块"><a href="#4-3-cache模块" class="headerlink" title="4.3 cache模块"></a>4.3 cache模块</h5><h5 id="4-4-logs模块"><a href="#4-4-logs模块" class="headerlink" title="4.4 logs模块"></a>4.4 logs模块</h5><h5 id="4-5-httplib模块"><a href="#4-5-httplib模块" class="headerlink" title="4.5 httplib模块"></a>4.5 httplib模块</h5><h5 id="4-6-context模块"><a href="#4-6-context模块" class="headerlink" title="4.6 context模块"></a>4.6 context模块</h5><h5 id="4-7-toolbox模块"><a href="#4-7-toolbox模块" class="headerlink" title="4.7 toolbox模块"></a>4.7 toolbox模块</h5><h5 id="4-8-config模块"><a href="#4-8-config模块" class="headerlink" title="4.8 config模块"></a>4.8 config模块</h5><h5 id="4-9-i18n模块"><a href="#4-9-i18n模块" class="headerlink" title="4.9 i18n模块"></a>4.9 i18n模块</h5><h3 id="5-beego高级编程"><a href="#5-beego高级编程" class="headerlink" title="5. beego高级编程"></a>5. beego高级编程</h3><h5 id="5-1-进程内监控"><a href="#5-1-进程内监控" class="headerlink" title="5.1 进程内监控"></a>5.1 进程内监控</h5><ol>
+<li>8080对外提供服务，8088端口对内用于监控进程内的信息，执行定时任务等。</li>
+</ol>
+<h5 id="5-2-过滤器"><a href="#5-2-过滤器" class="headerlink" title="5.2 过滤器"></a>5.2 过滤器</h5><h5 id="5-3-热升级"><a href="#5-3-热升级" class="headerlink" title="5.3 热升级"></a>5.3 热升级</h5><h5 id="5-4-API自动化文档"><a href="#5-4-API自动化文档" class="headerlink" title="5.4 API自动化文档"></a>5.4 API自动化文档</h5><h3 id="6-应用部署"><a href="#6-应用部署" class="headerlink" title="6. 应用部署"></a>6. 应用部署</h3><h5 id="6-1-Nginx部署"><a href="#6-1-Nginx部署" class="headerlink" title="6.1 Nginx部署"></a>6.1 Nginx部署</h5>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/go/" rel="tag"><i class="fa fa-tag">go</i></a>
+              <a href="/tags/beego/" rel="tag"><i class="fa fa-tag">beego</i></a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/GOJson%E5%BA%93gjson/" rel="prev" title="GOJson库gjson">
+      <i class="fa fa-chevron-left"></i> GOJson库gjson
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E3%80%8Ahead-first%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B/" rel="next" title="《head first设计模式》">
+      《head first设计模式》 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Beego"><span class="nav-text">1. Beego</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-restful-api%E9%A1%B9%E7%9B%AE"><span class="nav-text">2. restful api项目</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E5%88%9B%E5%BB%BA"><span class="nav-text">1. 创建</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E8%B7%AF%E7%94%B1%E8%A7%A3%E6%9E%90"><span class="nav-text">2. 路由解析</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8swagger%E6%96%87%E6%A1%A3"><span class="nav-text">使用swagger文档</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-web%E9%A1%B9%E7%9B%AE"><span class="nav-text">3. web项目</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E5%88%9B%E5%BB%BA-1"><span class="nav-text">1. 创建</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E8%B7%AF%E7%94%B1"><span class="nav-text">2. 路由</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E8%A7%86%E5%9B%BE"><span class="nav-text">3. 视图</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-MC"><span class="nav-text">4. MC</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E7%89%B9%E6%80%A7%E6%A8%A1%E5%9D%97%E8%AF%B4%E6%98%8E"><span class="nav-text">4. 特性模块说明</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#4-1-session%E6%A8%A1%E5%9D%97"><span class="nav-text">4.1 session模块</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-2-grace%E6%A8%A1%E5%9D%97"><span class="nav-text">4.2 grace模块</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-3-cache%E6%A8%A1%E5%9D%97"><span class="nav-text">4.3 cache模块</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-4-logs%E6%A8%A1%E5%9D%97"><span class="nav-text">4.4 logs模块</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-5-httplib%E6%A8%A1%E5%9D%97"><span class="nav-text">4.5 httplib模块</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-6-context%E6%A8%A1%E5%9D%97"><span class="nav-text">4.6 context模块</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-7-toolbox%E6%A8%A1%E5%9D%97"><span class="nav-text">4.7 toolbox模块</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-8-config%E6%A8%A1%E5%9D%97"><span class="nav-text">4.8 config模块</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-9-i18n%E6%A8%A1%E5%9D%97"><span class="nav-text">4.9 i18n模块</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-beego%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B"><span class="nav-text">5. beego高级编程</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#5-1-%E8%BF%9B%E7%A8%8B%E5%86%85%E7%9B%91%E6%8E%A7"><span class="nav-text">5.1 进程内监控</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-2-%E8%BF%87%E6%BB%A4%E5%99%A8"><span class="nav-text">5.2 过滤器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-3-%E7%83%AD%E5%8D%87%E7%BA%A7"><span class="nav-text">5.3 热升级</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-4-API%E8%87%AA%E5%8A%A8%E5%8C%96%E6%96%87%E6%A1%A3"><span class="nav-text">5.4 API自动化文档</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E5%BA%94%E7%94%A8%E9%83%A8%E7%BD%B2"><span class="nav-text">6. 应用部署</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#6-1-Nginx%E9%83%A8%E7%BD%B2"><span class="nav-text">6.1 Nginx部署</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="不知自己不知"
+      src="/images/head.jpeg">
+  <p class="site-author-name" itemprop="name">不知自己不知</p>
+  <div class="site-description" itemprop="description">以阅读为生是一件很酷的事，以写作为生是一件更酷的事。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">70</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">59</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+    <!--
+    <div id="music163player">
+      <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=110 src="//music.163.com/outchain/player?type=0&id=5445280661&auto=0&height=90"></iframe>
+       </div>
+    -->
+  </aside>
+  
+  
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不知自己不知</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">412k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">6:14</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='200' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : true,
+      appId      : 'Dv4yd2JUuvVhLBe640B6m1jw-gzGzoHsz',
+      appKey     : 'sNdrMuVcw6jJzlz0HpXBNhdB',
+      placeholder: "来交流交流吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+    </div>
+  
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/miku.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":true},"react":{"opacity":1},"log":false});</script></body>
+</html>
+
+
+

@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head.jpeg">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xtlvlv.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":2,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="1. 简介 包地址：github.com&#x2F;robfig&#x2F;cron&#x2F;v3 介绍：https:&#x2F;&#x2F;darjun.github.io&#x2F;2020&#x2F;06&#x2F;25&#x2F;godailylib&#x2F;cron&#x2F; 类似Linux的crontab  2. 简单例子12345678910111213141516171819package mainimport (&quot;fmt&quot;&quot;time&quot;&amp;quo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GO定时任务库cron">
+<meta property="og:url" content="https://xtlvlv.github.io/GO%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1%E5%BA%93cron/index.html">
+<meta property="og:site_name" content="不知自己不知">
+<meta property="og:description" content="1. 简介 包地址：github.com&#x2F;robfig&#x2F;cron&#x2F;v3 介绍：https:&#x2F;&#x2F;darjun.github.io&#x2F;2020&#x2F;06&#x2F;25&#x2F;godailylib&#x2F;cron&#x2F; 类似Linux的crontab  2. 简单例子12345678910111213141516171819package mainimport (&quot;fmt&quot;&quot;time&quot;&amp;quo">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-01-06T12:30:03.000Z">
+<meta property="article:modified_time" content="2021-01-06T12:30:50.283Z">
+<meta property="article:author" content="不知自己不知">
+<meta property="article:tag" content="go">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://xtlvlv.github.io/GO%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1%E5%BA%93cron/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>GO定时任务库cron | 不知自己不知</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<!-- require MetingJS-->
+
+<script src="https://cdn.jsdelivr.net/npm/meting@2.0.1/dist/Meting.min.js"></script> 
+
+  <!--pjax：防止跳转页面音乐暂停-->
+ <script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.js"></script>
+  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">不知自己不知</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">59</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">70</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xtlvlv.github.io/GO%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1%E5%BA%93cron/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpeg">
+      <meta itemprop="name" content="不知自己不知">
+      <meta itemprop="description" content="以阅读为生是一件很酷的事，以写作为生是一件更酷的事。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不知自己不知">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          GO定时任务库cron
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-01-06 20:30:03 / 修改时间：20:30:50" itemprop="dateCreated datePublished" datetime="2021-01-06T20:30:03+08:00">2021-01-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/go/" itemprop="url" rel="index"><span itemprop="name">go</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论数：</span>
+    
+    <a title="valine" href="/GO%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1%E5%BA%93cron/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/GO%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1%E5%BA%93cron/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h3><ol>
+<li>包地址：github.com/robfig/cron/v3</li>
+<li>介绍：<a target="_blank" rel="noopener" href="https://darjun.github.io/2020/06/25/godailylib/cron/">https://darjun.github.io/2020/06/25/godailylib/cron/</a></li>
+<li>类似Linux的crontab</li>
+</ol>
+<h3 id="2-简单例子"><a href="#2-简单例子" class="headerlink" title="2. 简单例子"></a>2. 简单例子</h3><pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line">import (</span><br><span class="line">&quot;fmt&quot;</span><br><span class="line">&quot;time&quot;</span><br><span class="line"></span><br><span class="line">&quot;github.com&#x2F;robfig&#x2F;cron&#x2F;v3&quot;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line">c :&#x3D; cron.New()</span><br><span class="line"></span><br><span class="line">c.AddFunc(&quot;@every 1s&quot;, func() &#123;</span><br><span class="line">fmt.Println(&quot;tick every 1 second&quot;)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">c.Start()</span><br><span class="line">time.Sleep(time.Second * 5)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></code></pre>
+<h3 id="3-job，实现Run-接口"><a href="#3-job，实现Run-接口" class="headerlink" title="3. job，实现Run()接口"></a>3. job，实现Run()接口</h3><ol>
+<li>对于结构体，实现了Run接口，就可以直接当做job使用，直接调用Run()方法，jobrunner库中就是使用了这个特性。 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; cron.go</span><br><span class="line">  type Job interface &#123;</span><br><span class="line">    Run()</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">type GreetingJob struct &#123;</span><br><span class="line">    Name string</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  func (g GreetingJob) Run() &#123;</span><br><span class="line">    fmt.Println(&quot;Hello &quot;, g.Name)</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  func main() &#123;</span><br><span class="line">    c :&#x3D; cron.New()</span><br><span class="line">    c.AddJob(&quot;@every 1s&quot;, GreetingJob&#123;&quot;dj&quot;&#125;)</span><br><span class="line">    c.Start()</span><br><span class="line"></span><br><span class="line">    time.Sleep(5 * time.Second)</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="4-时间格式"><a href="#4-时间格式" class="headerlink" title="4. 时间格式"></a>4. 时间格式</h3><h5 id="1-五种"><a href="#1-五种" class="headerlink" title="1. 五种"></a>1. 五种</h5><pre><code>Minutes：分钟，取值范围[0-59]，支持特殊字符* / , -；
+Hours：小时，取值范围[0-23]，支持特殊字符* / , -；
+Day of month：每月的第几天，取值范围[1-31]，支持特殊字符* / , - ?；
+Month：月，取值范围[1-12]或者使用月份名字缩写[JAN-DEC]，支持特殊字符* / , -；
+Day of week：周历，取值范围[0-6]或名字缩写[JUN-SAT]，支持特殊字符* / , - ?。</code></pre>
+<h5 id="2-特殊字符含义"><a href="#2-特殊字符含义" class="headerlink" title="2. 特殊字符含义"></a>2. 特殊字符含义</h5><pre><code>*：使用*的域可以匹配任何值，例如将月份域（第 4 个）设置为*，表示每个月；
+/：用来指定范围的步长，例如将小时域（第 2 个）设置为3-59/15表示第 3 分钟触发，以后每隔 15 分钟触发一次，因此第 2 次触发为第 18 分钟，第 3 次为 33 分钟。。。直到分钟大于 59；
+,：用来列举一些离散的值和多个范围，例如将周历的域（第 5 个）设置为MON,WED,FRI表示周一、三和五；
+-：用来表示范围，例如将小时的域（第 1 个）设置为9-17表示上午 9 点到下午 17 点（包括 9 和 17）；
+?：只能用在月历和周历的域中，用来代替*，表示每月/周的任意一天。</code></pre>
+<h5 id="3-时间格式例子"><a href="#3-时间格式例子" class="headerlink" title="3. 时间格式例子"></a>3. 时间格式例子</h5><pre><code>30 * * * *：分钟域为 30，其他域都是*表示任意。每小时的 30 分触发；
+30 3-6,20-23 * * *：分钟域为 30，小时域的3-6,20-23表示 3 点到 6 点和 20 点到 23 点。3,4,5,6,20,21,22,23 时的 30 分触发；
+0 0 1 1 *：1（第 4 个） 月 1（第 3 个） 号的 0（第 2 个） 时 0（第 1 个） 分触发。</code></pre>
+<h5 id="4-代码例子"><a href="#4-代码例子" class="headerlink" title="4. 代码例子"></a>4. 代码例子</h5><pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">	func main() &#123;</span><br><span class="line">  c :&#x3D; cron.New()</span><br><span class="line"></span><br><span class="line">  c.AddFunc(&quot;30 * * * *&quot;, func() &#123;</span><br><span class="line">    fmt.Println(&quot;Every hour on the half hour&quot;)</span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line">  c.AddFunc(&quot;30 3-6,20-23 * * *&quot;, func() &#123;</span><br><span class="line">    fmt.Println(&quot;On the half hour of 3-6am, 8-11pm&quot;)</span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line">  c.AddFunc(&quot;0 0 1 1 *&quot;, func() &#123;</span><br><span class="line">    fmt.Println(&quot;Jun 1 every year&quot;)</span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line">  c.Start()</span><br><span class="line"></span><br><span class="line">  for &#123;</span><br><span class="line">    time.Sleep(time.Second)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></code></pre>
+<h3 id="5-固定时间间隔"><a href="#5-固定时间间隔" class="headerlink" title="5. 固定时间间隔"></a>5. 固定时间间隔</h3><h5 id="1-格式"><a href="#1-格式" class="headerlink" title="1. 格式"></a>1. 格式</h5><pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@every &lt;duration&gt;</span><br></pre></td></tr></table></figure></code></pre>
+<h5 id="2-duration格式"><a href="#2-duration格式" class="headerlink" title="2. duration格式"></a>2. duration格式</h5><ol>
+<li>1h15m10s，每隔一小时15分10秒</li>
+<li>1m1s</li>
+<li>10s</li>
+</ol>
+<h3 id="6-线程安全"><a href="#6-线程安全" class="headerlink" title="6. 线程安全"></a>6. 线程安全</h3><ul>
+<li>cron会创建一个新的 goroutine 来执行触发回调。如果这些回调需要并发访问一些资源、数据，需要显式地做同步。</li>
+<li>如果每个都创建一个新的goroutine的话，如果需要大量定时任务，要考虑其他解决方案。</li>
+</ul>
+<h3 id="7-其他特性"><a href="#7-其他特性" class="headerlink" title="7. 其他特性"></a>7. 其他特性</h3><ul>
+<li>暂不深入</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/go/" rel="tag"><i class="fa fa-tag">go</i></a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/GO%E6%97%A5%E5%BF%97%E5%BA%93logrus/" rel="prev" title="GO日志库logrus">
+      <i class="fa fa-chevron-left"></i> GO日志库logrus
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/GOExcel%E5%A4%84%E7%90%86%E5%BA%93excelize/" rel="next" title="GOExcel处理库excelize">
+      GOExcel处理库excelize <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E7%AE%80%E4%BB%8B"><span class="nav-text">1. 简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E7%AE%80%E5%8D%95%E4%BE%8B%E5%AD%90"><span class="nav-text">2. 简单例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-job%EF%BC%8C%E5%AE%9E%E7%8E%B0Run-%E6%8E%A5%E5%8F%A3"><span class="nav-text">3. job，实现Run()接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%97%B6%E9%97%B4%E6%A0%BC%E5%BC%8F"><span class="nav-text">4. 时间格式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E4%BA%94%E7%A7%8D"><span class="nav-text">1. 五种</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E7%89%B9%E6%AE%8A%E5%AD%97%E7%AC%A6%E5%90%AB%E4%B9%89"><span class="nav-text">2. 特殊字符含义</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E6%97%B6%E9%97%B4%E6%A0%BC%E5%BC%8F%E4%BE%8B%E5%AD%90"><span class="nav-text">3. 时间格式例子</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-%E4%BB%A3%E7%A0%81%E4%BE%8B%E5%AD%90"><span class="nav-text">4. 代码例子</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%9B%BA%E5%AE%9A%E6%97%B6%E9%97%B4%E9%97%B4%E9%9A%94"><span class="nav-text">5. 固定时间间隔</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E6%A0%BC%E5%BC%8F"><span class="nav-text">1. 格式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-duration%E6%A0%BC%E5%BC%8F"><span class="nav-text">2. duration格式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8"><span class="nav-text">6. 线程安全</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E5%85%B6%E4%BB%96%E7%89%B9%E6%80%A7"><span class="nav-text">7. 其他特性</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="不知自己不知"
+      src="/images/head.jpeg">
+  <p class="site-author-name" itemprop="name">不知自己不知</p>
+  <div class="site-description" itemprop="description">以阅读为生是一件很酷的事，以写作为生是一件更酷的事。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">70</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">59</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+    <!--
+    <div id="music163player">
+      <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=110 src="//music.163.com/outchain/player?type=0&id=5445280661&auto=0&height=90"></iframe>
+       </div>
+    -->
+  </aside>
+  
+  
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不知自己不知</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">412k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">6:14</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='200' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : true,
+      appId      : 'Dv4yd2JUuvVhLBe640B6m1jw-gzGzoHsz',
+      appKey     : 'sNdrMuVcw6jJzlz0HpXBNhdB',
+      placeholder: "来交流交流吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+    </div>
+  
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/miku.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":true},"react":{"opacity":1},"log":false});</script></body>
+</html>
+
+
+

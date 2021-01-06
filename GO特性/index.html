@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head.jpeg">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xtlvlv.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":2,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="一、闭包1. 闭包基本使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GO特性">
+<meta property="og:url" content="https://xtlvlv.github.io/GO%E7%89%B9%E6%80%A7/index.html">
+<meta property="og:site_name" content="不知自己不知">
+<meta property="og:description" content="一、闭包1. 闭包基本使用">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-01-06T12:12:14.000Z">
+<meta property="article:modified_time" content="2021-01-06T12:26:30.461Z">
+<meta property="article:author" content="不知自己不知">
+<meta property="article:tag" content="go">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://xtlvlv.github.io/GO%E7%89%B9%E6%80%A7/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>GO特性 | 不知自己不知</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<!-- require MetingJS-->
+
+<script src="https://cdn.jsdelivr.net/npm/meting@2.0.1/dist/Meting.min.js"></script> 
+
+  <!--pjax：防止跳转页面音乐暂停-->
+ <script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.js"></script>
+  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">不知自己不知</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">59</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">70</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xtlvlv.github.io/GO%E7%89%B9%E6%80%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpeg">
+      <meta itemprop="name" content="不知自己不知">
+      <meta itemprop="description" content="以阅读为生是一件很酷的事，以写作为生是一件更酷的事。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不知自己不知">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          GO特性
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-01-06 20:12:14 / 修改时间：20:26:30" itemprop="dateCreated datePublished" datetime="2021-01-06T20:12:14+08:00">2021-01-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/go/" itemprop="url" rel="index"><span itemprop="name">go</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论数：</span>
+    
+    <a title="valine" href="/GO%E7%89%B9%E6%80%A7/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/GO%E7%89%B9%E6%80%A7/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>15k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>14 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="一、闭包"><a href="#一、闭包" class="headerlink" title="一、闭包"></a>一、闭包</h3><h5 id="1-闭包基本使用"><a href="#1-闭包基本使用" class="headerlink" title="1. 闭包基本使用"></a>1. 闭包基本使用</h5><a id="more"></a>
+<pre><code><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    n := <span class="number">0</span></span><br><span class="line">    f := <span class="function"><span class="keyword">func</span><span class="params">()</span> <span class="title">int</span></span> &#123;</span><br><span class="line">        n += <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> n</span><br><span class="line">    &#125;</span><br><span class="line">    fmt.Println(f())  <span class="comment">// 别忘记括号，不加括号相当于地址</span></span><br><span class="line">    fmt.Println(f())</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">输出：</span></span><br><span class="line"><span class="comment">1</span></span><br><span class="line"><span class="comment">2</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure></code></pre>
+<h5 id="2-闭包作为函数返回值"><a href="#2-闭包作为函数返回值" class="headerlink" title="2. 闭包作为函数返回值"></a>2. 闭包作为函数返回值</h5><pre><code><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Increase</span><span class="params">()</span> <span class="title">func</span><span class="params">()</span> <span class="title">int</span></span> &#123;</span><br><span class="line">    n := <span class="number">0</span></span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">()</span> <span class="title">int</span></span> &#123;</span><br><span class="line">        n++</span><br><span class="line">        <span class="keyword">return</span> n</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    in := Increase()</span><br><span class="line">    fmt.Println(in())</span><br><span class="line">    fmt.Println(in())</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">输出：</span></span><br><span class="line"><span class="comment">1</span></span><br><span class="line"><span class="comment">2</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure></code></pre>
+<h5 id="3-并发中的闭包"><a href="#3-并发中的闭包" class="headerlink" title="3. 并发中的闭包"></a>3. 并发中的闭包</h5><pre><code>- Go语言的并发时，一定要处理好循环中的闭包引用的外部变量。
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    runtime.GOMAXPROCS(runtime.NumCPU())</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> wg sync.WaitGroup</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">        wg.Add(<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">            fmt.Println(i)</span><br><span class="line">            wg.Done()</span><br><span class="line">        &#125;()</span><br><span class="line">    &#125;</span><br><span class="line">    wg.Wait()</span><br><span class="line">&#125;</span><br><span class="line">输出结果：</span><br><span class="line"><span class="number">5</span></span><br><span class="line"><span class="number">5</span></span><br><span class="line"><span class="number">5</span></span><br><span class="line"><span class="number">5</span></span><br><span class="line"><span class="number">5</span></span><br></pre></td></tr></table></figure>
+- 这种现象的原因在于闭包共享外部的变量i，注意到，每次调用go就会启动一个goroutine，这需要一定时间；但是，启动的goroutine与循环变量递增不是在同一个goroutine，可以把i认为处于主goroutine中。启动一个goroutine的速度远小于循环执行的速度，所以即使是第一个goroutine刚起启动时，外层的循环也执行到了最后一步了。由于所有的goroutine共享i，而且这个i会在最后一个使用它的goroutine结束后被销毁，所以最后的输出结果都是最后一步的i==5。</code></pre>
+<h5 id="14-并发闭包问题的两种解决方式"><a href="#14-并发闭包问题的两种解决方式" class="headerlink" title="14. 并发闭包问题的两种解决方式"></a>14. 并发闭包问题的两种解决方式</h5><pre><code>- 共享的环境变量作为函数参数传递
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    runtime.GOMAXPROCS(runtime.NumCPU())</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> wg sync.WaitGroup</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">        wg.Add(<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(i <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">            fmt.Println(i)</span><br><span class="line">            wg.Done()</span><br><span class="line">        &#125;(i)</span><br><span class="line">    &#125;</span><br><span class="line">    wg.Wait()</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">输出:</span></span><br><span class="line"><span class="comment">4</span></span><br><span class="line"><span class="comment">0</span></span><br><span class="line"><span class="comment">3</span></span><br><span class="line"><span class="comment">1</span></span><br><span class="line"><span class="comment">2</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+- 使用同名的变量保留当前的状态
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">func main() &#123;</span><br><span class="line">    runtime.GOMAXPROCS(runtime.NumCPU())</span><br><span class="line"></span><br><span class="line">    var wg sync.WaitGroup</span><br><span class="line">    for i :&#x3D; 0; i &lt; 5; i++ &#123;</span><br><span class="line">        wg.Add(1)</span><br><span class="line">        i :&#x3D; i       &#x2F;&#x2F; 注意这里的同名变量覆盖</span><br><span class="line">        go func() &#123;</span><br><span class="line">            fmt.Println(i)</span><br><span class="line">            wg.Done()</span><br><span class="line">        &#125;()</span><br><span class="line">    &#125;</span><br><span class="line">    wg.Wait()</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;*</span><br><span class="line">输出结果：</span><br><span class="line">4</span><br><span class="line">2</span><br><span class="line">0</span><br><span class="line">3</span><br><span class="line">1</span><br><span class="line">结果顺序原因同1</span><br><span class="line">*&#x2F;</span><br></pre></td></tr></table></figure>
+- 输出结果不一定按照顺序，这取决于每个goroutine的实际情况，但是最后的结果是不变的。可以理解为，函数参数的传递是瞬时的，而且是在一个goroutine执行之前就完成，所以此时执行的闭包存储了当前i的状态。    </code></pre>
+<h3 id="二、接口"><a href="#二、接口" class="headerlink" title="二、接口"></a>二、接口</h3><h5 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h5><ol>
+<li>和其他语言不同的是，在Go语言中接口的实现是隐式的。即我们不用去明确的指出某一个类型实现了某一个接口.只要某一类型的方法中实现了接口中的全部方法签名，就意味着此类型实现了这一接口。</li>
+</ol>
+<h5 id="2-接口的组合"><a href="#2-接口的组合" class="headerlink" title="2. 接口的组合"></a>2. 接口的组合</h5><ol>
+<li>直接embbedding。</li>
+</ol>
+<h5 id="3-类型断言"><a href="#3-类型断言" class="headerlink" title="3. 类型断言"></a>3. 类型断言</h5><ol>
+<li>为什么Go语言在运行时还需要再判断一次呢，这是由于在类型断言方法m = i.(Type)中,如果Type实现了接口i,但是此时接口内部并没有任何动态类型(此时为nil),这时在运行时会直接panic。如果不想panic，就加个ok判断一下，如下。ok为bool类型。 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">value, ok := i.(Type)</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h5 id="4-空接口"><a href="#4-空接口" class="headerlink" title="4. 空接口"></a>4. 空接口</h5><ol>
+<li><p>空接口可以存储结构体、字段串、整数等任何的类型。</p>
+</li>
+<li><p>在Println源码中,使用switch语句嵌套这一语法获取空接口中的动态类型。并根据动态类型的不同,进行不同的格式化输出。</p>
+ <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">switch</span> f := arg.(<span class="keyword">type</span>) &#123;</span><br><span class="line">   <span class="keyword">case</span> <span class="keyword">bool</span>:</span><br><span class="line">       p.fmtBool(f, verb)</span><br><span class="line">   <span class="keyword">case</span> <span class="keyword">float32</span>:</span><br><span class="line">       p.fmtFloat(<span class="keyword">float64</span>(f), <span class="number">32</span>, verb)</span><br><span class="line">   <span class="keyword">case</span> <span class="keyword">float64</span>:</span><br><span class="line">       p.fmtFloat(f, <span class="number">64</span>, verb)</span><br></pre></td></tr></table></figure>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">func MyPrintln(arg interface&#123;&#125;)&#123;</span><br><span class="line">    switch arg.(type) &#123;</span><br><span class="line">    case string:</span><br><span class="line">        fmt.Println(&quot;string:&quot;,strings.ToUpper(arg.(string)))</span><br><span class="line">    case bool:</span><br><span class="line">        fmt.Println(&quot;this is bool&quot;)</span><br><span class="line">    case float32,float64:</span><br><span class="line">        fmt.Println(&quot;this is float&quot;)</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h5 id="5-接口的比较性"><a href="#5-接口的比较性" class="headerlink" title="5. 接口的比较性"></a>5. 接口的比较性</h5><ol>
+<li>两个接口之间可以通过==或!=进行比较。</li>
+<li>如果两个接口不为nil,如果他们具有相同的动态类型与动态类型值，则两个接口是相同的。</li>
+<li>如果都为nil，比较结果相等，如果只有1个接口为nil,那么比较结果总是false。</li>
+<li>如果接口存储的动态类型值是不可比较的,在运行时会报错。</li>
+</ol>
+<h3 id="三、Go标准库-锁、信号量、POOL"><a href="#三、Go标准库-锁、信号量、POOL" class="headerlink" title="三、Go标准库-锁、信号量、POOL"></a>三、Go标准库-锁、信号量、POOL</h3><h5 id="1-Mutex-互斥锁"><a href="#1-Mutex-互斥锁" class="headerlink" title="1. Mutex 互斥锁"></a>1. Mutex 互斥锁</h5><ol>
+<li><p>互斥锁是用来保证在任一时刻， 只能有一个例程访问某个对象。 Mutex的初始值为解锁的状态。 通常作为其他结构体的匿名字段使用， 并且可以安全的在多个例程中并行使用</p>
+</li>
+<li><p>成员方法</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; Lock 用于锁住 m，如果 m 已经被加锁，则 Lock 将被阻塞，直到 m 被解锁。</span><br><span class="line">   func (m *Mutex) Lock()</span><br><span class="line"></span><br><span class="line">   &#x2F;&#x2F; Unlock 用于解锁 m，如果 m 未加锁，则该操作会引发 panic。</span><br><span class="line">   func (m *Mutex) Unlock()</span><br></pre></td></tr></table></figure></li>
+<li><p>示例代码</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line">   import (</span><br><span class="line">       &quot;fmt&quot;</span><br><span class="line">       &quot;sync&quot;</span><br><span class="line">   )</span><br><span class="line"></span><br><span class="line">   type safeInt struct &#123;</span><br><span class="line">       sync.Mutex</span><br><span class="line">       Num int</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   func main() &#123;</span><br><span class="line">       waitNum :&#x3D; 10</span><br><span class="line">       count :&#x3D; safeInt&#123;&#125;</span><br><span class="line">       done :&#x3D; make(chan bool)</span><br><span class="line"></span><br><span class="line">       for i :&#x3D; 0; i &lt; waitNum; i++ &#123;</span><br><span class="line">           go func(i int) &#123;</span><br><span class="line">               count.Lock()</span><br><span class="line">               count.Num &#x3D; count.Num + i</span><br><span class="line">               fmt.Print(count.Num, &quot; &quot;)</span><br><span class="line">               count.Unlock()</span><br><span class="line">               done &lt;- true</span><br><span class="line">           &#125;(i)</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       for i :&#x3D; 0; i &lt; waitNum; i++ &#123;</span><br><span class="line">           &lt;-done</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h5 id="2-RWMutex-读写互斥锁"><a href="#2-RWMutex-读写互斥锁" class="headerlink" title="2. RWMutex 读写互斥锁"></a>2. RWMutex 读写互斥锁</h5><ol>
+<li><p>RWMutex是读写互斥锁。该锁可以被同时多个读取者持有或唯一个写入者持有。RWMutex可以创建为其他结构体的字段；零值为解锁状态。RWMutex类型的锁也和线程无关，可以由不同的线程加读取锁/写入和解读取锁/写入锁。Mutex 可以安全的在多个例程中并行使用。</p>
+<ul>
+<li>可以读时， 多个goroutine可以同时读。</li>
+<li>写的时候， 其他goroutine不可读也不可写。</li>
+</ul>
+</li>
+<li><p>成员方法</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; Lock 将 rw 设置为写锁定状态，禁止其他例程读取或写入。</span><br><span class="line">   func (rw *RWMutex) Lock()</span><br><span class="line"></span><br><span class="line">   &#x2F;&#x2F; Unlock 解除 rw 的写锁定状态，如果 rw 未被写锁定，则该操作会引发 panic。</span><br><span class="line">   func (rw *RWMutex) Unlock()</span><br><span class="line"></span><br><span class="line">   &#x2F;&#x2F; RLock 将 rw 设置为读锁定状态，禁止其他例程写入，但可以读取。</span><br><span class="line">   func (rw *RWMutex) RLock()</span><br><span class="line"></span><br><span class="line">   &#x2F;&#x2F; Runlock 解除 rw 的读锁定状态，如果 rw 未被读锁顶，则该操作会引发 panic。</span><br><span class="line">   func (rw *RWMutex) RUnlock()</span><br><span class="line"></span><br><span class="line">   &#x2F;&#x2F; RLocker 返回一个互斥锁，将 rw.RLock 和 rw.RUnlock 封装成了一个 Locker 接口。</span><br><span class="line">   func (rw *RWMutex) RLocker() Locker</span><br></pre></td></tr></table></figure></li>
+<li><p>示例代码</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line">   import (</span><br><span class="line">       &quot;fmt&quot;</span><br><span class="line">       &quot;sync&quot;</span><br><span class="line">       &quot;time&quot;</span><br><span class="line">   )</span><br><span class="line"></span><br><span class="line">   var m *sync.RWMutex</span><br><span class="line">   var wg sync.WaitGroup</span><br><span class="line"></span><br><span class="line">   func main() &#123;</span><br><span class="line">       m &#x3D; new(sync.RWMutex)</span><br><span class="line">       wg.Add(2)</span><br><span class="line">       go write(1)</span><br><span class="line">       time.Sleep(1 * time.Second)</span><br><span class="line">       go read(2)</span><br><span class="line">       wg.Wait()</span><br><span class="line">   &#125;</span><br><span class="line">   func write(i int) &#123;</span><br><span class="line">       fmt.Println(i, &quot;写开始.&quot;)</span><br><span class="line">       m.Lock()</span><br><span class="line">       fmt.Println(i, &quot;正在写入中......&quot;)</span><br><span class="line">       time.Sleep(3 * time.Second)</span><br><span class="line">       m.Unlock()</span><br><span class="line">       fmt.Println(i, &quot;写入结束.&quot;)</span><br><span class="line">       wg.Done()</span><br><span class="line">   &#125;</span><br><span class="line">   func read(i int) &#123;</span><br><span class="line">       fmt.Println(i, &quot;读开始.&quot;)</span><br><span class="line">       m.RLock()</span><br><span class="line">       fmt.Println(i, &quot;正在读取中......&quot;)</span><br><span class="line">       time.Sleep(1 * time.Second)</span><br><span class="line">       m.RUnlock()</span><br><span class="line">       fmt.Println(i, &quot;读取结束.&quot;)</span><br><span class="line">       wg.Done()</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h5 id="3-WaitGroup-组等待"><a href="#3-WaitGroup-组等待" class="headerlink" title="3. WaitGroup 组等待"></a>3. WaitGroup 组等待</h5><ol>
+<li><p>WaitGroup用于等待一组线程的结束。父线程调用Add方法来设定应等待的线程的数量。每个被等待的线程在结束时应调用Done方法。同时，主线程里可以调用Wait方法阻塞至所有线程结束（计数器归零）。</p>
+</li>
+<li><p>成员方法    </p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 计数器增加 delta，delta 可以是负数。</span><br><span class="line">   func (wg *WaitGroup) Add(delta int)</span><br><span class="line"></span><br><span class="line">   &#x2F;&#x2F; 计数器减少 1</span><br><span class="line">   func (wg *WaitGroup) Done()</span><br><span class="line"></span><br><span class="line">   &#x2F;&#x2F; 等待直到计数器归零。如果计数器小于 0，则该操作会引发 panic。</span><br><span class="line">   func (wg *WaitGroup) Wait()</span><br></pre></td></tr></table></figure></li>
+<li><p>示例代码</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">func main() &#123;</span><br><span class="line">    wg :&#x3D; sync.WaitGroup&#123;&#125;</span><br><span class="line">    wg.Add(10)</span><br><span class="line">    for i :&#x3D; 0; i &lt; 10; i++ &#123;</span><br><span class="line">        go func(i int) &#123;</span><br><span class="line">            defer wg.Done()</span><br><span class="line">            fmt.Print(i, &quot; &quot;)</span><br><span class="line">        &#125;(i)</span><br><span class="line">    &#125;</span><br><span class="line">    wg.Wait()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h5 id="4-Cond-条件等待"><a href="#4-Cond-条件等待" class="headerlink" title="4. Cond 条件等待"></a>4. Cond 条件等待</h5><ol>
+<li><p>Cond结构</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">type Cond struct &#123;</span><br><span class="line">       &#x2F;&#x2F; L is held while observing or changing the condition</span><br><span class="line">       L Locker</span><br><span class="line">       &#x2F;&#x2F; contains filtered or unexported fields</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>Cond实现了一个条件变量，一个线程集合地，供线程等待或者宣布某事件的发生。</p>
+</li>
+<li><p>每个Cond实例都有一个相关的锁（一般是<em>Mutex或</em>RWMutex类型的值），它必须在改变条件时或者调用Wait方法时保持锁定。</p>
+</li>
+<li><p>Cond可以创建为其他结构体的字段，Cond在开始使用后不能被拷贝。</p>
+</li>
+<li><p>条件等待通过Wait让例程等待，通过Signal让一个等待的例程继续，通过Broadcase让所有等待的继续。在Wait之前需要手动为c.L上锁， Wait结束了手动解锁。为避免虚假唤醒， 需要将Wait放到一个条件判断的循环中，官方要求写法:</p>
+ <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">c.L.Lock()</span><br><span class="line">   <span class="keyword">for</span> !condition() &#123;</span><br><span class="line">       c.Wait()</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">// 执行条件满足之后的动作...</span></span><br><span class="line">   c.L.Unlock()</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>成员方法</p>
+ <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Cond <span class="keyword">struct</span> &#123;</span><br><span class="line">       L Locker <span class="comment">// 在&quot;检查条件&quot;或&quot;更改条件&quot;时 L 应该锁定。</span></span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// 创建一个条件等待</span></span><br><span class="line">   <span class="function"><span class="keyword">func</span> <span class="title">NewCond</span><span class="params">(l Locker)</span> *<span class="title">Cond</span></span></span><br><span class="line"></span><br><span class="line">   <span class="comment">// Broadcast 唤醒所有等待的 Wait，建议在&quot;更改条件&quot;时锁定 c.L，更改完毕再解锁。</span></span><br><span class="line">   <span class="function"><span class="keyword">func</span> <span class="params">(c *Cond)</span> <span class="title">Broadcast</span><span class="params">()</span></span></span><br><span class="line"></span><br><span class="line">   <span class="comment">// Signal 唤醒一个等待的 Wait，建议在&quot;更改条件&quot;时锁定 c.L，更改完毕再解锁。</span></span><br><span class="line">   <span class="function"><span class="keyword">func</span> <span class="params">(c *Cond)</span> <span class="title">Signal</span><span class="params">()</span></span></span><br><span class="line"></span><br><span class="line">   <span class="comment">// Wait 会解锁 c.L 并进入等待状态，在被唤醒时，会重新锁定 c.L</span></span><br><span class="line">   <span class="function"><span class="keyword">func</span> <span class="params">(c *Cond)</span> <span class="title">Wait</span><span class="params">()</span></span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>示例代码</p>
+ <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line">   <span class="keyword">import</span> (</span><br><span class="line">       <span class="string">&quot;fmt&quot;</span></span><br><span class="line">       <span class="string">&quot;sync&quot;</span></span><br><span class="line">       <span class="string">&quot;time&quot;</span></span><br><span class="line">   )</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">       condition := <span class="literal">false</span> <span class="comment">// 条件不满足</span></span><br><span class="line"></span><br><span class="line">       <span class="keyword">var</span> mu sync.Mutex</span><br><span class="line">       cond := sync.NewCond(&amp;mu) <span class="comment">// 创建一个Cond</span></span><br><span class="line"></span><br><span class="line">       <span class="comment">//让协程去创造条件</span></span><br><span class="line">       <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">           mu.Lock()</span><br><span class="line">           condition = <span class="literal">true</span> <span class="comment">// 改写条件</span></span><br><span class="line">           time.Sleep(<span class="number">3</span> * time.Second)</span><br><span class="line">           cond.Signal() <span class="comment">// 发送通知：条件ok</span></span><br><span class="line">           mu.Unlock()</span><br><span class="line">       &#125;()</span><br><span class="line"></span><br><span class="line">       mu.Lock()</span><br><span class="line"></span><br><span class="line">       <span class="comment">// 检查条件是否满足，避免虚假通知，同时避免 Signal 提前于 Wait 执行。</span></span><br><span class="line">       <span class="keyword">for</span> !condition &#123; <span class="comment">// 如果Signal提前执行了，那么此处就是false了</span></span><br><span class="line"></span><br><span class="line">           <span class="comment">// 等待条件满足的通知，如果虚假通知，则继续循环等待</span></span><br><span class="line">           cond.Wait() <span class="comment">// 等待时 mu 处于解锁状态，唤醒时重新锁定。 (阻塞当前线程)</span></span><br><span class="line"></span><br><span class="line">       &#125;</span><br><span class="line">       fmt.Println(<span class="string">&quot;条件满足，开始后续动作...&quot;</span>)</span><br><span class="line">       mu.Unlock()</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h5 id="5-Locker"><a href="#5-Locker" class="headerlink" title="5. Locker"></a>5. Locker</h5><ol>
+<li><p>Locker接口代表一个可以加锁和解锁的对象。 是一个接口。</p>
+</li>
+<li><p>结构</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">type Locker interface &#123;</span><br><span class="line">       Lock()</span><br><span class="line">       Unlock()</span><br><span class="line">     &#125;</span><br></pre></td></tr></table></figure>
+<h5 id="6-Pool-临时对象池"><a href="#6-Pool-临时对象池" class="headerlink" title="6. Pool 临时对象池"></a>6. Pool 临时对象池</h5></li>
+<li><p>我们通常用golang来构建高并发场景下的应用，但是由于golang内建的GC机制会影响应用的性能，为了减少GC，golang提供了对象重用的机制，也就是sync.Pool对象池。</p>
+</li>
+<li><p>sync.Pool是可伸缩的，并发安全的。其大小仅受限于内存的大小，可以被看作是一个存放可重用对象的值的容器。 设计的目的是存放已经分配的但是暂时不用的对象，在需要用到的时候直接从pool中取。</p>
+</li>
+<li><p>暂不了解。</p>
+</li>
+</ol>
+<h3 id="四、Go的异常处理"><a href="#四、Go的异常处理" class="headerlink" title="四、Go的异常处理"></a>四、Go的异常处理</h3><h5 id="1-异常与错误的概念"><a href="#1-异常与错误的概念" class="headerlink" title="1. 异常与错误的概念"></a>1. 异常与错误的概念</h5><ol>
+<li>异常和错误不是一个概念，但二者经常被弄混。错误指的是可能出现问题的地方出现了问题，比如打开一个文件时失败，这种情况在人们的意料之中 ；而异常指的是不应该出现问题的地方出现了问题，比如引用了空指针，这种情况在人们的意料之外。可见，错误是业务过程的一部分，而异常不是 。</li>
+<li>go使用error来处理错误，使用panic和recover来触发和终止异常流程。同时引入关键字defer来延迟执行defer后面的函数（异常后也执行）。</li>
+</ol>
+<h5 id="2-异常的处理"><a href="#2-异常的处理" class="headerlink" title="2. 异常的处理"></a>2. 异常的处理</h5><ol>
+<li>如越界，引用空指针等触发panic，就调用defer函数。</li>
+<li>然后向上传递panic，一直到遇到recover接收处理。</li>
+<li>如果没有recover，会一直传到协程的起点，然后终止包括主协程在内的所有协程。</li>
+</ol>
+<h5 id="3-go异常和错误互相转化"><a href="#3-go异常和错误互相转化" class="headerlink" title="3. go异常和错误互相转化"></a>3. go异常和错误互相转化</h5><ol>
+<li>错误转异常，如当错误次数过多的时候就抛出异常。</li>
+<li>异常转错误，如用recover接收后当做错误处理，程序继续执行。</li>
+</ol>
+<h5 id="4-异常与错误的使用场景"><a href="#4-异常与错误的使用场景" class="headerlink" title="4. 异常与错误的使用场景"></a>4. 异常与错误的使用场景</h5><ol>
+<li>异常使用的场景<ul>
+<li>空指针引用</li>
+<li>下标越界</li>
+<li>除数为0</li>
+<li>不应该出现的分支，比如default</li>
+<li>输入不应该引起函数错误</li>
+</ul>
+</li>
+<li>对于异常，我们可以选择在一个合适的上游去recover，并打印堆栈信息，使得部署后的程序不会终止。</li>
+<li>其他使用错误</li>
+</ol>
+<h5 id="5-错误处理"><a href="#5-错误处理" class="headerlink" title="5. 错误处理"></a>5. 错误处理</h5><ol>
+<li><p>不要滥用错误，比如有些返回场景是需要bool类型的，也返回一个errors.New(“假的”)，就很不合理。很多没有必要的地方，不用非得返回一个nil。</p>
+</li>
+<li><p>如果有error返回，应该放在返回列表的最后一位。</p>
+</li>
+<li><p>错误值要统一定义，不要每个函数想起来什么返回什么。最好每个包里有个专门的错误对象定义文件。如下：</p>
+ <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> ERR_EOF = errors.New(<span class="string">&quot;EOF&quot;</span>)</span><br><span class="line">   <span class="keyword">var</span> ERR_CLOSED_PIPE = errors.New(<span class="string">&quot;io: read/write on closed pipe&quot;</span>)</span><br><span class="line">   <span class="keyword">var</span> ERR_NO_PROGRESS = errors.New(<span class="string">&quot;multiple Read calls return no data or error&quot;</span>)</span><br><span class="line">   <span class="keyword">var</span> ERR_SHORT_BUFFER = errors.New(<span class="string">&quot;short buffer&quot;</span>)</span><br><span class="line">   <span class="keyword">var</span> ERR_SHORT_WRITE = errors.New(<span class="string">&quot;short write&quot;</span>)</span><br><span class="line">   <span class="keyword">var</span> ERR_UNEXPECTED_EOF = errors.New(<span class="string">&quot;unexpected EOF&quot;</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>错误逐层传递时，层层都加日志，方便定位。</p>
+</li>
+<li><p>错误处理使用defer</p>
+<ul>
+<li><p>当出现错误的时候，需要把之前申请的资源都释放掉，一般如下这样写：</p>
+  <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">deferDemo</span><span class="params">()</span> <span class="title">error</span></span> &#123;</span><br><span class="line">          err := createResource1()</span><br><span class="line">          <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">              <span class="keyword">return</span> ERR_CREATE_RESOURCE1_FAILED</span><br><span class="line">          &#125;</span><br><span class="line">          err = createResource2()</span><br><span class="line">          <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">              destroyResource1()</span><br><span class="line">              <span class="keyword">return</span> ERR_CREATE_RESOURCE2_FAILED</span><br><span class="line">          &#125;</span><br><span class="line"></span><br><span class="line">          err = createResource3()</span><br><span class="line">          <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">              destroyResource1()</span><br><span class="line">              destroyResource2()</span><br><span class="line">              <span class="keyword">return</span> ERR_CREATE_RESOURCE3_FAILED</span><br><span class="line">          &#125;</span><br><span class="line"></span><br><span class="line">          err = createResource4()</span><br><span class="line">          <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">              destroyResource1()</span><br><span class="line">              destroyResource2()</span><br><span class="line">              destroyResource3()</span><br><span class="line">              <span class="keyword">return</span> ERR_CREATE_RESOURCE4_FAILED</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>使用defer来释放资源</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">func deferDemo() error &#123;</span><br><span class="line">    err :&#x3D; createResource1()</span><br><span class="line">    if err !&#x3D; nil &#123;</span><br><span class="line">        return ERR_CREATE_RESOURCE1_FAILED</span><br><span class="line">    &#125;</span><br><span class="line">    defer func() &#123;</span><br><span class="line">        if err !&#x3D; nil &#123;</span><br><span class="line">            destroyResource1()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;()</span><br><span class="line">    err &#x3D; createResource2()</span><br><span class="line">    if err !&#x3D; nil &#123;</span><br><span class="line">        return ERR_CREATE_RESOURCE2_FAILED</span><br><span class="line">    &#125;</span><br><span class="line">    defer func() &#123;</span><br><span class="line">        if err !&#x3D; nil &#123;</span><br><span class="line">            destroyResource2()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;()</span><br><span class="line"></span><br><span class="line">    err &#x3D; createResource3()</span><br><span class="line">    if err !&#x3D; nil &#123;</span><br><span class="line">        return ERR_CREATE_RESOURCE3_FAILED</span><br><span class="line">    &#125;</span><br><span class="line">    defer func() &#123;</span><br><span class="line">        if err !&#x3D; nil &#123;</span><br><span class="line">            destroyResource3()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;()</span><br><span class="line"></span><br><span class="line">    err &#x3D; createResource4()</span><br><span class="line">    if err !&#x3D; nil &#123;</span><br><span class="line">        return ERR_CREATE_RESOURCE4_FAILED</span><br><span class="line">    &#125;</span><br><span class="line">    return nil</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>当尝试几次可以避免失败时，不要立即返回错误，如尝试请求某个URL，有时第一次没有响应可以再试一次。</p>
+</li>
+<li><p>当上层函数不关心错误时，建议不返回error，只打印日志就行。</p>
+</li>
+</ol>
+<h5 id="6-异常处理"><a href="#6-异常处理" class="headerlink" title="6. 异常处理"></a>6. 异常处理</h5><ol>
+<li><p>在程序开发阶段，坚持速错。在早期开发以及任何发布阶段之前，最简单的同时也可能是最好的方法是调用panic函数来中断程序的执行以强制发生错误，使得该错误不会被忽略，因而能够被尽快修复。</p>
+</li>
+<li><p>在程序部署后，应恢复异常避免程序终止。在上层函数应该用recover接收异常。可以通过配置文件或环境变量的方式，来区分开发环境和部署环境是否进行recover。</p>
+</li>
+<li><p>recover一般的处理方法</p>
+<ul>
+<li>打印堆栈的异常调用信息和关键的业务信息，以便这些问题保留可见；</li>
+<li>将异常转换为错误，以便调用者让程序恢复到健康状态并继续安全运行。错误需要自己转换。  <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">funcA</span><span class="params">()</span> <span class="params">(err error)</span></span> &#123;</span><br><span class="line">          <span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">              <span class="keyword">if</span> p := <span class="built_in">recover</span>(); p != <span class="literal">nil</span> &#123;</span><br><span class="line">                  fmt.Println(<span class="string">&quot;panic recover! p:&quot;</span>, p)</span><br><span class="line">                  str, ok := p.(<span class="keyword">string</span>)</span><br><span class="line">                  <span class="keyword">if</span> ok &#123;</span><br><span class="line">                      err = errors.New(str)</span><br><span class="line">                  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                      err = errors.New(<span class="string">&quot;panic&quot;</span>)</span><br><span class="line">                  &#125;</span><br><span class="line">                  debug.PrintStack()</span><br><span class="line">              &#125;</span><br><span class="line">          &#125;()</span><br><span class="line">          <span class="keyword">return</span> funcB()</span><br><span class="line">      &#125;</span><br><span class="line">      </span><br><span class="line">      <span class="function"><span class="keyword">func</span> <span class="title">funcB</span><span class="params">()</span> <span class="title">error</span></span> &#123;</span><br><span class="line">          <span class="comment">// simulation</span></span><br><span class="line">          <span class="built_in">panic</span>(<span class="string">&quot;foo&quot;</span>)</span><br><span class="line">          <span class="keyword">return</span> errors.New(<span class="string">&quot;success&quot;</span>)</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="function"><span class="keyword">func</span> <span class="title">test</span><span class="params">()</span></span> &#123;</span><br><span class="line">          err := funcA()</span><br><span class="line">          <span class="keyword">if</span> err == <span class="literal">nil</span> &#123;</span><br><span class="line">              fmt.Printf(<span class="string">&quot;err is nil\\n&quot;</span>)</span><br><span class="line">          &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">              fmt.Printf(<span class="string">&quot;err is %v\\n&quot;</span>, err)</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>对于不应该出现的分支，使用异常处理。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">switch s :&#x3D; suit(drawCard()); s &#123;</span><br><span class="line">       case &quot;Spades&quot;:</span><br><span class="line">       &#x2F;&#x2F; ...</span><br><span class="line">       case &quot;Hearts&quot;:</span><br><span class="line">       &#x2F;&#x2F; ...</span><br><span class="line">       case &quot;Diamonds&quot;:</span><br><span class="line">       &#x2F;&#x2F; ... </span><br><span class="line">       case &quot;Clubs&quot;:</span><br><span class="line">       &#x2F;&#x2F; ...</span><br><span class="line">       default:</span><br><span class="line">           panic(fmt.Sprintf(&quot;invalid suit %v&quot;, s))</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>函数参数由用户保证不会出错，一出错立刻panic，减少繁琐的错误处理。比如我确定就是字符串，非得传一个Int，那就直接panic，也不进行错误检查。</p>
+</li>
+</ol>
+<h3 id="五、Go语言中反射包的实现原理"><a href="#五、Go语言中反射包的实现原理" class="headerlink" title="五、Go语言中反射包的实现原理"></a>五、Go语言中反射包的实现原理</h3><h5 id="1-概述-1"><a href="#1-概述-1" class="headerlink" title="1. 概述"></a>1. 概述</h5><ol>
+<li><p>反射是建立在类型系统（the type system）上的。Go是静态类型化的。每个变量都有一个静态类型，也就是说，在编译的时候变量的类型就被很精确地确定下来了。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">type MyInt int</span><br><span class="line">var i int</span><br><span class="line">var j MyInt</span><br></pre></td></tr></table></figure>
+<ul>
+<li>如上，i的类型就是int，而j的类型就是MyInt。这里的变量i和j具有不同的静态类型，虽然它们有相同的底层类型（underlying type），如果不显示的进行强制类型转换它们是不能互相赋值的。</li>
+</ul>
+</li>
+</ol>
+<h5 id="2-作用"><a href="#2-作用" class="headerlink" title="2. 作用"></a>2. 作用</h5><ul>
+<li>应用场景还不知道，看着好像理解是什么，就是能获得对象的类型，但是也不知道这样有什么用。TODO</li>
+</ul>
+<h3 id="六、Go语言并发的设计模式和应用场景"><a href="#六、Go语言并发的设计模式和应用场景" class="headerlink" title="六、Go语言并发的设计模式和应用场景"></a>六、Go语言并发的设计模式和应用场景</h3><h5 id="1-利用阻塞通道自动生成数据。"><a href="#1-利用阻塞通道自动生成数据。" class="headerlink" title="1. 利用阻塞通道自动生成数据。"></a>1. 利用阻塞通道自动生成数据。</h5><ol>
+<li><p>创建一个阻塞通道，每次想要数据了就从中提取。比如可以生成随机数。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">func xrange() chan int&#123; &#x2F;&#x2F; xrange用来生成自增的整数</span><br><span class="line">       var ch chan int &#x3D; make(chan int)</span><br><span class="line"></span><br><span class="line">       go func() &#123; &#x2F;&#x2F; 开出一个goroutine</span><br><span class="line">           for i :&#x3D; 0; ; i++ &#123;</span><br><span class="line">               ch &lt;- i  &#x2F;&#x2F; 直到信道索要数据，才把i添加进信道</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;()</span><br><span class="line"></span><br><span class="line">       return ch</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   func main() &#123;</span><br><span class="line"></span><br><span class="line">       generator :&#x3D; xrange()</span><br><span class="line"></span><br><span class="line">       for i:&#x3D;0; i &lt; 1000; i++ &#123;  &#x2F;&#x2F; 我们生成1000个自增的整数！</span><br><span class="line">           fmt.Println(&lt;-generator)</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h5 id="2-主程序阻塞通道等待，等到协程执行完发送信号，主程序再推出。"><a href="#2-主程序阻塞通道等待，等到协程执行完发送信号，主程序再推出。" class="headerlink" title="2. 主程序阻塞通道等待，等到协程执行完发送信号，主程序再推出。"></a>2. 主程序阻塞通道等待，等到协程执行完发送信号，主程序再推出。</h5><h5 id="3-指定数据生成器"><a href="#3-指定数据生成器" class="headerlink" title="3. 指定数据生成器"></a>3. 指定数据生成器</h5><ol>
+<li>比如指定0和1随机数生成器</li>
+<li>如下，其中select是随机执行case语句的，在go的select设计中，每次select，会随机打乱case顺序。 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">func rand01() chan int &#123;</span><br><span class="line">       ch :&#x3D; make(chan int)</span><br><span class="line"></span><br><span class="line">       go func () &#123;</span><br><span class="line">           for &#123;</span><br><span class="line">               select &#123; &#x2F;&#x2F;select会尝试执行各个case, 如果都可以执行，那么随机选一个执行</span><br><span class="line">               case ch &lt;- 0:</span><br><span class="line">               case ch &lt;- 1:</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;()</span><br><span class="line"></span><br><span class="line">       return ch</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   func main() &#123;</span><br><span class="line">       generator :&#x3D; rand01() &#x2F;&#x2F;初始化一个01随机生成器</span><br><span class="line">   </span><br><span class="line">       &#x2F;&#x2F;测试，打印10个随机01</span><br><span class="line">       for i :&#x3D; 0; i &lt; 10; i++ &#123;</span><br><span class="line">           fmt.Println(&lt;-generator)</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<h5 id="4-定时器"><a href="#4-定时器" class="headerlink" title="4. 定时器"></a>4. 定时器</h5></li>
+<li>time.After</li>
+<li>定时给通道发消息</li>
+</ol>
+<h5 id="5-当成先进先出的队列使用"><a href="#5-当成先进先出的队列使用" class="headerlink" title="5. 当成先进先出的队列使用"></a>5. 当成先进先出的队列使用</h5><h5 id="6-菊花链（过滤器）"><a href="#6-菊花链（过滤器）" class="headerlink" title="6. 菊花链（过滤器）"></a>6. 菊花链（过滤器）</h5><ol>
+<li><p>这个真的妙不可言</p>
+</li>
+<li><p>如这个生成素数的例子，这段程序来慢慢分析。</p>
+<ul>
+<li><p>xrange()可以忽略，直接指定2也行</p>
+</li>
+<li><p>先看main()函数。</p>
+<ul>
+<li>筛子中最小的数肯定是素数，然后这个素数的倍数肯定不是素数，每次循环就是做这个事，把这个素数的倍数剔除了。</li>
+<li>filter(nums, number)就是剔除操作，number为当前的素数，nums为要剔除的列表，然后会返回一个新的列表。</li>
+<li>把新列表中的第一个数取出来，作为下一次循环的筛子，这个数肯定是素数。</li>
+<li>当筛子大于100的时候，就是获得的第一个大于100的素数，循环结束。</li>
+</ul>
+</li>
+<li><p>filter()函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;*</span><br><span class="line">    * 利用信道菊花链筛法求某一个整数范围的素数</span><br><span class="line">    * 筛法求素数的基本思想是：把从1开始的、某一范围内的正整数从小到大顺序排列，</span><br><span class="line">    * 1不是素数，首先把它筛掉。剩下的数中选择最小的数是素数，然后去掉它的倍数。</span><br><span class="line">    * 依次类推，直到筛子为空时结束</span><br><span class="line">    *&#x2F;</span><br><span class="line">   package main</span><br><span class="line"></span><br><span class="line">   import &quot;fmt&quot;</span><br><span class="line"></span><br><span class="line">   func xrange() chan int&#123; &#x2F;&#x2F; 从2开始自增的整数生成器</span><br><span class="line">       var ch chan int &#x3D; make(chan int)</span><br><span class="line"></span><br><span class="line">       go func() &#123; &#x2F;&#x2F; 开出一个goroutine</span><br><span class="line">           for i :&#x3D; 2; ; i++ &#123;</span><br><span class="line">               ch &lt;- i  &#x2F;&#x2F; 直到信道索要数据，才把i添加进信道</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;()</span><br><span class="line"></span><br><span class="line">       return ch</span><br><span class="line">   &#125;</span><br><span class="line">  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   func filter(in chan int, number int) chan int &#123;</span><br><span class="line">       &#x2F;&#x2F; 输入一个整数队列，筛出是number倍数的, 不是number的倍数的放入输出队列</span><br><span class="line">       &#x2F;&#x2F; in: 输入队列</span><br><span class="line">       out :&#x3D; make(chan int)</span><br><span class="line">   </span><br><span class="line">       go func() &#123;</span><br><span class="line">           for &#123;</span><br><span class="line">               i :&#x3D; &lt;- in &#x2F;&#x2F; 从输入中取一个</span><br><span class="line">   </span><br><span class="line">               if i % number !&#x3D; 0 &#123;</span><br><span class="line">                   out &lt;- i &#x2F;&#x2F; 放入输出信道</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;()</span><br><span class="line">   </span><br><span class="line">       return out</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   func main() &#123;</span><br><span class="line">       const max &#x3D; 100 &#x2F;&#x2F; 找出100以内的所有素数</span><br><span class="line">       nums :&#x3D; xrange() &#x2F;&#x2F; 初始化一个整数生成器</span><br><span class="line">       number :&#x3D; &lt;-nums  &#x2F;&#x2F; 从生成器中抓一个整数(2), 作为初始化整数</span><br><span class="line">   </span><br><span class="line">       for number &lt;&#x3D; max &#123; &#x2F;&#x2F; number作为筛子，当筛子超过max的时候结束筛选</span><br><span class="line">           fmt.Println(number) &#x2F;&#x2F; 打印素数, 筛子即一个素数</span><br><span class="line">           nums &#x3D; filter(nums, number) &#x2F;&#x2F;筛掉number的倍数</span><br><span class="line">           number &#x3D; &lt;- nums  &#x2F;&#x2F; 更新筛子</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="七、关于golang锁的正确使用方式"><a href="#七、关于golang锁的正确使用方式" class="headerlink" title="七、关于golang锁的正确使用方式"></a>七、关于golang锁的正确使用方式</h3><h5 id="1-尽量减少锁的持有时间"><a href="#1-尽量减少锁的持有时间" class="headerlink" title="1. 尽量减少锁的持有时间"></a>1. 尽量减少锁的持有时间</h5><ol>
+<li><p>细化锁的粒度。通过细化锁的粒度来减少锁的持有时间以及避免在持有锁操作的时候做各种耗时的操作。</p>
+</li>
+<li><p>不要在持有锁的时候做 IO 操作。尽量只通过持有锁来保护 IO 操作需要的资源而不是 IO 操作本身。如下：</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">func doSomething() &#123;</span><br><span class="line">      m.Lock()</span><br><span class="line">      item :&#x3D; ...</span><br><span class="line">      http.Get()  &#x2F;&#x2F; 各种耗时的 IO 操作</span><br><span class="line">      m.Unlock()</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F; 改为</span><br><span class="line">  func doSomething() &#123;</span><br><span class="line">      m.Lock()</span><br><span class="line">      item :&#x3D; ...</span><br><span class="line">      m.Unlock()</span><br><span class="line"></span><br><span class="line">      http.Get()</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h5 id="2-善用-defer-来确保在函数内正确释放了锁"><a href="#2-善用-defer-来确保在函数内正确释放了锁" class="headerlink" title="2. 善用 defer 来确保在函数内正确释放了锁"></a>2. 善用 defer 来确保在函数内正确释放了锁</h5><ol>
+<li>但是注意defer就代表整个函数期间都持有锁，可以用匿名函数。</li>
+</ol>
+<h5 id="3-在适当时候使用-RWMutex"><a href="#3-在适当时候使用-RWMutex" class="headerlink" title="3. 在适当时候使用 RWMutex"></a>3. 在适当时候使用 RWMutex</h5><ol>
+<li>当确定操作不会修改保护的资源时，可以使用 RWMutex 来减少锁等待时间（不同的 goroutine 可以同时持有 RLock, 但是 Lock 限制了只能有一个 goroutine 持有 Lock）</li>
+</ol>
+<h5 id="4-copy-结构体操作可能导致非预期的死锁"><a href="#4-copy-结构体操作可能导致非预期的死锁" class="headerlink" title="4. copy 结构体操作可能导致非预期的死锁"></a>4. copy 结构体操作可能导致非预期的死锁</h5><ol>
+<li>copy 结构体时，如果结构体中有锁的话，记得重新初始化一个锁对象，否则会出现非预期的死锁。</li>
+</ol>
+<h5 id="5-build-test-时使用-race-参数以便运行时检测数据竞争问题"><a href="#5-build-test-时使用-race-参数以便运行时检测数据竞争问题" class="headerlink" title="5. build/test 时使用 -race 参数以便运行时检测数据竞争问题"></a>5. build/test 时使用 -race 参数以便运行时检测数据竞争问题</h5><h5 id="6-使用-go-deadlock-检测死锁或锁等待问题"><a href="#6-使用-go-deadlock-检测死锁或锁等待问题" class="headerlink" title="6. 使用 go-deadlock 检测死锁或锁等待问题"></a>6. 使用 go-deadlock 检测死锁或锁等待问题</h5><ol>
+<li><p>go-deadlock是一个库</p>
+</li>
+<li><p>示例代码：</p>
+ <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line">   <span class="keyword">import</span> (</span><br><span class="line">       <span class="string">&quot;net/http&quot;</span></span><br><span class="line">       <span class="string">&quot;time&quot;</span></span><br><span class="line"></span><br><span class="line">       sync <span class="string">&quot;github.com/sasha-s/go-deadlock&quot;</span></span><br><span class="line">   )</span><br><span class="line"></span><br><span class="line">   <span class="keyword">var</span> mu sync.Mutex</span><br><span class="line">   <span class="keyword">var</span> url = <span class="string">&quot;http://xxx.com:80&quot;</span></span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">func</span> <span class="title">do</span><span class="params">()</span></span> &#123;</span><br><span class="line">       mu.Lock()</span><br><span class="line">       <span class="keyword">defer</span> mu.Unlock()</span><br><span class="line"></span><br><span class="line">       u := url</span><br><span class="line">       http.Get(u)  <span class="comment">// 非预期的在持有锁期间做 IO 操作，导致锁等待时间变长</span></span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">       <span class="comment">// 检测超过 100 ms 的锁等待</span></span><br><span class="line">       sync.Opts.DeadlockTimeout = time.Millisecond * <span class="number">100</span></span><br><span class="line"></span><br><span class="line">       <span class="keyword">var</span> wg sync.WaitGroup</span><br><span class="line">       <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">3</span>; i++ &#123;</span><br><span class="line">           wg.Add(<span class="number">1</span>)</span><br><span class="line">           <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">               <span class="keyword">defer</span> wg.Done()</span><br><span class="line">               do()</span><br><span class="line">           &#125;()</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       wg.Wait()</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h5 id="7-实现-tryLock-功能"><a href="#7-实现-tryLock-功能" class="headerlink" title="7. 实现 tryLock 功能"></a>7. 实现 tryLock 功能</h5><ol>
+<li>一般 Lock() 如果拿不到锁的话，会一直阻塞在那里，在某些场景下这个功能不是我们所期望的结果，我们可能希望程序在一定时间内无法获取到锁的话就做其他操作或者直接返回失败：比如在一个 http server 中，处理请求时因为锁等待时间太长导致客户端大量超时，引发客户端重连以及服务端 goroutine 数量持续增长（虽然客户端超时了，但是处理请求的 goroutine 还在继续处理已超时的请求并且阻塞在了获取锁的地方，然后客户端重连又加重了这个问题，表现就是处理请求的 goroutine 数量直线上升）。这个时候我们就需要有一个类似 tryLock 的功能，在发现短时间内无法获取到锁的时候直接返回失败的响应，防止问题进一步加重（Fail Fast）。</li>
+<li>go语言实现tryLock:<a target="_blank" rel="noopener" href="https://colobu.com/2017/03/09/implement-TryLock-in-Go/">https://colobu.com/2017/03/09/implement-TryLock-in-Go/</a></li>
+</ol>
+<h5 id="8-改为使用-channel"><a href="#8-改为使用-channel" class="headerlink" title="8. 改为使用 channel"></a>8. 改为使用 channel</h5><h3 id="八、其他"><a href="#八、其他" class="headerlink" title="八、其他"></a>八、其他</h3><h5 id="1-runtime-GOMAXPROCS"><a href="#1-runtime-GOMAXPROCS" class="headerlink" title="1. runtime.GOMAXPROCS()"></a>1. runtime.GOMAXPROCS()</h5><ol>
+<li>&lt;1：不修改任何数值。=1：单核心执行。&gt;1：多核并发执行。</li>
+<li>指定的是使用的CPU核数，go1.5以后不指定的话默认使用最大核数。</li>
+</ol>
+<h5 id="2-go-defer的一些注意事项"><a href="#2-go-defer的一些注意事项" class="headerlink" title="2. go defer的一些注意事项"></a>2. go defer的一些注意事项</h5><ol>
+<li>异常后defer函数也会执行，常用来解锁</li>
+<li>返回值和defer的执行顺序问题，一般是先把返回值写入，然后开始执行defer。如果defer修改了返回值，分两种情况。<ul>
+<li>如果返回值是声明过的，就会修改。func name()(i int)</li>
+<li>如果返回值没有声明，在函数中声明并返回的，就不会修改。func name()(int)</li>
+</ul>
+</li>
+</ol>
+<h5 id="3-信道死锁-阻塞"><a href="#3-信道死锁-阻塞" class="headerlink" title="3. 信道死锁/阻塞"></a>3. 信道死锁/阻塞</h5><ol>
+<li>不指定容量，写入数据就会一直阻塞，直到数据读出。（注意不指定容量和指定容量大小为1，是不一样的，为1说明容量为1，只写入一个数据的时候不阻塞，写入第二个数据的时候如果第一个数据没被读出才阻塞。）</li>
+<li>指定容量，当容量满的时候才会阻塞。</li>
+</ol>
+<h3 id="九、语言相关"><a href="#九、语言相关" class="headerlink" title="九、语言相关"></a>九、语言相关</h3><h5 id="1-map"><a href="#1-map" class="headerlink" title="1. map"></a>1. map</h5><ul>
+<li>支持多键索引</li>
+<li>delete(map,key)删除元素</li>
+<li>sync.Map ，并发map，效率降低，安全性提高，但不支持len()操作，不能使用 map 的方式进行取值和设置等操作，而是使用 sync.Map 的方法进行调用，Store 表示存储，Load 表示获取，Delete 表示删除。</li>
+</ul>
+<h5 id="2-goto"><a href="#2-goto" class="headerlink" title="2. goto"></a>2. goto</h5><ul>
+<li>使用goto统一处理错误  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">    err :&#x3D; firstCheckError()</span><br><span class="line">    if err !&#x3D; nil &#123;</span><br><span class="line">        goto onExit</span><br><span class="line">    &#125;</span><br><span class="line">    err &#x3D; secondCheckError()</span><br><span class="line">    if err !&#x3D; nil &#123;</span><br><span class="line">        goto onExit</span><br><span class="line">    &#125;</span><br><span class="line">    fmt.Println(&quot;done&quot;)</span><br><span class="line">    return</span><br><span class="line">onExit:</span><br><span class="line">    fmt.Println(err)</span><br><span class="line">    exitProcess()&#125;&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/go/" rel="tag"><i class="fa fa-tag">go</i></a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/GO%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E7%9A%84%E4%BD%BF%E7%94%A8/" rel="prev" title="GO命令行工具的使用">
+      <i class="fa fa-chevron-left"></i> GO命令行工具的使用
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/GO%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/" rel="next" title="GO一些问题">
+      GO一些问题 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E9%97%AD%E5%8C%85"><span class="nav-text">一、闭包</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E9%97%AD%E5%8C%85%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8"><span class="nav-text">1. 闭包基本使用</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E9%97%AD%E5%8C%85%E4%BD%9C%E4%B8%BA%E5%87%BD%E6%95%B0%E8%BF%94%E5%9B%9E%E5%80%BC"><span class="nav-text">2. 闭包作为函数返回值</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E5%B9%B6%E5%8F%91%E4%B8%AD%E7%9A%84%E9%97%AD%E5%8C%85"><span class="nav-text">3. 并发中的闭包</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#14-%E5%B9%B6%E5%8F%91%E9%97%AD%E5%8C%85%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%A4%E7%A7%8D%E8%A7%A3%E5%86%B3%E6%96%B9%E5%BC%8F"><span class="nav-text">14. 并发闭包问题的两种解决方式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%8E%A5%E5%8F%A3"><span class="nav-text">二、接口</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E6%A6%82%E8%BF%B0"><span class="nav-text">1. 概述</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E6%8E%A5%E5%8F%A3%E7%9A%84%E7%BB%84%E5%90%88"><span class="nav-text">2. 接口的组合</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E7%B1%BB%E5%9E%8B%E6%96%AD%E8%A8%80"><span class="nav-text">3. 类型断言</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-%E7%A9%BA%E6%8E%A5%E5%8F%A3"><span class="nav-text">4. 空接口</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-%E6%8E%A5%E5%8F%A3%E7%9A%84%E6%AF%94%E8%BE%83%E6%80%A7"><span class="nav-text">5. 接口的比较性</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E3%80%81Go%E6%A0%87%E5%87%86%E5%BA%93-%E9%94%81%E3%80%81%E4%BF%A1%E5%8F%B7%E9%87%8F%E3%80%81POOL"><span class="nav-text">三、Go标准库-锁、信号量、POOL</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-Mutex-%E4%BA%92%E6%96%A5%E9%94%81"><span class="nav-text">1. Mutex 互斥锁</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-RWMutex-%E8%AF%BB%E5%86%99%E4%BA%92%E6%96%A5%E9%94%81"><span class="nav-text">2. RWMutex 读写互斥锁</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-WaitGroup-%E7%BB%84%E7%AD%89%E5%BE%85"><span class="nav-text">3. WaitGroup 组等待</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-Cond-%E6%9D%A1%E4%BB%B6%E7%AD%89%E5%BE%85"><span class="nav-text">4. Cond 条件等待</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-Locker"><span class="nav-text">5. Locker</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-Pool-%E4%B8%B4%E6%97%B6%E5%AF%B9%E8%B1%A1%E6%B1%A0"><span class="nav-text">6. Pool 临时对象池</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E3%80%81Go%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86"><span class="nav-text">四、Go的异常处理</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E5%BC%82%E5%B8%B8%E4%B8%8E%E9%94%99%E8%AF%AF%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="nav-text">1. 异常与错误的概念</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86"><span class="nav-text">2. 异常的处理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-go%E5%BC%82%E5%B8%B8%E5%92%8C%E9%94%99%E8%AF%AF%E4%BA%92%E7%9B%B8%E8%BD%AC%E5%8C%96"><span class="nav-text">3. go异常和错误互相转化</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-%E5%BC%82%E5%B8%B8%E4%B8%8E%E9%94%99%E8%AF%AF%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-text">4. 异常与错误的使用场景</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86"><span class="nav-text">5. 错误处理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86"><span class="nav-text">6. 异常处理</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%94%E3%80%81Go%E8%AF%AD%E8%A8%80%E4%B8%AD%E5%8F%8D%E5%B0%84%E5%8C%85%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-text">五、Go语言中反射包的实现原理</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E6%A6%82%E8%BF%B0-1"><span class="nav-text">1. 概述</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E4%BD%9C%E7%94%A8"><span class="nav-text">2. 作用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%AD%E3%80%81Go%E8%AF%AD%E8%A8%80%E5%B9%B6%E5%8F%91%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%92%8C%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-text">六、Go语言并发的设计模式和应用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E5%88%A9%E7%94%A8%E9%98%BB%E5%A1%9E%E9%80%9A%E9%81%93%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90%E6%95%B0%E6%8D%AE%E3%80%82"><span class="nav-text">1. 利用阻塞通道自动生成数据。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E4%B8%BB%E7%A8%8B%E5%BA%8F%E9%98%BB%E5%A1%9E%E9%80%9A%E9%81%93%E7%AD%89%E5%BE%85%EF%BC%8C%E7%AD%89%E5%88%B0%E5%8D%8F%E7%A8%8B%E6%89%A7%E8%A1%8C%E5%AE%8C%E5%8F%91%E9%80%81%E4%BF%A1%E5%8F%B7%EF%BC%8C%E4%B8%BB%E7%A8%8B%E5%BA%8F%E5%86%8D%E6%8E%A8%E5%87%BA%E3%80%82"><span class="nav-text">2. 主程序阻塞通道等待，等到协程执行完发送信号，主程序再推出。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E6%8C%87%E5%AE%9A%E6%95%B0%E6%8D%AE%E7%94%9F%E6%88%90%E5%99%A8"><span class="nav-text">3. 指定数据生成器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-%E5%AE%9A%E6%97%B6%E5%99%A8"><span class="nav-text">4. 定时器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-%E5%BD%93%E6%88%90%E5%85%88%E8%BF%9B%E5%85%88%E5%87%BA%E7%9A%84%E9%98%9F%E5%88%97%E4%BD%BF%E7%94%A8"><span class="nav-text">5. 当成先进先出的队列使用</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-%E8%8F%8A%E8%8A%B1%E9%93%BE%EF%BC%88%E8%BF%87%E6%BB%A4%E5%99%A8%EF%BC%89"><span class="nav-text">6. 菊花链（过滤器）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%83%E3%80%81%E5%85%B3%E4%BA%8Egolang%E9%94%81%E7%9A%84%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F"><span class="nav-text">七、关于golang锁的正确使用方式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E5%B0%BD%E9%87%8F%E5%87%8F%E5%B0%91%E9%94%81%E7%9A%84%E6%8C%81%E6%9C%89%E6%97%B6%E9%97%B4"><span class="nav-text">1. 尽量减少锁的持有时间</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E5%96%84%E7%94%A8-defer-%E6%9D%A5%E7%A1%AE%E4%BF%9D%E5%9C%A8%E5%87%BD%E6%95%B0%E5%86%85%E6%AD%A3%E7%A1%AE%E9%87%8A%E6%94%BE%E4%BA%86%E9%94%81"><span class="nav-text">2. 善用 defer 来确保在函数内正确释放了锁</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E5%9C%A8%E9%80%82%E5%BD%93%E6%97%B6%E5%80%99%E4%BD%BF%E7%94%A8-RWMutex"><span class="nav-text">3. 在适当时候使用 RWMutex</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-copy-%E7%BB%93%E6%9E%84%E4%BD%93%E6%93%8D%E4%BD%9C%E5%8F%AF%E8%83%BD%E5%AF%BC%E8%87%B4%E9%9D%9E%E9%A2%84%E6%9C%9F%E7%9A%84%E6%AD%BB%E9%94%81"><span class="nav-text">4. copy 结构体操作可能导致非预期的死锁</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-build-test-%E6%97%B6%E4%BD%BF%E7%94%A8-race-%E5%8F%82%E6%95%B0%E4%BB%A5%E4%BE%BF%E8%BF%90%E8%A1%8C%E6%97%B6%E6%A3%80%E6%B5%8B%E6%95%B0%E6%8D%AE%E7%AB%9E%E4%BA%89%E9%97%AE%E9%A2%98"><span class="nav-text">5. build&#x2F;test 时使用 -race 参数以便运行时检测数据竞争问题</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-%E4%BD%BF%E7%94%A8-go-deadlock-%E6%A3%80%E6%B5%8B%E6%AD%BB%E9%94%81%E6%88%96%E9%94%81%E7%AD%89%E5%BE%85%E9%97%AE%E9%A2%98"><span class="nav-text">6. 使用 go-deadlock 检测死锁或锁等待问题</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#7-%E5%AE%9E%E7%8E%B0-tryLock-%E5%8A%9F%E8%83%BD"><span class="nav-text">7. 实现 tryLock 功能</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#8-%E6%94%B9%E4%B8%BA%E4%BD%BF%E7%94%A8-channel"><span class="nav-text">8. 改为使用 channel</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%AB%E3%80%81%E5%85%B6%E4%BB%96"><span class="nav-text">八、其他</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-runtime-GOMAXPROCS"><span class="nav-text">1. runtime.GOMAXPROCS()</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-go-defer%E7%9A%84%E4%B8%80%E4%BA%9B%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-text">2. go defer的一些注意事项</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E4%BF%A1%E9%81%93%E6%AD%BB%E9%94%81-%E9%98%BB%E5%A1%9E"><span class="nav-text">3. 信道死锁&#x2F;阻塞</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B9%9D%E3%80%81%E8%AF%AD%E8%A8%80%E7%9B%B8%E5%85%B3"><span class="nav-text">九、语言相关</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-map"><span class="nav-text">1. map</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-goto"><span class="nav-text">2. goto</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="不知自己不知"
+      src="/images/head.jpeg">
+  <p class="site-author-name" itemprop="name">不知自己不知</p>
+  <div class="site-description" itemprop="description">以阅读为生是一件很酷的事，以写作为生是一件更酷的事。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">70</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">59</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+    <!--
+    <div id="music163player">
+      <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=110 src="//music.163.com/outchain/player?type=0&id=5445280661&auto=0&height=90"></iframe>
+       </div>
+    -->
+  </aside>
+  
+  
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不知自己不知</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">412k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">6:14</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='200' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : true,
+      appId      : 'Dv4yd2JUuvVhLBe640B6m1jw-gzGzoHsz',
+      appKey     : 'sNdrMuVcw6jJzlz0HpXBNhdB',
+      placeholder: "来交流交流吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+    </div>
+  
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/miku.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":true},"react":{"opacity":1},"log":false});</script></body>
+</html>
+
+
+
