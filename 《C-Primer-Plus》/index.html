@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head.jpeg">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xtlvlv.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":2,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="1. 字符串处理123456781. gets(str)&#x2F;puts(str)2. fgets(str,len,stdin)&#x2F;fputs(str,stdout)3. strlen(str)4. strcat(s1,s2)&#x2F;strncat(s1,s2,n)   &#x2F;&#x2F;strcat无法检测s1是否能容纳s2，strncat加上n字节的限制5. strcmp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《C Primer Plus》">
+<meta property="og:url" content="https://xtlvlv.github.io/%E3%80%8AC-Primer-Plus%E3%80%8B/index.html">
+<meta property="og:site_name" content="不知自己无知">
+<meta property="og:description" content="1. 字符串处理123456781. gets(str)&#x2F;puts(str)2. fgets(str,len,stdin)&#x2F;fputs(str,stdout)3. strlen(str)4. strcat(s1,s2)&#x2F;strncat(s1,s2,n)   &#x2F;&#x2F;strcat无法检测s1是否能容纳s2，strncat加上n字节的限制5. strcmp">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-01-06T04:16:24.000Z">
+<meta property="article:modified_time" content="2021-01-06T04:18:19.999Z">
+<meta property="article:author" content="不知自己无知">
+<meta property="article:tag" content="C++">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://xtlvlv.github.io/%E3%80%8AC-Primer-Plus%E3%80%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>《C Primer Plus》 | 不知自己无知</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<!-- require MetingJS-->
+
+<script src="https://cdn.jsdelivr.net/npm/meting@2.0.1/dist/Meting.min.js"></script> 
+
+  <!--pjax：防止跳转页面音乐暂停-->
+ <script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.js"></script>
+  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">不知自己无知</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">53</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">12</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">57</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xtlvlv.github.io/%E3%80%8AC-Primer-Plus%E3%80%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpeg">
+      <meta itemprop="name" content="不知自己无知">
+      <meta itemprop="description" content="以阅读为生是一件很酷的事，以写作为生是一件更酷的事。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不知自己无知">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《C Primer Plus》
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-01-06 12:16:24 / 修改时间：12:18:19" itemprop="dateCreated datePublished" datetime="2021-01-06T12:16:24+08:00">2021-01-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论数：</span>
+    
+    <a title="valine" href="/%E3%80%8AC-Primer-Plus%E3%80%8B/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/%E3%80%8AC-Primer-Plus%E3%80%8B/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="1-字符串处理"><a href="#1-字符串处理" class="headerlink" title="1. 字符串处理"></a>1. 字符串处理</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1. gets(str)&#x2F;puts(str)</span><br><span class="line">2. fgets(str,len,stdin)&#x2F;fputs(str,stdout)</span><br><span class="line">3. strlen(str)</span><br><span class="line">4. strcat(s1,s2)&#x2F;strncat(s1,s2,n)   &#x2F;&#x2F;strcat无法检测s1是否能容纳s2，strncat加上n字节的限制</span><br><span class="line">5. strcmp(s1,s2)strncmp(s1,s2,n)    &#x2F;&#x2F;只比较前n位</span><br><span class="line">6. strcpy(s1,s2)&#x2F;strncpy(s1,s2,n)</span><br><span class="line">7. strchr(str,c)&#x2F;strrchr(str,c)  &#x2F;&#x2F;在字符串中找字符位置,第二个是倒着找</span><br><span class="line">8. strstr(s1,s2)           &#x2F;&#x2F;在字符串中找子串位置</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+
+<h1 id="2-存储类别、链接"><a href="#2-存储类别、链接" class="headerlink" title="2. 存储类别、链接"></a>2. 存储类别、链接</h1><table>
+<thead>
+<tr>
+<th>序号</th>
+<th>存储类别</th>
+<th>作用域</th>
+<th>链接</th>
+<th>声明方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>auto 自动</td>
+<td>块</td>
+<td>无</td>
+<td>块内默认</td>
+</tr>
+<tr>
+<td>2</td>
+<td>register 寄存器</td>
+<td>块</td>
+<td>无</td>
+<td>变量前用关键字register</td>
+</tr>
+<tr>
+<td>3</td>
+<td>静态无链接</td>
+<td>块</td>
+<td>无</td>
+<td>块内的static</td>
+</tr>
+<tr>
+<td>4</td>
+<td>静态内部链接</td>
+<td>文件</td>
+<td>内部</td>
+<td>全局static</td>
+</tr>
+<tr>
+<td>5</td>
+<td>静态外部链接</td>
+<td>文件</td>
+<td>外部</td>
+<td>全局变量，不加static</td>
+</tr>
+</tbody></table>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1. extern 说明</span><br><span class="line">    extern 只是变量声明，表明这个变量已经在其他文件中定义过了。</span><br><span class="line">    用extern声明的变量不能再定义。</span><br><span class="line">2. auto 关键字</span><br><span class="line">    C 中的 auto 和C++ 中的完全不一样</span><br><span class="line">    C 中的是存储类别声明</span><br><span class="line">    C++ 中是自动类型</span><br><span class="line">3. 自动即放到栈上，静态即放到数据段，动态放到堆段</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="3-内存管理"><a href="#3-内存管理" class="headerlink" title="3. 内存管理"></a>3. 内存管理</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1. malloc(size)</span><br><span class="line">2. calloc(n,size)</span><br><span class="line">    二者参数不同。且calloc初始化申请的空间为0，而malloc不初始化</span><br><span class="line">3. relloc</span><br><span class="line">3. free</span><br></pre></td></tr></table></figure>
+
+<h1 id="4-ANSI-C-限定符"><a href="#4-ANSI-C-限定符" class="headerlink" title="4. ANSI C 限定符"></a>4. ANSI C 限定符</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. const   &#x2F;&#x2F;常量限定，注意常量指针和指针常量</span><br><span class="line">2. volatile &#x2F;&#x2F;声明不能被编译器优化</span><br><span class="line">3. restrict &#x2F;&#x2F;只能用于指针，告诉编译器该指针是访问数据的唯一且初始的方式，可以被优化</span><br><span class="line">4. _Atomic  &#x2F;&#x2F;原子操作限定，相当于资源锁了，但是只是可选实现，编译器不一定支持，不建议使用</span><br></pre></td></tr></table></figure>
+
+<h1 id="5-文件操作函数-FILE"><a href="#5-文件操作函数-FILE" class="headerlink" title="5. 文件操作函数 FILE*"></a>5. 文件操作函数 FILE*</h1><table>
+<thead>
+<tr>
+<th>序号</th>
+<th>函数名</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>fopen(filename,model)</td>
+<td>打开文件</td>
+</tr>
+<tr>
+<td>2</td>
+<td>fclose(FILE*)</td>
+<td>关闭文件</td>
+</tr>
+<tr>
+<td>3</td>
+<td>EOF</td>
+<td>文件结尾，-1</td>
+</tr>
+<tr>
+<td>4</td>
+<td>fprintf(FILE*,string,parameter)</td>
+<td>写入文件</td>
+</tr>
+<tr>
+<td>5</td>
+<td>fscanf(FILE*,string,parameter)</td>
+<td>从文件中读取内容到parameter</td>
+</tr>
+<tr>
+<td>6</td>
+<td>fgets(buf,len,fp)</td>
+<td>读取len-1个字符，或者遇到换行符、文件结尾</td>
+</tr>
+<tr>
+<td>7</td>
+<td>fputs(buf,fp)</td>
+<td>把buf输入到fp文件</td>
+</tr>
+<tr>
+<td>8</td>
+<td>fseek(fp,offset,model)</td>
+<td>model确定起点位置，SEEK_SET文件开始处，SEEK_CUR当前位置，SEEK_END文件末尾，成功返回0，失败-1</td>
+</tr>
+<tr>
+<td>9</td>
+<td>ftell()</td>
+<td>成功返回当前位置，ftell(fp)可以获得fp文件的字节数</td>
+</tr>
+<tr>
+<td>10</td>
+<td>fgetpos(fp,pos)/fsetpos(fp,pos)</td>
+<td>fseek的增强版,fseek只能操作小文件，这个能操作更大的文件</td>
+</tr>
+<tr>
+<td>11</td>
+<td>fflush(fp)</td>
+<td>刷新缓冲区</td>
+</tr>
+<tr>
+<td>12</td>
+<td>fwrite/fread(str,size,num,fp)</td>
+<td>二进制读写，从str中读num个size大小的内存到fp文件中，或从fp读到str</td>
+</tr>
+<tr>
+<td>13</td>
+<td>feof(fp)/ferror(fp)</td>
+<td>检测是到文件尾返回的EOF还是出错返回的EOF</td>
+</tr>
+</tbody></table>
+<h1 id="6-struct、union、enum"><a href="#6-struct、union、enum" class="headerlink" title="6. struct、union、enum"></a>6. struct、union、enum</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1. 注意struct成员是数组还是指针的问题</span><br><span class="line">    若是数组，存的是数组的大小</span><br><span class="line">    若是指针，存的是地址，地址指向其他地方，若要使用，记得用malloc</span><br><span class="line">2. 结构体的对齐问题</span><br><span class="line">3. union 中多种类型只占一份空间，可用来判别大端小端</span><br><span class="line">4. enum 枚举，为了增加程序的可读性，最好只使用，不要对其进行算术运算，不推荐使用</span><br></pre></td></tr></table></figure>
+
+<h1 id="7-typedef与-define"><a href="#7-typedef与-define" class="headerlink" title="7. typedef与#define"></a>7. typedef与#define</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. typedef只能用于类型</span><br><span class="line">2. typedef由编译器解释，#define由预处理器处理</span><br></pre></td></tr></table></figure>
+
+<h1 id="8-位操作"><a href="#8-位操作" class="headerlink" title="8. 位操作"></a>8. 位操作</h1><ol>
+<li>符号<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">～：取反</span><br><span class="line">&amp; | ^ 与 或 异或</span><br></pre></td></tr></table></figure></li>
+<li>掩码<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">MASK&#x3D;0x02</span><br><span class="line">flags &#x3D; flags &amp; MASK</span><br><span class="line">使用 MASK 中的 0 掩藏 flags 中的相应位</span><br></pre></td></tr></table></figure></li>
+<li>打开位<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">MASK&#x3D;0x02</span><br><span class="line">flags &#x3D; flags | MASK</span><br><span class="line">使用 MASK 中的 1 打开 flags 中的相应位</span><br></pre></td></tr></table></figure></li>
+<li>关闭位<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">MASK&#x3D;0x02</span><br><span class="line">flags &#x3D; flags &amp; ～MASK</span><br><span class="line">使用 MASK 中的 1取反后 关闭 flags 中的相应位</span><br></pre></td></tr></table></figure></li>
+<li>切换位<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">MASK&#x3D;0x02</span><br><span class="line">flags &#x3D; flags ^ MASK</span><br><span class="line">flags中对应 MASK 中的 为1的位置的数全部改变，1变为0,0变为1</span><br></pre></td></tr></table></figure></li>
+<li>检查位<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">MASK&#x3D;0x02</span><br><span class="line">(flags &amp; MASK)&#x3D;&#x3D;MASK</span><br><span class="line">检查 flags 中的某位或某几位是否为1</span><br></pre></td></tr></table></figure></li>
+<li>&lt;&lt; 左移 右移&gt;&gt;</li>
+<li>位字段<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">主要是在结构体中声明位大小</span><br><span class="line">struct &#123;</span><br><span class="line">    int a:1;</span><br><span class="line">    int b:1;</span><br><span class="line">&#125;</span><br><span class="line">本来应该占8字节，现在只占4字节，因为对齐原则，一个int至少4字节，但只使用了2位，其他的30位为0，不使用</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h1 id="9-预处理器"><a href="#9-预处理器" class="headerlink" title="9. 预处理器"></a>9. 预处理器</h1><ol>
+<li><p>#include,#ifdef,#ifndef </p>
+<ul>
+<li>常见就不用强调了</li>
+</ul>
+</li>
+<li><p>#if,#elif,#else,#endif  </p>
+<ul>
+<li>和if else 差不多，也是后面跟判断条件</li>
+</ul>
+</li>
+<li><p>#define</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">不推荐使用</span><br><span class="line">若定义变量，可以用const</span><br><span class="line">若想用宏函数，可以用内联</span><br><span class="line">若想定义类型，可以用typedef</span><br><span class="line">还有一些加 ## 的骚操作，，，感觉不是很必要，需要的时候再看吧</span><br></pre></td></tr></table></figure></li>
+<li><p>#undef   </p>
+<ul>
+<li>取消宏</li>
+</ul>
+</li>
+<li><p>#line和#error</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. 预定义宏有 __FILE__,__DATE__,__LINE__,__TIME__。字面意思</span><br><span class="line">2. #line 可以改变__FILE__,__LINE__</span><br><span class="line">3. #error 可以在编译期报错，放在#if等里面</span><br></pre></td></tr></table></figure></li>
+<li><p>#pragma  </p>
+<ul>
+<li>编译器设置，例如可以改变struct的对齐字节数</li>
+</ul>
+</li>
+</ol>
+<h1 id="10-C库"><a href="#10-C库" class="headerlink" title="10. C库"></a>10. C库</h1><ol>
+<li><p>数学库 math.h</p>
+</li>
+<li><p>断言库 assert.h  </p>
+<ul>
+<li>调试的时候用</li>
+</ul>
+</li>
+<li><p>string.h 中的memcpy(dest,src,n)和memmove(dest,src,n)的区别</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">传入参数的类别不同，memcpy假定两个字符串没有重叠，用register关键字声明</span><br><span class="line">memmove没有这个限制，所以感觉memmove比较好用</span><br></pre></td></tr></table></figure></li>
+<li><p>通用工具库</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1. qsort(s1,s2,mycompare);  </span><br><span class="line">    - 自己写比较函数</span><br><span class="line">2. exit()   </span><br><span class="line">    - 退出</span><br><span class="line">3. atexit(函数名) </span><br><span class="line">    - 在exit执行前，退出前执行某个函数，若注册多个函数，是按照栈的方式注册的，即后面注册的先执行。</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h1 id="11-各种小技巧"><a href="#11-各种小技巧" class="headerlink" title="11. 各种小技巧"></a>11. 各种小技巧</h1><h3 id="1-逗号"><a href="#1-逗号" class="headerlink" title="1. 逗号"></a>1. 逗号</h3><ul>
+<li>在C语言中，多个表达式可以用逗号分开，其中用逗号分开的表达式的值分别结算，但整个表达式的值是最后一个表达式的值。</li>
+<li>假设b=2,c=7,d=5,  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">a1&#x3D;(++b,c--,d+3);</span><br><span class="line">a2&#x3D;++b,c--,d+3;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>对于第一行代码，有三个表达式，用逗号分开，所以最终的值应该是最后一个表达式的值，也就是d+3，为8，所以a1=8。</li>
+<li>对于第二行代码，那么也是有三个表达式，这时的三个表达式为a2=++b、c–、d+3,(这是因为赋值运算符比逗号运算符优先级高)所以最终表达式的值虽然也为8，但a2=3。</li>
+</ul>
+</li>
+<li>注意：逗号运算的结合性是从左至右，完毕之后整个表达式的值是最后一个表达式的值。<ul>
+<li>例子：int a[2],x=2,y=5;<br>  a[0]=(x+3,y++,x++);那么最终结果是：a[0]=2 x=3 y=6;<br>  为何a[0]=2：因为(x++)是运算之后再自加<br>  a[1]=(x++,x+3,x+7);那么最终结果是：a[1]=11 ，x=4<br>  逗号运算是从左至右，所以先算x++,x从而变成4了，然后a[1]=4+7=11;</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"><i class="fa fa-tag">C++</i></a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E4%B8%8E%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="prev" title="机器学习与深度学习">
+      <i class="fa fa-chevron-left"></i> 机器学习与深度学习
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E3%80%8ACpp-Primer-Plus%E3%80%8B/" rel="next" title="《Cpp Primer Plus》">
+      《Cpp Primer Plus》 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%A4%84%E7%90%86"><span class="nav-text">1. 字符串处理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E5%AD%98%E5%82%A8%E7%B1%BB%E5%88%AB%E3%80%81%E9%93%BE%E6%8E%A5"><span class="nav-text">2. 存储类别、链接</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86"><span class="nav-text">3. 内存管理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-ANSI-C-%E9%99%90%E5%AE%9A%E7%AC%A6"><span class="nav-text">4. ANSI C 限定符</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C%E5%87%BD%E6%95%B0-FILE"><span class="nav-text">5. 文件操作函数 FILE*</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-struct%E3%80%81union%E3%80%81enum"><span class="nav-text">6. struct、union、enum</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-typedef%E4%B8%8E-define"><span class="nav-text">7. typedef与#define</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#8-%E4%BD%8D%E6%93%8D%E4%BD%9C"><span class="nav-text">8. 位操作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#9-%E9%A2%84%E5%A4%84%E7%90%86%E5%99%A8"><span class="nav-text">9. 预处理器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#10-C%E5%BA%93"><span class="nav-text">10. C库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#11-%E5%90%84%E7%A7%8D%E5%B0%8F%E6%8A%80%E5%B7%A7"><span class="nav-text">11. 各种小技巧</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%80%97%E5%8F%B7"><span class="nav-text">1. 逗号</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="不知自己无知"
+      src="/images/head.jpeg">
+  <p class="site-author-name" itemprop="name">不知自己无知</p>
+  <div class="site-description" itemprop="description">以阅读为生是一件很酷的事，以写作为生是一件更酷的事。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">57</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">53</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+    <!--
+    <div id="music163player">
+      <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=110 src="//music.163.com/outchain/player?type=0&id=5445280661&auto=0&height=90"></iframe>
+       </div>
+    -->
+  </aside>
+  
+  
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不知自己无知</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">346k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">5:14</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='200' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : true,
+      appId      : 'Dv4yd2JUuvVhLBe640B6m1jw-gzGzoHsz',
+      appKey     : 'sNdrMuVcw6jJzlz0HpXBNhdB',
+      placeholder: "来交流交流吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+    </div>
+  
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/miku.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":true},"react":{"opacity":1},"log":false});</script></body>
+</html>
+
+
+

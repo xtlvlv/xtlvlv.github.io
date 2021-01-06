@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head.jpeg">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xtlvlv.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":2,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="一、杂项1. progma once和ifndef ifndef是C++标准，针对代码，若是ifndef后面的名字有重复会出问题 pragma once是非标准，编译器自己实现，针对文件，若是有重复文件，还是会有重复包含问题">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《Cpp Primer Plus》">
+<meta property="og:url" content="https://xtlvlv.github.io/%E3%80%8ACpp-Primer-Plus%E3%80%8B/index.html">
+<meta property="og:site_name" content="不知自己无知">
+<meta property="og:description" content="一、杂项1. progma once和ifndef ifndef是C++标准，针对代码，若是ifndef后面的名字有重复会出问题 pragma once是非标准，编译器自己实现，针对文件，若是有重复文件，还是会有重复包含问题">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-01-06T04:27:30.000Z">
+<meta property="article:modified_time" content="2021-01-06T04:28:23.226Z">
+<meta property="article:author" content="不知自己无知">
+<meta property="article:tag" content="C++">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://xtlvlv.github.io/%E3%80%8ACpp-Primer-Plus%E3%80%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>《Cpp Primer Plus》 | 不知自己无知</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<!-- require MetingJS-->
+
+<script src="https://cdn.jsdelivr.net/npm/meting@2.0.1/dist/Meting.min.js"></script> 
+
+  <!--pjax：防止跳转页面音乐暂停-->
+ <script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.js"></script>
+  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">不知自己无知</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">53</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">12</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">57</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xtlvlv.github.io/%E3%80%8ACpp-Primer-Plus%E3%80%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpeg">
+      <meta itemprop="name" content="不知自己无知">
+      <meta itemprop="description" content="以阅读为生是一件很酷的事，以写作为生是一件更酷的事。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不知自己无知">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《Cpp Primer Plus》
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-01-06 12:27:30 / 修改时间：12:28:23" itemprop="dateCreated datePublished" datetime="2021-01-06T12:27:30+08:00">2021-01-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论数：</span>
+    
+    <a title="valine" href="/%E3%80%8ACpp-Primer-Plus%E3%80%8B/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/%E3%80%8ACpp-Primer-Plus%E3%80%8B/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>11k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>10 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="一、杂项"><a href="#一、杂项" class="headerlink" title="一、杂项"></a>一、杂项</h1><h3 id="1-progma-once和ifndef"><a href="#1-progma-once和ifndef" class="headerlink" title="1. progma once和ifndef"></a>1. progma once和ifndef</h3><ol>
+<li>ifndef是C++标准，针对代码，若是ifndef后面的名字有重复会出问题</li>
+<li>pragma once是非标准，编译器自己实现，针对文件，若是有重复文件，还是会有重复包含问题</li>
+</ol>
+<a id="more"></a>
+<h3 id="2-虚函数"><a href="#2-虚函数" class="headerlink" title="2. 虚函数"></a>2. 虚函数</h3><ol>
+<li>子类中重写基类的虚函数时，不要改变参数类型和数量，否则会覆盖。最好不要用默认参数</li>
+</ol>
+<h1 id="第三章：处理数据"><a href="#第三章：处理数据" class="headerlink" title="第三章：处理数据"></a>第三章：处理数据</h1><ol>
+<li>C++新增整型：unsigned long long, long long 至少64位</li>
+<li>using std::cout</li>
+<li>char类型<ul>
+<li>wchar_t: 处理超过8位的字符集，如日文汉子系统。cin/cout处理char流，不适合wchar_t,<br>可以用wcin/wcout。用L表示<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wchar_t a &#x3D; L&#39;c&#39;;</span><br></pre></td></tr></table></figure></li>
+<li>char16_t/char32_t: C++11新增类型，wchar_t的长度和特征随着实现而改变，不适合unicode编码，因此新增这两种类型<br>两种都是无符号的，分别用u/U表示<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">char16_t c16&#x3D;u&#39;a&#39;;</span><br><span class="line">char32_t c16&#x3D;U&#39;\U0000222B&#39;;</span><br><span class="line">U&quot;hello&quot;;   &#x2F;&#x2F;字符串常量</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>C++11的auto<ul>
+<li>和C中的auto不同，作用是编译器根据初始值自动推断数据类型</li>
+<li>处理简单类型不必要，用处一般是较复杂的类型，比如STL中的迭代器自动推断。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">std::vector&lt;int&gt; test;</span><br><span class="line">auto p&#x3D;test.begin();</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+</li>
+</ol>
+<h1 id="第四章：复合类型"><a href="#第四章：复合类型" class="headerlink" title="第四章：复合类型"></a>第四章：复合类型</h1><ol>
+<li>数组，char[]字符串，注意若要处理输入，注意\n是否在缓冲区内等等问题，看输入是否符合预期</li>
+<li>string(C++98标准)</li>
+<li>结构struct,枚举enum,共同体union</li>
+<li>指针数组，new int[10] 用delete[]释放，new int用delete释放</li>
+<li>自动存储，静态存储，动态存储。实际上就是局部变量存在栈区，static存在数据区，new的存在堆区</li>
+<li>数组的替代——vector,vector效率比[]低，但更安全，若想效率高点，可以用array&lt;int,5&gt; a;表示5个int类型的数组</li>
+</ol>
+<h1 id="第五章：循环和关系表达式"><a href="#第五章：循环和关系表达式" class="headerlink" title="第五章：循环和关系表达式"></a>第五章：循环和关系表达式</h1><ol>
+<li>基于范围的for循环(C++11)<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">double prices[5]&#x3D;&#123;1,2,3,4,5&#125;;</span><br><span class="line">for(double x:prices)&#123;</span><br><span class="line">    cout&lt;&lt;x&lt;&lt;endl;</span><br><span class="line">&#125;</span><br><span class="line">for(double &amp;x:prices)&#123;</span><br><span class="line">    x&#x3D;1;&#x2F;&#x2F;这是要修改prices里面的值的话，要加&amp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>其他的for(x;x;x){}, while(x){}, do{}while(x);， 没什么说的</li>
+</ol>
+<h1 id="第六章：分支语句与逻辑运算符"><a href="#第六章：分支语句与逻辑运算符" class="headerlink" title="第六章：分支语句与逻辑运算符"></a>第六章：分支语句与逻辑运算符</h1><ol>
+<li><p><cctype>库<br> 从C继承的（ctype.h）与字符相关的库</p>
+<table>
+<thead>
+<tr>
+<th>函数名称</th>
+<th>作用与返回值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>isalnum(c)</td>
+<td>若c是字母或数字，返回true</td>
+</tr>
+<tr>
+<td>其他的</td>
+<td>需要时自己搜吧，知道有这个库就ok了</td>
+</tr>
+<tr>
+<td>toupper(c)</td>
+<td>返回c的大写，不改变c</td>
+</tr>
+<tr>
+<td>tolower(c)</td>
+<td>返回c的小写，不改变c</td>
+</tr>
+</tbody></table>
+</li>
+</ol>
+<h1 id="第七、八章：函数"><a href="#第七、八章：函数" class="headerlink" title="第七、八章：函数"></a>第七、八章：函数</h1><ol>
+<li>函数指针，回调函数。可以用typedef简化函数声明</li>
+<li>内联函数inline，可以替代#define</li>
+<li>引用传值，默认参数</li>
+<li>函数重载，参数可以数量和类型不同。只有返回值类型不同不算重载</li>
+<li>函数模板,可以进行模板函数的重载，只要参数不一样就行 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">template&lt;class T,class T2&gt;</span><br><span class="line">T test(T a,T b)&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>函数模板具体化<br> 为了解决某些特殊类型的问题，比如结构体不能加减，可以单独写一个针对此结构体的类型函数，如下所示 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">template&lt;&gt; void test&lt;Student&gt;(Student,Student);</span><br></pre></td></tr></table></figure></li>
+<li>函数模板实例化<ul>
+<li>实例化和具体化不一样，实例化分为隐士和显示实例化，显示实例化如下，两者的书写格式主要是少个&lt;&gt;  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">template void test&lt;int&gt;(int,int);</span><br></pre></td></tr></table></figure></li>
+<li>实例化我理解是指定生成这种类型的函数，如上，生成一个参数为int的函数。不然的话得根据参数自己去生成</li>
+<li>具体化是在声明的时候用的，实例化实在代码执行中用的<br>(第二次看，，讲真没看懂这条笔记是啥意思，，然后又看了看书就又懂了。。。)</li>
+</ul>
+</li>
+<li>通过使用auto和decltype关键字，可以在模板函数中推导不确定的类型，这个需要的时候再查 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">template&lt;class T1,class T2&gt;</span><br><span class="line">auto gt(T1 x,T2 y) -&gt; decltype(x+y)&#123;</span><br><span class="line">    ...</span><br><span class="line">    return x+y;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;-&gt; decltype(x+y) 是后置返回类型声明，表示返回类型是x+y的类型</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h1 id="第九章：内存模型和名称空间"><a href="#第九章：内存模型和名称空间" class="headerlink" title="第九章：内存模型和名称空间"></a>第九章：内存模型和名称空间</h1><ol>
+<li><p>存储持续性</p>
+<ul>
+<li>自动</li>
+<li>静态</li>
+<li>动态</li>
+<li>线程存储持续性(C++11)，上三个和C一样，这个是和线程声明周期一样长的，用thread_local声明</li>
+</ul>
+</li>
+<li><p>作用域和链接性都和C差不多，已经做过笔记不再赘述</p>
+</li>
+<li><p>mutable 关键字声明的变量，即使加const也可以修改，用在结构体中</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">struct Student&#123;</span><br><span class="line">    int id;</span><br><span class="line">    mutable string name;</span><br><span class="line">&#125;;</span><br><span class="line">const Student s;</span><br><span class="line">&#x2F;&#x2F;s的id不能改，但是名字能改</span><br></pre></td></tr></table></figure></li>
+<li><p>函数链接性<br> 默认是外部链接<br> 加上static后就变为内部链接</p>
+</li>
+<li><p>名称空间</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">namespace lvkou&#123;</span><br><span class="line">    int id;</span><br><span class="line">    bool sex;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>using使用</p>
+<ul>
+<li>using声明 lvkou::id=1;</li>
+<li>using编译 using namespace lvkou;</li>
+<li>using替代typedef using xx=vector<int>;</li>
+</ul>
+</li>
+<li><p>匿名名称空间</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">namespace&#123;</span><br><span class="line">    int aa;</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;&#x2F;等价于,即将作用域限制与本文件</span><br><span class="line">static int aa;</span><br></pre></td></tr></table></figure>
+<h1 id="第十章：对象和类"><a href="#第十章：对象和类" class="headerlink" title="第十章：对象和类"></a>第十章：对象和类</h1></li>
+<li><p>默认构造</p>
+<ul>
+<li>不写构造函数的话自动生成默认构造</li>
+<li>使用：Student s=new Student;  //不加小括号代表使用默认构造——加小括号：Student()</li>
+<li>只有一个参数的构造函数，接受参数类型到类类型的隐式转换</li>
+<li>用explicit声明的构造函数，不能用于隐式转换</li>
+</ul>
+</li>
+<li><p>析构函数</p>
+<ul>
+<li>若有堆空间，需要自己写析构函数释放，否则使用默认的析构函数就行</li>
+<li>若是虚基类，一定要把析构函数声明为virtual</li>
+</ul>
+</li>
+<li><p>构造函数</p>
+<ul>
+<li>写在函数里的是赋值，不是初始化，写在函数列表后面的是初始化，初始化顺序和声明顺序一样，和写的顺序无关</li>
+<li>初始化列表不能用this指针</li>
+</ul>
+</li>
+<li><p>private,protect,public的用法区别得会</p>
+</li>
+<li><p>const成员函数<br> 声明为const的函数，只能读取类成员，不能改变类成员，若在类使用过程中定义了一个const的对象，则不能调用非const的成员函数</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">void show() const&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>this的使用</p>
+<ul>
+<li>一般在返回的时候使用，return *this，例如操作符重载</li>
+</ul>
+</li>
+<li><p>const成员变量</p>
+<ul>
+<li>在类内声明const, 同时要加上static</li>
+</ul>
+</li>
+</ol>
+<h1 id="第十一、十二章：使用类"><a href="#第十一、十二章：使用类" class="headerlink" title="第十一、十二章：使用类"></a>第十一、十二章：使用类</h1><ol>
+<li>运算符重载<ul>
+<li>++的两个重载注意一下，参数加int的是 ++i, 不加int的是i++</li>
+<li>仿函数：重载()运算符</li>
+<li>除了()、[]、-&gt;、=这四种不能重载为非成员函数外，其他函数都能写为非成员函数。</li>
+<li>根据类设计，如果不是必须，把操作符重载写为非成员函数更好一些，尤其是为类定义类型转换时<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Student operator&#x3D;(const Student&amp;)&#123;</span><br><span class="line"></span><br><span class="line">    return *this;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>友元<ul>
+<li>友元函数</li>
+<li>友元类</li>
+<li>友元成员函数<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;Time的hours是private的, 令该函数为Time类的友元就能访问了</span><br><span class="line">void operator&lt;&lt;(ostream&amp; os,const Time&amp; t)&#123;</span><br><span class="line">    os&lt;&lt;t.hours&lt;&lt;&quot;:&quot;&lt;&lt;&quot;t.minutes&quot;;</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;&#x2F;但上面这种情况不能处理 cout&lt;&lt;a&lt;&lt;b; 这种连续输出的情况</span><br><span class="line">&#x2F;&#x2F;因为上面相当于(cout&lt;&lt;a)&lt;&lt;b;   而(cout&lt;&lt;a)返回的不是ostream类型，修改如下：</span><br><span class="line">ostream&amp; operator&lt;&lt;(ostream&amp; os,const Time&amp; t)&#123;</span><br><span class="line">    os&lt;&lt;t.hours&lt;&lt;&quot;:&quot;&lt;&lt;&quot;t.minutes&quot;;</span><br><span class="line">    return os;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>拷贝构造/赋值构造<ul>
+<li>若有成员变量在堆区，要自己写拷贝构造函数进行深拷贝，否则只是浅拷贝</li>
+<li>赋值构造是重写=操作符，和拷贝构造类似，不过应该返回引用类型<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Student::Student(Student&amp; s)&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line">Student&amp; operator&#x3D;(const Student&amp; s)&#123;</span><br><span class="line">    ...</span><br><span class="line">    return *this;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>调用拷贝构造的三种情况<ul>
+<li>使用</li>
+<li>对象参数</li>
+<li>返回对象</li>
+</ul>
+</li>
+<li>析构函数的调用情况<ul>
+<li>局部，区域结束调用</li>
+<li>static，程序结束调用</li>
+<li>new, 手动delete，否则等到程序结束，由操作系统释放</li>
+</ul>
+</li>
+<li>定位new<br> 我去还有这种操作，，，第一次学<br> 就是指定new 后对象放置的空间 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">char* buf&#x3D;new char[100];</span><br><span class="line">Student* s1,*s2;</span><br><span class="line">s1&#x3D;new(buf) Student;</span><br><span class="line">s2&#x3D;new(buf) Student;</span><br><span class="line">&#x2F;&#x2F;s2把s1覆盖了</span><br></pre></td></tr></table></figure></li>
+<li>C++11允许类内初始化，相当于默认值</li>
+</ol>
+<h1 id="第十三章：类继承"><a href="#第十三章：类继承" class="headerlink" title="第十三章：类继承"></a>第十三章：类继承</h1><ol>
+<li><p>继承is-a, 包含has-a</p>
+</li>
+<li><p>三种继承, 只有public能被对象调用</p>
+<table>
+<thead>
+<tr>
+<th>基类访问特性</th>
+<th>继承方法</th>
+<th>子类访问特性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>public</td>
+<td>public</td>
+<td>public</td>
+</tr>
+<tr>
+<td>protect</td>
+<td>-</td>
+<td>protect</td>
+</tr>
+<tr>
+<td>private</td>
+<td>-</td>
+<td>no acess</td>
+</tr>
+<tr>
+<td>public</td>
+<td>protect</td>
+<td>protect</td>
+</tr>
+<tr>
+<td>protect</td>
+<td>-</td>
+<td>protect</td>
+</tr>
+<tr>
+<td>private</td>
+<td>-</td>
+<td>no acess</td>
+</tr>
+<tr>
+<td>public</td>
+<td>private</td>
+<td>no acess</td>
+</tr>
+<tr>
+<td>protect</td>
+<td>-</td>
+<td>no acess</td>
+</tr>
+<tr>
+<td>private</td>
+<td>-</td>
+<td>no acess</td>
+</tr>
+</tbody></table>
+<ul>
+<li>无语，Markdown不支持单元格合并，写html又觉得太麻烦了</li>
+</ul>
+</li>
+<li><p>构造</p>
+<ul>
+<li>派生类先调用基类构造函数，再调用自己的构造函数</li>
+<li>若基类构造函数需要参数，在构造函数的初始化列表处传过去</li>
+</ul>
+</li>
+<li><p>多态</p>
+<ul>
+<li>静态多态：重写基类方法，注意重写和重载的区别</li>
+<li>动态多态：基类使用虚方法，注意若有虚方法，基类的析构函数最好也声明为virtual<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">- 为什么声明为虚析构？</span><br><span class="line">    因为若不声明，则派生类对象结束后会调用基类的析构方法，而不会调用自己的，可能造成内存泄露</span><br><span class="line">- 为什么叫动态？</span><br><span class="line">    若基类存在虚方法，则会对其对象添加一个隐藏成员，保存一个指向函数地址数组的指针，这种数组叫虚函数表，表项为函数地址。在创建对象时，也继承虚表，若是派生类对象，则修改对应函数的地址，这样会额外占些空间，且程序速度降低</span><br><span class="line">- 虚方法在派生类中不一定非要重写，虚函数表项保留基类函数地址，但不重写的话也没必要定义为派生类</span><br><span class="line">- 构造函数不能是虚函数</span><br><span class="line">- 如果重定义时和基类的参数不符合，可能会有警告。会覆盖基类的这个函数，不是重载</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>静态联编和动态联编</p>
+<ul>
+<li>动态联编，还是有虚继承的时候，用指针运行时才确定对象类型</li>
+<li>静态联编，不用指针，直接使用对象，编译期间确定对象类型<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Base *b&#x3D; new Son;&#x2F;&#x2F;动态</span><br><span class="line">Base b; &#x2F;&#x2F;确定为Base基类类型了</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>抽象基类</p>
+<ul>
+<li>纯虚方法，也叫接口，只定义，在子类中必须重写</li>
+<li>顶基类一般全部定义为接口<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">virtual void eat3()&#x3D;0;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+</li>
+</ol>
+<h1 id="第十四章：C-中的代码重用"><a href="#第十四章：C-中的代码重用" class="headerlink" title="第十四章：C++中的代码重用"></a>第十四章：C++中的代码重用</h1><ol>
+<li>通常，包含，私有继承，公有继承用于实现has-a的关系</li>
+<li>最好使用包含，除非要重新定义虚函数，或者要用到基类的protect成员，否则用包含，容易理解</li>
+<li>多重继承，典型的菱形继承问题，可以用虚基类，xxx:virtual public name{};</li>
+<li>类模板 template<class T></li>
+<li>模板的具体化：隐式实例化，显式实例化，显式具体化。上面说过，不再赘述</li>
+<li>模板别名 using aaa=std::vector<int></li>
+<li>模板友元，非模板 友元，约束模板友元，非约束模板友元。这个需要的时候再细看。</li>
+</ol>
+<h1 id="第十五章：友元，异常和其他"><a href="#第十五章：友元，异常和其他" class="headerlink" title="第十五章：友元，异常和其他"></a>第十五章：友元，异常和其他</h1><ol>
+<li>友元类的使用</li>
+<li>嵌套类的使用</li>
+<li>异常处理<ul>
+<li>abord(),stdlib.h库，直接退出程序，需要程序员自己判断什么时候调用</li>
+<li>返回错误码，在函数参数用用一个参数传指针或引用来存错误码，还是需要程序员自己判断<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">bool test(int a,int* ERR_CODE)&#123;</span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>异常机制<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;捕获异常</span><br><span class="line">try&#123;</span><br><span class="line"></span><br><span class="line">&#125;catch(char* s)&#123;</span><br><span class="line">    cout&lt;&lt;s&lt;&lt;endl;</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;&#x2F;抛出异常</span><br><span class="line">if(a&#x3D;&#x3D;0)&#123;</span><br><span class="line">    throw &quot;a is 0&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>return 和 throw的不同处理方式<ul>
+<li>return返回上一个调用此函数的函数</li>
+<li>throw一直往上找到catch的语句，没有就abort()</li>
+</ul>
+</li>
+<li>基类引用可以执行派生类对象，这个在多重继承中有用，throw()参数若是对象的话，不能先捕获基类引用</li>
+<li>exception类，所有异常类的基类 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">try&#123;</span><br><span class="line">    ......</span><br><span class="line">&#125;catch(exception&amp; e)&#123;</span><br><span class="line">    cout&lt;&lt;e.what()&lt;&lt;endl;   &#x2F;&#x2F;输入错误信息</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>new 的异常处理 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> &#x2F;&#x2F;new 失败时返回null</span><br><span class="line">int* a&#x3D;new(std::nothrow) int;    </span><br></pre></td></tr></table></figure></li>
+<li>RTTI 运行阶段类型识别(Runtime Type Identification)<ul>
+<li>注意:RTTI只适用于包含虚函数的类</li>
+<li>三个支持RTTI的元素<ul>
+<li>dynamic_cast 运算符使用一个指向基类的指针来生成一个指向派生类的指针</li>
+<li>typeid，返回一个指出对象类型的值</li>
+<li>type_info，结构存储有关特定类型的值</li>
+</ul>
+</li>
+<li>dynamic_cast<ul>
+<li>它主要是确保类型转换的安全性<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Base *b&#x3D;new Base;</span><br><span class="line">Person *p&#x3D;new Person;</span><br><span class="line">Student *s&#x3D;new Student; &#x2F;&#x2F;注意这三者是依次继承的</span><br><span class="line">Student *p1&#x3D;(Student*)s;    &#x2F;&#x2F;安全的</span><br><span class="line">Student *p2&#x3D;(Student*)b;    &#x2F;&#x2F;不安全</span><br><span class="line">Person* p3&#x3D;(Student*)s;     &#x2F;&#x2F;安全</span><br><span class="line">&#x2F;&#x2F;用dynamic_cast转换后，不安全的就会返回null</span><br><span class="line">Person* s&#x3D;dynamic_cast&lt;Person*&gt;(b)</span><br><span class="line">&#x2F;&#x2F;指针b指向的类型是否可以转换为Person*类型，若果可以转换成功，不行的话返回null</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>typeid(obj)==typeid(obj2),通过这种方式判断是不是同一个类，typeid返回一个type_info类型，能获得对象信息</li>
+</ul>
+</li>
+<li>更严格的类型转换<ul>
+<li>dynamic_cast</li>
+<li>const_cast    把const改为非const</li>
+<li>static_cast   </li>
+<li>reinterpret_cast</li>
+</ul>
+</li>
+</ol>
+<h1 id="第十六章：string类和标准模板库"><a href="#第十六章：string类和标准模板库" class="headerlink" title="第十六章：string类和标准模板库"></a>第十六章：string类和标准模板库</h1><ol>
+<li>string的几种构造函数<ul>
+<li>字符串</li>
+<li>迭代器</li>
+<li>n个字符</li>
+<li>初始化列表(C++11)</li>
+<li>截取字符串</li>
+</ul>
+</li>
+<li>find的几种用法</li>
+<li>size(),capacity(),reserve()的区别<ul>
+<li>reserve()是请求最小内存大小</li>
+<li>capacity()是返回总内存大小</li>
+<li>size()是使用的元素个数</li>
+</ul>
+</li>
+<li>智能指针<ul>
+<li>auto_ptr  已弃用，因为可能会有问题，例如把指针赋值给另一个指针后，上一个指针就失效了，但还存在  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;例</span><br><span class="line">unique&lt;Student&gt; p&#x3D;new Student;</span><br><span class="line">unique&lt;Student&gt; q;</span><br><span class="line">q&#x3D;p;    &#x2F;&#x2F;这个赋值会让p失效，万一以后使用p的话就会出错</span><br><span class="line">    &#x2F;&#x2F;为什么让p失效？为了防止以后对同一对象调用两次析构函数</span><br><span class="line">        &#x2F;&#x2F;用unique_ptr的话这里编译不通过，若想赋值的话得用move()</span><br><span class="line">q&#x3D;move(p);</span><br></pre></td></tr></table></figure></li>
+<li>unique_ptr    auto_ptr的替代品</li>
+<li>share_ptr     能多个指针指向同一对象  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">unique&lt;Student&gt; p&#x3D;new Student;</span><br></pre></td></tr></table></figure></li>
+<li>注意，auto_ptr和share_ptr只适用于new分配的内存，不适用于new[]。unique两种都适用</li>
+</ul>
+</li>
+<li>vector的使用<ul>
+<li>增删改查</li>
+<li>for_each(v.begin(),v.end(),dosomething);   对每个元素执行dosomething操作</li>
+<li>random_shuffle(v.begin(),v.end());    对v中元素打乱排序</li>
+<li>sort(v.begin(),v.end(),compare);  快排，默认从小到大</li>
+<li>基于范围的for循环  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">for(auto &amp;x:v)&#123;</span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>注意迭代器的本质是指针，某些地方可以用指针代替迭代器，注意是某些地方</li>
+<li>cbegin()获得const迭代器，不能修改指向的值</li>
+<li>rbegin()等于end()，但二者类型不同</li>
+</ul>
+</li>
+<li>迭代器类型<ul>
+<li>输入迭代器</li>
+<li>输出迭代器  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;这个可以用于输出vector中的元素,等价于把</span><br><span class="line">copy(v.begin(),v.end(),ostream_iterator&lt;int&gt;(cout,&quot; &quot;))</span><br><span class="line">&#x2F;&#x2F;把v中的元素拷贝到输出迭代器，等价于对每个元素执行 cout&lt;&lt;v[i]&lt;&lt;&quot; &quot;;</span><br></pre></td></tr></table></figure></li>
+<li>正向迭代器</li>
+<li>双向迭代器</li>
+<li>随即访问迭代器</li>
+</ul>
+</li>
+<li>容器类型<ul>
+<li>序列容器<ul>
+<li>vector</li>
+<li>deque</li>
+<li>list 双向链表，容器插入或删除后，迭代器指向元素不变</li>
+<li>forward_list(C++11)   单链表，功能没有list强，但简单紧凑</li>
+<li>queue</li>
+<li>priority_queue    默认底层类是vector，总把最大元素放到队首，也可以自定义首部元素规则</li>
+<li>stack</li>
+<li>array(C++11)</li>
+</ul>
+</li>
+<li>关联容器<ul>
+<li>set</li>
+<li>multiset</li>
+<li>map</li>
+<li>multimap</li>
+</ul>
+</li>
+<li>无序关联容器<br>  关联容器底层实现是红黑树，无序关联容器底层实现是哈希表<ul>
+<li>unodered_set</li>
+<li>unordered_multiset</li>
+<li>unorder_map</li>
+<li>unordered_multimap</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>函数对象（仿函数）<ul>
+<li>transform(v.begin(),v.end(),v2.begin(),out,plus&lt;&gt;()) , 更多transform学STL时再细写</li>
+<li>看了一些例子，觉得transform用熟练了，无敌啊</li>
+</ul>
+</li>
+<li>算法组<ul>
+<li>非修改式序列操作  如find,for_each等</li>
+<li>修改式序列操作    如transform,random_shuffle,copy等</li>
+<li>排序和相关操作    如sort等</li>
+<li>通用数字运算  前三个在<algorithm>,这个在<numeric></li>
+</ul>
+</li>
+<li>其他库<ul>
+<li>valarray库<ul>
+<li>能方便的对数组内的数值进行计算，指出sum(),max(),min()等的计算。</li>
+<li>没有.begin() .end()函数，想用可以 sort(begin(obj),end(obj));</li>
+<li>用vectoc存数据，复制到valarray里面进行计算 </li>
+</ul>
+</li>
+</ul>
+</li>
+<li>模板initializer_list(C++11)</li>
+</ol>
+<h1 id="第十七章：输入输出和文件"><a href="#第十七章：输入输出和文件" class="headerlink" title="第十七章：输入输出和文件"></a>第十七章：输入输出和文件</h1><ol>
+<li><p>输出格式控制：cout.width(5)等，但感觉不如printf方便好记</p>
+</li>
+<li><p>iomanip，专门控制输出格式的头文件，常用的有setw(),setprecision(),setfill()</p>
+</li>
+<li><p>文件io,要包含&lt;ifsteam&gt;</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">ofstream fout;</span><br><span class="line">fout.open(&quot;xxx.txt&quot;); </span><br><span class="line">fout&lt;&lt;&quot;hello word!&quot;;</span><br><span class="line">fout.close();</span><br><span class="line">string rel;</span><br><span class="line">ifstream fin;</span><br><span class="line">fin.open(&quot;xxx.txt&quot;);</span><br><span class="line">fin&gt;&gt;rel;</span><br><span class="line">fin.close();</span><br></pre></td></tr></table></figure></li>
+<li><p>流状态检查</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">if(!fin.is_open())&#123;</span><br><span class="line">    ......&#x2F;&#x2F;打开失败</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>文件模式</p>
+<table>
+<thead>
+<tr>
+<th>常量</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ios_base::in</td>
+<td>读文件</td>
+</tr>
+<tr>
+<td>ios_base::out</td>
+<td>写文件</td>
+</tr>
+<tr>
+<td>ios_base::ate</td>
+<td>打开文件并移到文件尾</td>
+</tr>
+<tr>
+<td>ios_base::app</td>
+<td>追加到文件尾</td>
+</tr>
+<tr>
+<td>ios_base::trunc</td>
+<td>如果文件存在，则截断文件</td>
+</tr>
+<tr>
+<td>ios_base::binary</td>
+<td>二进制文件</td>
+</tr>
+</tbody></table>
+<pre><code> 输入流的默认为ios_base::in;
+ 输出流的默认为ios_base::out|ios_base::trunc</code></pre>
+</li>
+<li><p>讲真C++文件操作看着真费劲，不如fread,fwrite或者read,write</p>
+</li>
+</ol>
+<h1 id="第十八章：C-新标准"><a href="#第十八章：C-新标准" class="headerlink" title="第十八章：C++新标准"></a>第十八章：C++新标准</h1><ol>
+<li>复习前面介绍过的C++11<ul>
+<li>新类型 long long ,unsigned long long</li>
+<li>统一的初始化，可以用{1,2,3}列表初始化，<ul>
+<li>窄缩，禁止将数值赋给无法存储它的数据类型</li>
+<li>std::initializer_list</li>
+</ul>
+</li>
+<li>声明<ul>
+<li>auto</li>
+<li>decltype(x) y,将y声明为和x一个类型，在定义模板时很有用<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">template&lt;class T,class U&gt;</span><br><span class="line">auto test(T t,U u) -&gt; decltype(T*U)&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>返回类型后置，如上代码例子，专门用于模板这种</li>
+<li>模板别名 using xx=xxxx; 代替typedef</li>
+<li>nullptr,C++11的空指针</li>
+</ul>
+</li>
+<li>智能指针 unique_ptr,shared_ptr,weak_ptr</li>
+<li>异常规范的修改<ul>
+<li>不能再指明函数可能引发的异常  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">void test() throw(bad_exp)&#123;</span><br><span class="line"></span><br><span class="line">&#125;&#x2F;&#x2F;错误</span><br></pre></td></tr></table></figure></li>
+<li>可以声明不会产生异常  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">void test() noexcept&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>作用域内枚举  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">enum&#123;a,b,c&#125;     &#x2F;&#x2F;traditional form</span><br><span class="line">enum class a_new&#123;a,b,c&#125; &#x2F;&#x2F;new</span><br><span class="line">enum struce b_new&#123;a,b,c&#125;    &#x2F;&#x2F;new</span><br><span class="line">&#x2F;&#x2F;可以根据类名来选择枚举名，以前不能用重名，现在可以了</span><br></pre></td></tr></table></figure></li>
+<li>对类的修改<ul>
+<li>explicit  //对构造函数声明，禁止隐式转换</li>
+<li>类内成员初始化，可以在创建类的时候初始化成员，当做默认值</li>
+</ul>
+</li>
+<li>模板和STL方面的修改<ul>
+<li>基于范围的for循环 for(auto x:v){……}</li>
+<li>新增的STL容器 forward_list,unordered_系列，array</li>
+<li>新的STL方法   cbegin(),cend(),const迭代器</li>
+<li>valarray升级，新加了begin(),end(),使得STL算法可以应用在上面</li>
+<li>摒弃export</li>
+<li>尖括号<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">std::vector&lt;&lt;vector&lt;int&gt; &gt; &#x2F;&#x2F;以前为了怕识别成&gt;&gt;,后面要用空格隔开，C++11不用了</span><br><span class="line">std::vector&lt;&lt;vector&lt;int&gt;&gt; &#x2F;&#x2F;C++11这样写也行</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>右值引用<br>  &amp;&amp; 声明，引用等号右边的值  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">int &amp;&amp;a&#x3D;x+y;</span><br><span class="line">&#x2F;&#x2F;a为x+y的结果，以后x+y改变，a也不会变</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>移动构造和右值引用<ul>
+<li>主要是利用右值引用写构造函数和赋值函数</li>
+<li>对程序员来说重要的不是写右值引用的代码，而是使用利用右值引用实现移动语义库的代码</li>
+</ul>
+</li>
+<li>新的类功能</li>
+</ol>
+<ul>
+<li><p>特殊的成员函数，在原有的四个默认情况下新增了两个</p>
+<ul>
+<li>移动构造函数</li>
+<li>移动赋值函数<br>原来的四个是：</li>
+<li>默认构造</li>
+<li>默认拷贝构造</li>
+<li>默认赋值</li>
+<li>默认析构</li>
+</ul>
+</li>
+<li><p>默认的方法和禁用的方法</p>
+<ul>
+<li>Student() =default;   //声明默认构造</li>
+<li>Student(const Student&amp;) =delete   //禁止拷贝构造，也可以设置成私有，但不如这个易理解</li>
+<li>委托构造，构造中用构造</li>
+<li>继承构造函数，就是如果自己没写，就调用基类的相应构造方法，不过派生类的成员变量要通过初始化列表自己初始化<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Student(int id,string name,bool boy):b(boy),Base(id,name)&#123;</span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>管理虚方法：override,final</p>
+<ul>
+<li>要解决的问题：如果派生类重写了基类的虚方法，但是参数不同，这样不会重载，是直接覆盖，基类的那个就不能用了，为了解决这个问题，引入override。</li>
+<li>而final是禁止派生类重写这个虚方法</li>
+</ul>
+</li>
+<li><p>override是在派生类中使用的</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;在派生类中</span><br><span class="line">virtual void test() override&#123;</span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>final是在基类中使用的</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">virtual void test() final&#123;</span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>Lambda函数</p>
+<ul>
+<li>格式  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[]() -&gt;double&#123;...&#125;</span><br><span class="line">&#x2F;&#x2F;返回double的lambda,也可以不声明返回类型，由decltype自动推断</span><br></pre></td></tr></table></figure></li>
+<li>用于函数对象，函数指针的地方，如STL算法</li>
+<li>为什么用lambda  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">STL中常用为比较表达式替代函数对象</span><br><span class="line">[&#x3D;],[&amp;] 分别传值和传引用访问所有自动变量</span><br><span class="line">[xx]传值使用xx变量，加&amp;传引用</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>包装器/适配器</p>
+</li>
+<li><p>可变参数模板</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">template&lt;class T,class... Args&gt;</span><br><span class="line">void show_list(const T&amp; value,Args&amp;... args)&#123;</span><br><span class="line">    &#x2F;&#x2F;每次只取args里的一个值</span><br><span class="line">    cout&lt;&lt;value&lt;&lt;&quot;, &quot;;</span><br><span class="line">    show_list(args...);&#x2F;&#x2F;这样递归盗用</span><br><span class="line">&#125;</span><br><span class="line">template&lt;class T&gt;</span><br><span class="line">void show_list(const T&amp; value)&#123;</span><br><span class="line">    &#x2F;&#x2F;参数只有一个值的情况下，结束递归</span><br><span class="line">    cout&lt;&lt;value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>并行编程</p>
+<ul>
+<li>thread_local把变量声明为和线程生命周期一样长</li>
+<li>线程支持库：thread,mutex,condition_variable,future</li>
+</ul>
+</li>
+<li><p>新增的库</p>
+<ul>
+<li>tuple:扩展的pair，可以存储多个类型不同的值</li>
+<li>regex:正则表达式库</li>
+<li>chrono:处理时间间隔</li>
+<li>ratio:有理算数库，对有理数的算术运算</li>
+</ul>
+</li>
+<li><p>低级编程</p>
+<ul>
+<li>不是质量低级，而是更底层。</li>
+<li>constexpr 机制让编译器能够在编译阶段计算结果为常量的表达式</li>
+</ul>
+</li>
+<li><p>杂项</p>
+<ul>
+<li>assert,static_assert</li>
+<li>元编程加强</li>
+</ul>
+</li>
+<li><p>语言变化</p>
+<ul>
+<li>boost,tr1,标准库的实验场</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"><i class="fa fa-tag">C++</i></a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E3%80%8AC-Primer-Plus%E3%80%8B/" rel="prev" title="《C Primer Plus》">
+      <i class="fa fa-chevron-left"></i> 《C Primer Plus》
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E3%80%8AEffective-C-%E3%80%8B/" rel="next" title="《Effective C++》">
+      《Effective C++》 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E6%9D%82%E9%A1%B9"><span class="nav-text">一、杂项</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-progma-once%E5%92%8Cifndef"><span class="nav-text">1. progma once和ifndef</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%99%9A%E5%87%BD%E6%95%B0"><span class="nav-text">2. 虚函数</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E7%AB%A0%EF%BC%9A%E5%A4%84%E7%90%86%E6%95%B0%E6%8D%AE"><span class="nav-text">第三章：处理数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E7%AB%A0%EF%BC%9A%E5%A4%8D%E5%90%88%E7%B1%BB%E5%9E%8B"><span class="nav-text">第四章：复合类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%BA%94%E7%AB%A0%EF%BC%9A%E5%BE%AA%E7%8E%AF%E5%92%8C%E5%85%B3%E7%B3%BB%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-text">第五章：循环和关系表达式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E5%85%AD%E7%AB%A0%EF%BC%9A%E5%88%86%E6%94%AF%E8%AF%AD%E5%8F%A5%E4%B8%8E%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-text">第六章：分支语句与逻辑运算符</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%B8%83%E3%80%81%E5%85%AB%E7%AB%A0%EF%BC%9A%E5%87%BD%E6%95%B0"><span class="nav-text">第七、八章：函数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%B9%9D%E7%AB%A0%EF%BC%9A%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E5%92%8C%E5%90%8D%E7%A7%B0%E7%A9%BA%E9%97%B4"><span class="nav-text">第九章：内存模型和名称空间</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E5%8D%81%E7%AB%A0%EF%BC%9A%E5%AF%B9%E8%B1%A1%E5%92%8C%E7%B1%BB"><span class="nav-text">第十章：对象和类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E5%8D%81%E4%B8%80%E3%80%81%E5%8D%81%E4%BA%8C%E7%AB%A0%EF%BC%9A%E4%BD%BF%E7%94%A8%E7%B1%BB"><span class="nav-text">第十一、十二章：使用类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AB%A0%EF%BC%9A%E7%B1%BB%E7%BB%A7%E6%89%BF"><span class="nav-text">第十三章：类继承</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E5%8D%81%E5%9B%9B%E7%AB%A0%EF%BC%9AC-%E4%B8%AD%E7%9A%84%E4%BB%A3%E7%A0%81%E9%87%8D%E7%94%A8"><span class="nav-text">第十四章：C++中的代码重用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E5%8D%81%E4%BA%94%E7%AB%A0%EF%BC%9A%E5%8F%8B%E5%85%83%EF%BC%8C%E5%BC%82%E5%B8%B8%E5%92%8C%E5%85%B6%E4%BB%96"><span class="nav-text">第十五章：友元，异常和其他</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E5%8D%81%E5%85%AD%E7%AB%A0%EF%BC%9Astring%E7%B1%BB%E5%92%8C%E6%A0%87%E5%87%86%E6%A8%A1%E6%9D%BF%E5%BA%93"><span class="nav-text">第十六章：string类和标准模板库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E5%8D%81%E4%B8%83%E7%AB%A0%EF%BC%9A%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E5%92%8C%E6%96%87%E4%BB%B6"><span class="nav-text">第十七章：输入输出和文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E5%8D%81%E5%85%AB%E7%AB%A0%EF%BC%9AC-%E6%96%B0%E6%A0%87%E5%87%86"><span class="nav-text">第十八章：C++新标准</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="不知自己无知"
+      src="/images/head.jpeg">
+  <p class="site-author-name" itemprop="name">不知自己无知</p>
+  <div class="site-description" itemprop="description">以阅读为生是一件很酷的事，以写作为生是一件更酷的事。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">57</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">53</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+    <!--
+    <div id="music163player">
+      <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=110 src="//music.163.com/outchain/player?type=0&id=5445280661&auto=0&height=90"></iframe>
+       </div>
+    -->
+  </aside>
+  
+  
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不知自己无知</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">346k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">5:14</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='200' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : true,
+      appId      : 'Dv4yd2JUuvVhLBe640B6m1jw-gzGzoHsz',
+      appKey     : 'sNdrMuVcw6jJzlz0HpXBNhdB',
+      placeholder: "来交流交流吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+    </div>
+  
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/miku.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":true},"react":{"opacity":1},"log":false});</script></body>
+</html>
+
+
+

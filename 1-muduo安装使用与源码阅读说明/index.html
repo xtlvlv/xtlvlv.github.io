@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head.jpeg">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xtlvlv.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":2,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="1.源码阅读说明 在具有C++基础和Linux系统与网络编程基础的情况下阅读muduo源码,如果对Linux网络编程不熟悉,最好先学习一下Linux网络编程  阅读时可以参考&lt;muduo网络库使用手册&gt;,这个一搜就能搜到,对muduo整体的框架有讲解,能帮助理解Buffer,TcpConnection等类,可以先读读这个再看源码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="1.muduo安装使用与源码阅读说明">
+<meta property="og:url" content="https://xtlvlv.github.io/1-muduo%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A8%E4%B8%8E%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E8%AF%B4%E6%98%8E/index.html">
+<meta property="og:site_name" content="不知自己无知">
+<meta property="og:description" content="1.源码阅读说明 在具有C++基础和Linux系统与网络编程基础的情况下阅读muduo源码,如果对Linux网络编程不熟悉,最好先学习一下Linux网络编程  阅读时可以参考&lt;muduo网络库使用手册&gt;,这个一搜就能搜到,对muduo整体的框架有讲解,能帮助理解Buffer,TcpConnection等类,可以先读读这个再看源码">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xtlvlv.github.io/1-muduo%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A8%E4%B8%8E%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E8%AF%B4%E6%98%8E/muduo%E7%B1%BB%E5%9B%BE.png">
+<meta property="article:published_time" content="2021-01-06T04:36:56.000Z">
+<meta property="article:modified_time" content="2021-01-06T04:56:13.819Z">
+<meta property="article:author" content="不知自己无知">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="muduo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xtlvlv.github.io/1-muduo%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A8%E4%B8%8E%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E8%AF%B4%E6%98%8E/muduo%E7%B1%BB%E5%9B%BE.png">
+
+<link rel="canonical" href="https://xtlvlv.github.io/1-muduo%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A8%E4%B8%8E%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E8%AF%B4%E6%98%8E/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>1.muduo安装使用与源码阅读说明 | 不知自己无知</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<!-- require MetingJS-->
+
+<script src="https://cdn.jsdelivr.net/npm/meting@2.0.1/dist/Meting.min.js"></script> 
+
+  <!--pjax：防止跳转页面音乐暂停-->
+ <script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.js"></script>
+  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">不知自己无知</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">53</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">12</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">57</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xtlvlv.github.io/1-muduo%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A8%E4%B8%8E%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E8%AF%B4%E6%98%8E/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpeg">
+      <meta itemprop="name" content="不知自己无知">
+      <meta itemprop="description" content="以阅读为生是一件很酷的事，以写作为生是一件更酷的事。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不知自己无知">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          1.muduo安装使用与源码阅读说明
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-01-06 12:36:56 / 修改时间：12:56:13" itemprop="dateCreated datePublished" datetime="2021-01-06T12:36:56+08:00">2021-01-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">网络编程</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论数：</span>
+    
+    <a title="valine" href="/1-muduo%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A8%E4%B8%8E%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E8%AF%B4%E6%98%8E/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/1-muduo%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A8%E4%B8%8E%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E8%AF%B4%E6%98%8E/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="1-源码阅读说明"><a href="#1-源码阅读说明" class="headerlink" title="1.源码阅读说明"></a>1.源码阅读说明</h1><ol>
+<li><p>在具有C++基础和Linux系统与网络编程基础的情况下阅读muduo源码,如果对Linux网络编程不熟悉,最好先学习一下Linux网络编程</p>
+</li>
+<li><p>阅读时可以参考&lt;muduo网络库使用手册&gt;,这个一搜就能搜到,对muduo整体的框架有讲解,能帮助理解Buffer,TcpConnection等类,可以先读读这个再看源码</p>
+<a id="more"></a></li>
+<li><p>这里写的代码阅读笔记,只是对阅读源码的辅助,对各个类的功能和各函数难理解的地方做一些注释讲解,可以完全按照本人的阅读顺序,从base–&gt;net–&gt;httpserver–&gt;example文件夹顺序阅读,每个文件夹里面的都按照顺序阅读,结合我自身的经验是循序渐进的阅读学习.下面是CSDN博客目录,推荐按如下顺序阅读:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99935275">2.muduo学习笔记之base_Timestamp.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99935311">3.muduo学习笔记之base_Atomic.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99935453">4.muduo学习笔记之base_Exception.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99935505">5.muduo学习笔记之base_Mutex.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99935627">6.muduo学习笔记之base_Condition.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99935708">7.muduo学习笔记之base_CountDownLatch.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99935783">8.muduo学习笔记之base_CurrentThread.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99935837">9.muduo学习笔记之base_Thread.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99935905">10.muduo学习笔记之base_BlockingQueue.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99935946">11.muduo学习笔记之base_BoundedBlockingQueue.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99936017">12.muduo学习笔记之base_ThreadPool.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99936083">13.muduo学习笔记之base_Singleton.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99936122">14.muduo学习笔记之base_ThreadLocal.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99936171">15.muduo学习笔记之base_ThreadLocalSingleton.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99936218">16.muduo学习笔记之base_LogStream.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99936271">17.muduo学习笔记之base_Logging.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99936318">18.muduo学习笔记之base_FileUtil.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99936380">19.muduo学习笔记之base_LogFile.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99936425">20.muduo学习笔记之base_其他.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99936940">21.muduo学习笔记之net_Callback.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99936991">22.muduo学习笔记之net_Endian.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99937029">23.muduo学习笔记之net_InetAddress.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99937065">24.muduo学习笔记之net_SocketsOps.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99937165">25.muduo学习笔记之net_Socket.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99937285">26.muduo学习笔记之net_Timer.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99937339">27.muduo学习笔记之net_TimerId.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99937419">28.muduo学习笔记之net_TimerQueue.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99937485">29.muduo学习笔记之net_EventLoop.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99937766">30.muduo学习笔记之net_Channel.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99938635">31.muduo学习笔记之net_EventLoopThread.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99939239">32.muduo学习笔记之net_Acceptor.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99939342">33.muduo学习笔记之net_TcpConnection.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99939509">34.muduo学习笔记之net_TcpServer.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99939602">35.muduo学习笔记之net_EventLoopThreadPool.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99939751">36.muduo学习笔记之net_Buffer.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99943070">37.muduo学习笔记之net_Connector.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99943205">38.muduo学习笔记之net_TcpClient.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99943531">39.muduo学习笔记之net_Poller.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99944585">40.muduo学习笔记之net_PollPoller.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99944668">41.muduo学习笔记之net_EPollPoller.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99944815">42.muduo学习笔记之http_HttpRequest.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99945049">43.muduo学习笔记之http_HttpResponse.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99945241">44.muduo学习笔记之http_HttpContext.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99945335">45.muduo学习笔记之http_HttpServer.{h&amp;cc}</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99945447">46.muduo学习笔记之example_discard例子</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99945554">47.muduo学习笔记之example_下载文件例子</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LvPartner/article/details/99945621">48.muduo学习笔记之example_聊天服务器例子</a></li>
+</ul>
+</li>
+</ol>
+<h1 id="2-muduo安装使用"><a href="#2-muduo安装使用" class="headerlink" title="2. muduo安装使用"></a>2. muduo安装使用</h1><ol>
+<li>这里讲一下muduo如何使用,可以先运行一下再看源码,也可以看完源码在来使用…我是看完源码才用的,使用中也对源码整个框架有了更好的理解</li>
+</ol>
+<h3 id="1-下载编译"><a href="#1-下载编译" class="headerlink" title="1. 下载编译"></a>1. 下载编译</h3><ol>
+<li><p>muduo在github上有开源代码,作者也写的有README介绍如何运行,但是还是有些不理想,这里结合自身经历更详细的说一下如何编译安装</p>
+</li>
+<li><p>首先从<a target="_blank" rel="noopener" href="https://github.com/chenshuo/muduo">muduo(github)</a>下载源码,解压</p>
+</li>
+<li><p>进入解压的文件夹运行bash文件</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.&#x2F;build.sh</span><br></pre></td></tr></table></figure>
+<ul>
+<li>会在上一层目录多个build文件夹,进去后的bin文件夹内都是作者写好的测试例子程序,可以直接运行</li>
+</ul>
+</li>
+</ol>
+<h3 id="2-使用"><a href="#2-使用" class="headerlink" title="2. 使用"></a>2. 使用</h3><ol>
+<li><p>作者的README就是到上面这一步,但是这样只能运行测试作者写好的例子,想自己写代码使用的话,需要继续运行</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.&#x2F;bulid.sh install</span><br></pre></td></tr></table></figure>
+<ul>
+<li>这样会在build文件夹内生成一个”release-install-cpp11”文件夹,里面是头文件和静态库,编译的时候就要指定链接库</li>
+</ul>
+</li>
+<li><p>可以参考作者陈硕的<a target="_blank" rel="noopener" href="https://github.com/chenshuo/muduo-tutorial">教程</a>,这里有一个echo.cc服务例子和几种编译方法,我只关注了makefile文件,直接make不行,需要做一些修改</p>
+</li>
+<li><p>可以把echo.cc文件放到上面说的”release-install-cpp11”目录下,然后通过下面的命令编译</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">g++ echo.cc -I .&#x2F;include -L .&#x2F;lib -lmuduo_net -lmuduo_base -lpthread</span><br></pre></td></tr></table></figure>
+<ul>
+<li>这个本质就是要指定头文件和库文件所在位置,都在本目录下的include和lib文件夹下,如果在其他地方写程序,也需要指定这两个文件夹的目录,也可以放到系统path指定的目录中…</li>
+</ul>
+</li>
+<li><p>自己的代码要使用muduo的话,就需要这个include和lib文件夹,我为了方便使用就把这两个文件夹内的内容移动到了/usr/local/include和/usr/local/lib目录下,这样编译的时候就不用指定目录了</p>
+</li>
+<li><p>编程方面,主要是写三个回调函数,也就是关注作者所说的三个半事件</p>
+<ul>
+<li>onMessage() 当消息到来(1)时做什么</li>
+<li>onConnection() 当连接建立(2)和断开(3)的时候做什么</li>
+<li>onWriteComplete() 当写完后(第三个半事件)做什么</li>
+</ul>
+</li>
+</ol>
+<h1 id="3-muduo各类总览"><a href="#3-muduo各类总览" class="headerlink" title="3. muduo各类总览"></a>3. muduo各类总览</h1><ol>
+<li>这个实际是摘抄&lt;muduo网络库使用手册&gt;中的部分内容,能帮助快速理解muduo类</li>
+</ol>
+<h3 id="1-内部实现类"><a href="#1-内部实现类" class="headerlink" title="1. 内部实现类"></a>1. 内部实现类</h3><ol>
+<li>Channel<ul>
+<li>是selectable IO channel,负责注册与响应IO事件,它不拥有file descriptor.它是Acceptor,Connector,EventLoop,TimeQueue,TcpConnection的成员,生命周期由后者控制</li>
+</ul>
+</li>
+<li>Socket<ul>
+<li>封装一个file descriptor,并在析构的时候关闭fd.它是Acceptor,TcpConnection的成员,生命期由后者控制.EventLoop,TimerQueue也拥有fd,但是不封装为Socket.</li>
+</ul>
+</li>
+<li>SocketsOps<ul>
+<li>封装各种sockets系统调用</li>
+</ul>
+</li>
+<li>Poller<ul>
+<li>是PollPoller和EPollPoller的基类,采用”电平触发”的语意.它是EventLoop的成员,生命期由后者控制.</li>
+</ul>
+</li>
+<li>PollPoller,EPollPoller<ul>
+<li>这两个封装poll(2)和epoll(4)两种IO Multiplexing后端.Poll的存在价值是便于调试,因为poll(2)调用是上下文无关的,用strace(1)很容易知道库的行为是否准确.</li>
+</ul>
+</li>
+<li>Connector<ul>
+<li>用于发起TCP连接,它是TcpClient的成员,生命期由后者控制.</li>
+</ul>
+</li>
+<li>Acceptor <ul>
+<li>用于接受TCP连接,它是TcpServer的成员,生命期由后者控制.</li>
+</ul>
+</li>
+<li>TimerQueue   <ul>
+<li>用timerfd实现定时,这有别于传统的设置poll/epoll_wait的等待时长的方法.TimerQueue用std::map来管理Timer,常用操作的复杂度是O(lnN),N为定时器数目.它是EventLoop的成员,生命期由后者控制.</li>
+</ul>
+</li>
+<li>EventLoopThreadPool<ul>
+<li>用于创建IO线程池,用于把TcpConnection分派到某个EventLoop线程上.它是TcpServer的成员,生命期由后者控制.</li>
+</ul>
+</li>
+</ol>
+<h3 id="2-公开接口类"><a href="#2-公开接口类" class="headerlink" title="2. 公开接口类"></a>2. 公开接口类</h3><ol>
+<li>Buffer<ul>
+<li>仿Netty ChannelBuffer的buffer class,数据的读写透过buffer进行.用户代码不需要调用read(2)/write(2),只需要处理收到的数据和准备好要发送的数据.</li>
+</ul>
+</li>
+<li>InetAddress<ul>
+<li>封装IP地址,muduo目前不能解析域名,只认IP地址</li>
+</ul>
+</li>
+<li>EventLoop<ul>
+<li>事件循环(反应器Reactor),每个线程只能有一个EventLoop实体,它负责IO和定时器事件的分派.它用eventfd(2)来异步唤醒,者有别于传统的用一对pipe(2)的办法.它用TimerQueue作为计时器管理,用Poller作为IO Multiplexing.</li>
+</ul>
+</li>
+<li>EventLoopThread<ul>
+<li>启动一个线程,在其中运行EventLoop::loop().</li>
+</ul>
+</li>
+<li>TcpConnection<ul>
+<li>整个网络库的核心,封装一次TCP连接</li>
+</ul>
+</li>
+<li>TcpClient<ul>
+<li>用于编写网络客户端,能发起连接,并且有重试功能</li>
+</ul>
+</li>
+<li>TcpServer<ul>
+<li>用于编写网络服务端,接受客户的连接</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li>在这些类中,TcpConnection的生命期依靠share_ptr管理(即用户和库共同控制),Buffer的生命期由TcpConnection控制.其余类的生命期由用户控制.Buffer和InetAddress具有值语义,可以拷贝;其他class都是对象语义,不可以拷贝.</li>
+</ul>
+<h3 id="3-类图"><a href="#3-类图" class="headerlink" title="3. 类图"></a>3. 类图</h3><!-- ![muduo类图](./muduo类图.png) -->
+<img src="/1-muduo%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A8%E4%B8%8E%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E8%AF%B4%E6%98%8E/muduo%E7%B1%BB%E5%9B%BE.png" class="" title="muduo类图.png">
+<ul>
+<li>白三角表示继承,图中的Poller和PollPoller,EPollPoller的关系</li>
+<li>白菱形表示聚合,菱形指向整体,部分能脱离整体存在</li>
+<li>黑菱形表示组合,菱形指向整体,部分不能脱离整体存在</li>
+<li>实线表示关联,一个类知道另一个类的属性和方法</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"><i class="fa fa-tag">C++</i></a>
+              <a href="/tags/linux/" rel="tag"><i class="fa fa-tag">linux</i></a>
+              <a href="/tags/muduo/" rel="tag"><i class="fa fa-tag">muduo</i></a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E3%80%8AEffective-C-%E3%80%8B/" rel="prev" title="《Effective C++》">
+      <i class="fa fa-chevron-left"></i> 《Effective C++》
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/API%E7%BD%91%E5%85%B3/" rel="next" title="API网关">
+      API网关 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E8%AF%B4%E6%98%8E"><span class="nav-text">1.源码阅读说明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-muduo%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A8"><span class="nav-text">2. muduo安装使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E4%B8%8B%E8%BD%BD%E7%BC%96%E8%AF%91"><span class="nav-text">1. 下载编译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E4%BD%BF%E7%94%A8"><span class="nav-text">2. 使用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-muduo%E5%90%84%E7%B1%BB%E6%80%BB%E8%A7%88"><span class="nav-text">3. muduo各类总览</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%86%85%E9%83%A8%E5%AE%9E%E7%8E%B0%E7%B1%BB"><span class="nav-text">1. 内部实现类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%85%AC%E5%BC%80%E6%8E%A5%E5%8F%A3%E7%B1%BB"><span class="nav-text">2. 公开接口类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%B1%BB%E5%9B%BE"><span class="nav-text">3. 类图</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="不知自己无知"
+      src="/images/head.jpeg">
+  <p class="site-author-name" itemprop="name">不知自己无知</p>
+  <div class="site-description" itemprop="description">以阅读为生是一件很酷的事，以写作为生是一件更酷的事。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">57</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">53</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+    <!--
+    <div id="music163player">
+      <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=110 src="//music.163.com/outchain/player?type=0&id=5445280661&auto=0&height=90"></iframe>
+       </div>
+    -->
+  </aside>
+  
+  
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不知自己无知</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">346k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">5:14</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='200' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : true,
+      appId      : 'Dv4yd2JUuvVhLBe640B6m1jw-gzGzoHsz',
+      appKey     : 'sNdrMuVcw6jJzlz0HpXBNhdB',
+      placeholder: "来交流交流吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+    </div>
+  
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/miku.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":true},"react":{"opacity":1},"log":false});</script></body>
+</html>
+
+
+

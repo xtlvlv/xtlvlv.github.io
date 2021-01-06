@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head.jpeg">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xtlvlv.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":2,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="置顶 不全，随便做一下笔记，以后可以快速浏览复习  1. 标准数据类型 Python3 中有六个标准的数据类型：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python基础">
+<meta property="og:url" content="https://xtlvlv.github.io/python%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="不知自己无知">
+<meta property="og:description" content="置顶 不全，随便做一下笔记，以后可以快速浏览复习  1. 标准数据类型 Python3 中有六个标准的数据类型：">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-01-06T02:56:08.000Z">
+<meta property="article:modified_time" content="2021-01-06T02:57:01.638Z">
+<meta property="article:author" content="不知自己无知">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://xtlvlv.github.io/python%E5%9F%BA%E7%A1%80/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>python基础 | 不知自己无知</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<!-- require MetingJS-->
+
+<script src="https://cdn.jsdelivr.net/npm/meting@2.0.1/dist/Meting.min.js"></script> 
+
+  <!--pjax：防止跳转页面音乐暂停-->
+ <script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.js"></script>
+  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">不知自己无知</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">53</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">12</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">57</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xtlvlv.github.io/python%E5%9F%BA%E7%A1%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpeg">
+      <meta itemprop="name" content="不知自己无知">
+      <meta itemprop="description" content="以阅读为生是一件很酷的事，以写作为生是一件更酷的事。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不知自己无知">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          python基础
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-01-06 10:56:08 / 修改时间：10:57:01" itemprop="dateCreated datePublished" datetime="2021-01-06T10:56:08+08:00">2021-01-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论数：</span>
+    
+    <a title="valine" href="/python%E5%9F%BA%E7%A1%80/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/python%E5%9F%BA%E7%A1%80/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="置顶"><a href="#置顶" class="headerlink" title="置顶"></a>置顶</h3><ol>
+<li>不全，随便做一下笔记，以后可以快速浏览复习</li>
+</ol>
+<h3 id="1-标准数据类型"><a href="#1-标准数据类型" class="headerlink" title="1. 标准数据类型"></a>1. 标准数据类型</h3><ul>
+<li><p>Python3 中有六个标准的数据类型：</p>
+<a id="more"></a>
+<ul>
+<li>Number（数字）</li>
+<li>String（字符串）</li>
+<li>List（列表）</li>
+<li>Tuple（元组）</li>
+<li>Set（集合）</li>
+<li>Dictionary（字典）</li>
+</ul>
+</li>
+<li><p>Python3 的六个标准数据类型中：</p>
+<ul>
+<li>不可变数据（3 个）：Number（数字）、String（字符串）、Tuple（元组）；</li>
+<li>可变数据（3 个）：List（列表）、Dictionary（字典）、Set（集合）。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-Python字符串格式化"><a href="#2-Python字符串格式化" class="headerlink" title="2. Python字符串格式化"></a>2. Python字符串格式化</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">print (&quot;我叫 %s 今年 %d 岁!&quot; % (&#39;小明&#39;,10))</span><br><span class="line"></span><br><span class="line">print(&quot;我叫 &#123;0&#125; 今年 &#123;1&#125; 岁！&quot;。format(&quot;小明&quot;,10))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="3-Python列表"><a href="#3-Python列表" class="headerlink" title="3. Python列表"></a>3. Python列表</h3><h5 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h5><table>
+<thead>
+<tr>
+<th>序号</th>
+<th>函数</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>len(list)</td>
+<td>列表元素个数</td>
+</tr>
+<tr>
+<td>2</td>
+<td>max(list)</td>
+<td>返回列表元素最大值</td>
+</tr>
+<tr>
+<td>3</td>
+<td>min(list)</td>
+<td>返回列表元素最小值</td>
+</tr>
+<tr>
+<td>4</td>
+<td>list(seq)</td>
+<td>将元组转换为列表</td>
+</tr>
+</tbody></table>
+<h5 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h5><table>
+<thead>
+<tr>
+<th>序号</th>
+<th>函数</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>list.append(obj)</td>
+<td>在列表末尾添加新的对象</td>
+</tr>
+<tr>
+<td>2</td>
+<td>list.count(obj)</td>
+<td>统计某个元素在列表中出现的次数</td>
+</tr>
+<tr>
+<td>3</td>
+<td>list.extend(seq)</td>
+<td>在列表末尾一次性追加另一个序列中的多个值（用新列表扩展原来的列表）</td>
+</tr>
+<tr>
+<td>4</td>
+<td>list.index(obj)</td>
+<td>从列表中找出某个值第一个匹配项的索引位置</td>
+</tr>
+<tr>
+<td>5</td>
+<td>list.insert(index, obj)</td>
+<td>将对象插入列表</td>
+</tr>
+<tr>
+<td>6</td>
+<td>list.pop([index=-1])</td>
+<td>移除列表中的一个元素（默认最后一个元素），并且返回该元素的值</td>
+</tr>
+<tr>
+<td>7</td>
+<td>list.remove(obj)</td>
+<td>移除列表中某个值的第一个匹配项</td>
+</tr>
+<tr>
+<td>8</td>
+<td>list.reverse()</td>
+<td>反向列表中元素</td>
+</tr>
+<tr>
+<td>9</td>
+<td>list.sort( key=None, reverse=False)</td>
+<td>对原列表进行排序</td>
+</tr>
+<tr>
+<td>10</td>
+<td>list.clear()</td>
+<td>清空列表</td>
+</tr>
+<tr>
+<td>11</td>
+<td>list.copy()</td>
+<td>复制列表</td>
+</tr>
+</tbody></table>
+<h3 id="4-元组"><a href="#4-元组" class="headerlink" title="4. 元组"></a>4. 元组</h3><ul>
+<li>创建空元组</li>
+<li>元组中只包含一个元素时，需要在元素后面添加逗号，否则括号会被当作运算符使用：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tup1 &#x3D; ();</span><br><span class="line">tup1 &#x3D; (50,)</span><br></pre></td></tr></table></figure></li>
+<li>元组中的元素值是不允许修改的，但我们可以对元组进行连接组合</li>
+<li>元组中的元素值是不允许删除的，但我们可以使用del语句来删除整个元组</li>
+</ul>
+<h5 id="元组内置函数"><a href="#元组内置函数" class="headerlink" title="元组内置函数"></a>元组内置函数</h5><ul>
+<li><ol>
+<li>len(tuple)<br>计算元组元素个数。    <blockquote>
+<blockquote>
+<blockquote>
+<p>tuple1 = (‘Google’, ‘Runoob’, ‘Taobao’)<br>len(tuple1)<br>3</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>max(tuple)<br>返回元组中元素最大值。    <blockquote>
+<blockquote>
+<blockquote>
+<p>tuple2 = (‘5’, ‘4’, ‘8’)<br>max(tuple2)<br>‘8’</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>min(tuple)<br>返回元组中元素最小值。    <blockquote>
+<blockquote>
+<blockquote>
+<p>tuple2 = (‘5’, ‘4’, ‘8’)<br>min(tuple2)<br>‘4’</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>tuple(seq)<br>将列表转换为元组。    <blockquote>
+<blockquote>
+<blockquote>
+<p>list1= [‘Google’, ‘Taobao’, ‘Runoob’, ‘Baidu’]<br>tuple1=tuple(list1)<br>tuple1<br>(‘Google’, ‘Taobao’, ‘Runoob’, ‘Baidu’)</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="5-字典"><a href="#5-字典" class="headerlink" title="5. 字典"></a>5. 字典</h3><ul>
+<li><p>字典的每个键值(key=&gt;value)对用冒号(:)分割，每个对之间用逗号(,)分割，整个字典包括在花括号({})中 ,格式如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">d &#x3D; &#123;key1 : value1, key2 : value2 &#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>键必须是唯一的，但值则不必。</p>
+</li>
+<li><p>能删单一的元素也能清空字典，清空只需一项操作。</p>
+</li>
+<li><p>显示删除一个字典用del命令，如下实例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">del dict[&#39;Name&#39;] # 删除键 &#39;Name&#39;</span><br><span class="line">dict.clear()     # 清空字典</span><br><span class="line">del dict         # 删除字典</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>不允许同一个键出现两次。创建时如果同一个键被赋值两次，后一个值会被记住 </p>
+</li>
+<li><p>键必须不可变，所以可以用数字，字符串或元组充当，而用列表就不行</p>
+</li>
+</ul>
+<h5 id="内置函数："><a href="#内置函数：" class="headerlink" title="内置函数："></a>内置函数：</h5><ul>
+<li><ol>
+<li>len(dict)<br>计算字典元素个数，即键的总数。    <blockquote>
+<blockquote>
+<blockquote>
+<p>dict = {‘Name’: ‘Runoob’, ‘Age’: 7, ‘Class’: ‘First’}<br>len(dict)<br>3</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>str(dict)<br>输出字典，以可打印的字符串表示。    <blockquote>
+<blockquote>
+<blockquote>
+<p>dict = {‘Name’: ‘Runoob’, ‘Age’: 7, ‘Class’: ‘First’}<br>str(dict)<br>“{‘Name’: ‘Runoob’, ‘Class’: ‘First’, ‘Age’: 7}”</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>type(variable)<br>返回输入的变量类型，如果变量是字典就返回字典类型。    <blockquote>
+<blockquote>
+<blockquote>
+<p>dict = {‘Name’: ‘Runoob’, ‘Age’: 7, ‘Class’: ‘First’}<br>type(dict)<br>&lt;class ‘dict’&gt;</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</li>
+</ol>
+</li>
+</ul>
+<h5 id="内置方法："><a href="#内置方法：" class="headerlink" title="内置方法："></a>内置方法：</h5><ul>
+<li><ol>
+<li>radiansdict.clear()<br>删除字典内所有元素</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>radiansdict.copy()<br>返回一个字典的浅复制</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>radiansdict.fromkeys()<br>创建一个新字典，以序列seq中元素做字典的键，val为字典所有键对应的初始值</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>radiansdict.get(key, default=None)<br>返回指定键的值，如果值不在字典中返回default值</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>key in dict<br>如果键在字典dict里返回true，否则返回false</li>
+</ol>
+</li>
+<li><ol start="6">
+<li>radiansdict.items()<br>以列表返回可遍历的(键, 值) 元组数组</li>
+</ol>
+</li>
+<li><ol start="7">
+<li>radiansdict.keys()<br>返回一个迭代器，可以使用 list() 来转换为列表</li>
+</ol>
+</li>
+<li><ol start="8">
+<li>radiansdict.setdefault(key, default=None)<br>和get()类似, 但如果键不存在于字典中，将会添加键并将值设为default</li>
+</ol>
+</li>
+<li><ol start="9">
+<li>radiansdict.update(dict2)<br>把字典dict2的键/值对更新到dict里</li>
+</ol>
+</li>
+<li><ol start="10">
+<li>radiansdict.values()<br>返回一个迭代器，可以使用 list() 来转换为列表</li>
+</ol>
+</li>
+<li><ol start="11">
+<li>pop(key[,default])<br>删除字典给定键 key 所对应的值，返回值为被删除的值。key值必须给出。 否则，返回default值。</li>
+</ol>
+</li>
+<li><ol start="12">
+<li>popitem()<br>随机返回并删除字典中的一对键和值(一般删除末尾对)</li>
+</ol>
+</li>
+</ul>
+<h3 id="6-集合"><a href="#6-集合" class="headerlink" title="6. 集合"></a>6. 集合</h3><ul>
+<li><p>可以使用大括号 { } 或者 set() 函数创建集合，注意：创建一个空集合必须用 set() 而不是 { }，因为 { } 是用来创建一个空字典。</p>
+</li>
+<li><p>集合内置方法完整列表</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>add()</td>
+<td>为集合添加元素</td>
+</tr>
+<tr>
+<td>clear()</td>
+<td>移除集合中的所有元素</td>
+</tr>
+<tr>
+<td>copy()</td>
+<td>拷贝一个集合</td>
+</tr>
+<tr>
+<td>difference()</td>
+<td>返回多个集合的差集</td>
+</tr>
+<tr>
+<td>difference_update()</td>
+<td>移除集合中的元素，该元素在指定的集合也存在。</td>
+</tr>
+<tr>
+<td>discard()</td>
+<td>删除集合中指定的元素</td>
+</tr>
+<tr>
+<td>intersection()</td>
+<td>返回集合的交集</td>
+</tr>
+<tr>
+<td>intersection_update()</td>
+<td>删除集合中的元素，该元素在指定的集合中不存在。</td>
+</tr>
+<tr>
+<td>isdisjoint()</td>
+<td>判断两个集合是否包含相同的元素，如果没有返回 True，否则返回 False。</td>
+</tr>
+<tr>
+<td>issubset()</td>
+<td>判断指定集合是否为该方法参数集合的子集。</td>
+</tr>
+<tr>
+<td>issuperset()</td>
+<td>判断该方法的参数集合是否为指定集合的子集</td>
+</tr>
+<tr>
+<td>pop()</td>
+<td>随机移除元素</td>
+</tr>
+<tr>
+<td>remove()</td>
+<td>移除指定元素</td>
+</tr>
+<tr>
+<td>symmetric_difference()</td>
+<td>返回两个集合中不重复的元素集合。</td>
+</tr>
+<tr>
+<td>symmetric_difference_update()</td>
+<td>移除当前集合中在另外一个指定集合相同的元素，并将另外一个指定集合中不同的元素插入到当前集合中。</td>
+</tr>
+<tr>
+<td>union()</td>
+<td>返回两个集合的并集</td>
+</tr>
+<tr>
+<td>update()</td>
+<td>给集合添加元素</td>
+</tr>
+</tbody></table>
+<h3 id="7-循环"><a href="#7-循环" class="headerlink" title="7. 循环"></a>7. 循环</h3><ul>
+<li>for<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">for &lt;variable&gt; in &lt;sequence&gt;:</span><br><span class="line">    &lt;statements&gt;</span><br><span class="line">else:</span><br><span class="line">    &lt;statements&gt;</span><br></pre></td></tr></table></figure></li>
+<li>while<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">while count &lt; 5:</span><br><span class="line">   print (count, &quot; 小于 5&quot;)</span><br><span class="line">   count &#x3D; count + 1</span><br><span class="line">else:</span><br><span class="line">   print (count, &quot; 大于或等于 5&quot;)</span><br></pre></td></tr></table></figure></li>
+<li>range()函数<ul>
+<li>如果你需要遍历数字序列，可以使用内置range()函数。它会生成数列</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"><i class="fa fa-tag">python</i></a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="prev" title="Linux性能优化">
+      <i class="fa fa-chevron-left"></i> Linux性能优化
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/python%E8%BF%9B%E9%98%B6/" rel="next" title="python进阶">
+      python进阶 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%AE%E9%A1%B6"><span class="nav-text">置顶</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%A0%87%E5%87%86%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-text">1. 标准数据类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Python%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%A0%BC%E5%BC%8F%E5%8C%96"><span class="nav-text">2. Python字符串格式化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Python%E5%88%97%E8%A1%A8"><span class="nav-text">3. Python列表</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%87%BD%E6%95%B0"><span class="nav-text">函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%96%B9%E6%B3%95"><span class="nav-text">方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%85%83%E7%BB%84"><span class="nav-text">4. 元组</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%85%83%E7%BB%84%E5%86%85%E7%BD%AE%E5%87%BD%E6%95%B0"><span class="nav-text">元组内置函数</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%AD%97%E5%85%B8"><span class="nav-text">5. 字典</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%86%85%E7%BD%AE%E5%87%BD%E6%95%B0%EF%BC%9A"><span class="nav-text">内置函数：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%86%85%E7%BD%AE%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="nav-text">内置方法：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E9%9B%86%E5%90%88"><span class="nav-text">6. 集合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E5%BE%AA%E7%8E%AF"><span class="nav-text">7. 循环</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="不知自己无知"
+      src="/images/head.jpeg">
+  <p class="site-author-name" itemprop="name">不知自己无知</p>
+  <div class="site-description" itemprop="description">以阅读为生是一件很酷的事，以写作为生是一件更酷的事。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">57</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">53</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+    <!--
+    <div id="music163player">
+      <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=110 src="//music.163.com/outchain/player?type=0&id=5445280661&auto=0&height=90"></iframe>
+       </div>
+    -->
+  </aside>
+  
+  
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不知自己无知</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">346k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">5:14</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='200' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : true,
+      appId      : 'Dv4yd2JUuvVhLBe640B6m1jw-gzGzoHsz',
+      appKey     : 'sNdrMuVcw6jJzlz0HpXBNhdB',
+      placeholder: "来交流交流吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+    </div>
+  
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/miku.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":true},"react":{"opacity":1},"log":false});</script></body>
+</html>
+
+
+

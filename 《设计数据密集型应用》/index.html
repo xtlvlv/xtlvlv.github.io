@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head.jpeg">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xtlvlv.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":2,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="图书链接：设计数据密集型应用 第一部分：数据系统的基石第一章：可靠性、可扩展性、可维护性1. 一个应用程序可能需要的数据系统都有什么？ 数据库，存储数据，以便自己或其他应用程序之后能再次找到。 缓存，记住开销昂贵操作的结果，加快读取速度。 搜索索引，允许用户按关键字搜索数据，或以各种方式对数据进行过滤。 流处理，向其他进程发送消息，进行异步处理。 批处理，定期处理累积的大批量数据。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《设计数据密集型应用》">
+<meta property="og:url" content="https://xtlvlv.github.io/%E3%80%8A%E8%AE%BE%E8%AE%A1%E6%95%B0%E6%8D%AE%E5%AF%86%E9%9B%86%E5%9E%8B%E5%BA%94%E7%94%A8%E3%80%8B/index.html">
+<meta property="og:site_name" content="不知自己无知">
+<meta property="og:description" content="图书链接：设计数据密集型应用 第一部分：数据系统的基石第一章：可靠性、可扩展性、可维护性1. 一个应用程序可能需要的数据系统都有什么？ 数据库，存储数据，以便自己或其他应用程序之后能再次找到。 缓存，记住开销昂贵操作的结果，加快读取速度。 搜索索引，允许用户按关键字搜索数据，或以各种方式对数据进行过滤。 流处理，向其他进程发送消息，进行异步处理。 批处理，定期处理累积的大批量数据。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-01-06T06:36:23.000Z">
+<meta property="article:modified_time" content="2021-01-06T06:42:41.459Z">
+<meta property="article:author" content="不知自己无知">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://xtlvlv.github.io/%E3%80%8A%E8%AE%BE%E8%AE%A1%E6%95%B0%E6%8D%AE%E5%AF%86%E9%9B%86%E5%9E%8B%E5%BA%94%E7%94%A8%E3%80%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>《设计数据密集型应用》 | 不知自己无知</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<!-- require MetingJS-->
+
+<script src="https://cdn.jsdelivr.net/npm/meting@2.0.1/dist/Meting.min.js"></script> 
+
+  <!--pjax：防止跳转页面音乐暂停-->
+ <script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.js"></script>
+  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">不知自己无知</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">53</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">12</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">57</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xtlvlv.github.io/%E3%80%8A%E8%AE%BE%E8%AE%A1%E6%95%B0%E6%8D%AE%E5%AF%86%E9%9B%86%E5%9E%8B%E5%BA%94%E7%94%A8%E3%80%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpeg">
+      <meta itemprop="name" content="不知自己无知">
+      <meta itemprop="description" content="以阅读为生是一件很酷的事，以写作为生是一件更酷的事。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不知自己无知">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《设计数据密集型应用》
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-01-06 14:36:23 / 修改时间：14:42:41" itemprop="dateCreated datePublished" datetime="2021-01-06T14:36:23+08:00">2021-01-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">服务端</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论数：</span>
+    
+    <a title="valine" href="/%E3%80%8A%E8%AE%BE%E8%AE%A1%E6%95%B0%E6%8D%AE%E5%AF%86%E9%9B%86%E5%9E%8B%E5%BA%94%E7%94%A8%E3%80%8B/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/%E3%80%8A%E8%AE%BE%E8%AE%A1%E6%95%B0%E6%8D%AE%E5%AF%86%E9%9B%86%E5%9E%8B%E5%BA%94%E7%94%A8%E3%80%8B/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>图书链接：<a target="_blank" rel="noopener" href="https://vonng.gitbooks.io/ddia-cn/content/">设计数据密集型应用</a></p>
+<h1 id="第一部分：数据系统的基石"><a href="#第一部分：数据系统的基石" class="headerlink" title="第一部分：数据系统的基石"></a>第一部分：数据系统的基石</h1><h1 id="第一章：可靠性、可扩展性、可维护性"><a href="#第一章：可靠性、可扩展性、可维护性" class="headerlink" title="第一章：可靠性、可扩展性、可维护性"></a>第一章：可靠性、可扩展性、可维护性</h1><h3 id="1-一个应用程序可能需要的数据系统都有什么？"><a href="#1-一个应用程序可能需要的数据系统都有什么？" class="headerlink" title="1. 一个应用程序可能需要的数据系统都有什么？"></a>1. 一个应用程序可能需要的数据系统都有什么？</h3><ol>
+<li>数据库，存储数据，以便自己或其他应用程序之后能再次找到。</li>
+<li>缓存，记住开销昂贵操作的结果，加快读取速度。</li>
+<li>搜索索引，允许用户按关键字搜索数据，或以各种方式对数据进行过滤。</li>
+<li>流处理，向其他进程发送消息，进行异步处理。</li>
+<li>批处理，定期处理累积的大批量数据。</li>
+</ol>
+<a id="more"></a>
+
+<h3 id="2-这三者的定义是什么？"><a href="#2-这三者的定义是什么？" class="headerlink" title="2. 这三者的定义是什么？"></a>2. 这三者的定义是什么？</h3><ol>
+<li>可靠性Reliability：系统在困境（adversity）（硬件故障、软件故障、人为错误）中仍可正常工作（正确完成功能，并能达到期望的性能水准）。</li>
+<li>可扩展性Scalability：有合理的办法应对系统的增长（数据量、流量、复杂性）。</li>
+<li>可维护性Maintainability： 许多不同的人（工程师、运维）在不同的生命周期，都能高效地在系统上工作（使系统保持现有行为，并适应新的应用场景）。</li>
+</ol>
+<h3 id="3-可靠性理解"><a href="#3-可靠性理解" class="headerlink" title="3. 可靠性理解"></a>3. 可靠性理解</h3><h5 id="3-1-故障"><a href="#3-1-故障" class="headerlink" title="3.1 故障"></a>3.1 故障</h5><ol>
+<li>提高对故障的容错能力，减少故障。</li>
+<li>故障不等于失效，要设计容错机制以防因故障而导致失效。</li>
+</ol>
+<h5 id="3-2-故障大致分为三类：硬件故障、软件错误、人为错误。"><a href="#3-2-故障大致分为三类：硬件故障、软件错误、人为错误。" class="headerlink" title="3.2 故障大致分为三类：硬件故障、软件错误、人为错误。"></a>3.2 故障大致分为三类：硬件故障、软件错误、人为错误。</h5><ol>
+<li>硬件故障比较不可预测，云平台的设计就是优先考虑灵活性（flexibility）和弹性（elasticity），而不是单机可靠性。在硬件冗余的基础上进一步引入软件容错机制，那么系统在容忍整个（单台）机器故障的道路上就更进一步了。</li>
+<li>软件错误，彻底测试减少bug；进程隔离，允许进程崩溃并重启；监控生产环境的系统行为，及时报警。</li>
+<li>人为错误，如配置错误，要能方便回滚，及时全面的监控。</li>
+</ol>
+<h3 id="4-可扩展性理解"><a href="#4-可扩展性理解" class="headerlink" title="4. 可扩展性理解"></a>4. 可扩展性理解</h3><ol>
+<li>可扩展性（Scalability） 是用来描述系统应对负载增长能力的术语，服务 降级（degradation） 的一个常见原因是负载增加。</li>
+</ol>
+<h5 id="4-1-怎样描述负载？"><a href="#4-1-怎样描述负载？" class="headerlink" title="4.1 怎样描述负载？"></a>4.1 怎样描述负载？</h5><ol>
+<li>负载可以用一些称为 负载参数（load parameters） 的数字来描述。参数的最佳选择取决于系统架构，它可能是每秒向Web服务器发出的请求、数据库中的读写比率、聊天室中同时活跃的用户数量、缓存命中率或其他东西。除此之外，也许平均情况很重要，也许瓶颈是少数极端情况</li>
+<li>推特推文设计</li>
+</ol>
+<h5 id="4-2-怎么描述性能？"><a href="#4-2-怎么描述性能？" class="headerlink" title="4.2 怎么描述性能？"></a>4.2 怎么描述性能？</h5><ol>
+<li><p>从两种角度来看： </p>
+<ul>
+<li>增加负载参数并保持系统资源（CPU、内存、网络带宽等）不变时，系统性能将受到什么影响？ </li>
+<li>增加负载参数并希望保持性能不变时，需要增加多少系统资源？</li>
+</ul>
+</li>
+<li><p>常见的是”吞吐量“和”响应时间“</p>
+<ul>
+<li>对于Hadoop这样的批处理系统，通常关心的是吞吐量（throughput），即每秒可以处理的记录数量，或者在特定规模数据集上运行作业的总时间。理想情况下，批量作业的运行时间是数据集的大小除以吞吐量。 在实践中由于数据倾斜（数据不是均匀分布在每个工作进程中），需要等待最慢的任务完成，所以运行时间往往更长。</li>
+<li>对于在线系统，通常更重要的是服务的响应时间（response time），即客户端发送请求到接收响应之间的时间。</li>
+<li>延迟latency 和响应时间response time经常用作同义词，但实际上它们并不一样。响应时间是客户所看到的，除了实际处理请求的时间服务时间service time之外，还包括网络延迟和排队延迟。延迟是某个请求等待处理的持续时长，在此期间它处于 休眠（latent)状态并等待服务</li>
+</ul>
+</li>
+</ol>
+<h5 id="4-3-响应时间的讨论"><a href="#4-3-响应时间的讨论" class="headerlink" title="4.3 响应时间的讨论"></a>4.3 响应时间的讨论</h5><ol>
+<li>通常报表都会展示服务的平均响应时间。然而如果你想知道“典型（typical）”响应时间，那么平均值并不是一个非常好的指标，因为它不能告诉你有多少用户实际上经历了这个延迟。 通常使用百分位点（percentiles）会更好。</li>
+<li>如果将响应时间列表按最快到最慢排序，那么中位数（median）就在正中间：举个例子，如果你的响应时间中位数是200毫秒，这意味着一半请求的返回时间少于200毫秒，另一半比这个要长。</li>
+<li>响应时间的高百分位点（也称为尾部延迟（tail latencies））非常重要</li>
+<li>百分位点通常用于服务级别目标（SLO, service level objectives）和服务级别协议（SLA, service level agreements）</li>
+<li>SLA可能会声明，如果服务响应时间的中位数小于200毫秒，且99.9百分位点低于1秒，则认为服务工作正常（如果响应时间更长，就认为服务不达标）。这些指标为客户设定了期望值，并允许客户在SLA未达标的情况下要求退款。</li>
+</ol>
+<h5 id="4-4-应对负载的方法"><a href="#4-4-应对负载的方法" class="headerlink" title="4.4 应对负载的方法"></a>4.4 应对负载的方法</h5><ol>
+<li><p>纵向扩展（scaling up）（垂直扩展（vertical scaling），转向更强大的机器）和横向扩展（scaling out） （水平扩展（horizontal scaling），将负载分布到多台小机器上）</p>
+</li>
+<li><p>跨多台机器分配负载也称为“无共享（shared-nothing）”架构。</p>
+<ul>
+<li>可以在单台机器上运行的系统通常更简单，但高端机器可能非常贵，所以非常密集的负载通常无法避免地需要横向扩展。现实世界中的优秀架构需要将这两种方法务实地结合，因为使用几台足够强大的机器可能比使用大量的小型虚拟机更简单也更便宜。</li>
+</ul>
+</li>
+<li><p>弹性</p>
+<ul>
+<li>有些系统是 弹性（elastic） 的，这意味着可以在检测到负载增加时自动增加计算资源，而其他系统则是手动扩展（人工分析容量并决定向系统添加更多的机器）。如果负载极难预测（highly unpredictable），则弹性系统可能很有用，但手动扩展系统更简单，并且意外操作可能会更少</li>
+</ul>
+</li>
+<li><p>数据库应该单节点（纵向扩展）</p>
+<ul>
+<li>跨多台机器部署无状态服务（stateless services）非常简单，但将带状态的数据系统从单节点变为分布式配置则可能引入许多额外复杂度。出于这个原因，常识告诉我们应该将数据库放在单个节点上（纵向扩展），直到扩展成本或可用性需求迫使其改为分布式。</li>
+</ul>
+</li>
+</ol>
+<h3 id="5-可维护性理解"><a href="#5-可维护性理解" class="headerlink" title="5. 可维护性理解"></a>5. 可维护性理解</h3><h5 id="5-1-软件系统的三个设计原则"><a href="#5-1-软件系统的三个设计原则" class="headerlink" title="5.1 软件系统的三个设计原则"></a>5.1 软件系统的三个设计原则</h5><ol>
+<li><p>可操作性（Operability）</p>
+<ul>
+<li>便于运维团队保持系统平稳运行。</li>
+</ul>
+</li>
+<li><p>简单性（Simplicity）</p>
+<ul>
+<li>从系统中消除尽可能多的复杂度（complexity），使新工程师也能轻松理解系统。（注意这和用户接口的简单性不一样。）</li>
+</ul>
+</li>
+<li><p>可演化性（evolability）</p>
+<ul>
+<li>使工程师在未来能轻松地对系统进行更改，当需求变化时为新应用场景做适配。也称为可扩展性（extensibility），可修改性（modifiability）或可塑性（plasticity）。</li>
+</ul>
+</li>
+</ol>
+<h5 id="5-2-可操作性：人生苦短，关爱运维"><a href="#5-2-可操作性：人生苦短，关爱运维" class="headerlink" title="5.2 可操作性：人生苦短，关爱运维"></a>5.2 可操作性：人生苦短，关爱运维</h5><ol>
+<li><p>一个优秀运维团队的典型职责如下（或者更多）</p>
+<ul>
+<li>监控系统的运行状况，并在服务状态不佳时快速恢复服务</li>
+<li>跟踪问题的原因，例如系统故障或性能下降</li>
+<li>及时更新软件和平台，比如安全补丁</li>
+<li>了解系统间的相互作用，以便在异常变更造成损失前进行规避。</li>
+<li>预测未来的问题，并在问题出现之前加以解决（例如，容量规划）</li>
+<li>建立部署，配置、管理方面的良好实践，编写相应工具</li>
+<li>执行复杂的维护任务，例如将应用程序从一个平台迁移到另一个平台</li>
+<li>当配置变更时，维持系统的安全性</li>
+<li>定义工作流程，使运维操作可预测，并保持生产环境稳定。</li>
+<li>铁打的营盘流水的兵，维持组织对系统的了解。</li>
+</ul>
+</li>
+<li><p>良好的可操作性意味着更轻松的日常工作，进而运维团队能专注于高价值的事情。数据系统可以通过各种方式使日常任务更轻松：</p>
+<ul>
+<li>通过良好的监控，提供对系统内部状态和运行时行为的可见性（visibility）</li>
+<li>为自动化提供良好支持，将系统与标准化工具相集成</li>
+<li>避免依赖单台机器（在整个系统继续不间断运行的情况下允许机器停机维护）</li>
+<li>提供良好的文档和易于理解的操作模型（“如果做X，会发生Y”）</li>
+<li>提供良好的默认行为，但需要时也允许管理员自由覆盖默认值</li>
+<li>有条件时进行自我修复，但需要时也允许管理员手动控制系统状态</li>
+<li>行为可预测，最大限度减少意外</li>
+</ul>
+</li>
+</ol>
+<h5 id="5-3-简单性：管理复杂度"><a href="#5-3-简单性：管理复杂度" class="headerlink" title="5.3 简单性：管理复杂度"></a>5.3 简单性：管理复杂度</h5><ol>
+<li><p>复杂度（complexity） 有各种可能的症状</p>
+<ul>
+<li>状态空间激增</li>
+<li>模块间紧密耦合</li>
+<li>纠结的依赖关系</li>
+<li>不一致的命名和术语</li>
+<li>解决性能问题的Hack</li>
+<li>需要绕开的特例等等</li>
+</ul>
+</li>
+<li><p>用于消除额外复杂度的最好工具之一是抽象（abstraction）</p>
+<ul>
+<li>一个好的抽象可以将大量实现细节隐藏在一个干净，简单易懂的外观下面。</li>
+<li>一个好的抽象也可以广泛用于各类不同应用。</li>
+<li>比起重复造很多轮子，重用抽象不仅更有效率，而且有助于开发高质量的软件。</li>
+<li>例如，高级编程语言是一种抽象，隐藏了机器码、CPU寄存器和系统调用。 SQL也是一种抽象，隐藏了复杂的磁盘/内存数据结构、来自其他客户端的并发请求、崩溃后的不一致性。</li>
+<li>抽象可以帮助我们将系统的复杂度控制在可管理的水平，不过，找到好的抽象是非常困难的。在分布式系统领域虽然有许多好的算法，但我们并不清楚它们应该打包成什么样抽象。</li>
+</ul>
+</li>
+</ol>
+<h5 id="5-4-可演化性：拥抱变化"><a href="#5-4-可演化性：拥抱变化" class="headerlink" title="5.4 可演化性：拥抱变化"></a>5.4 可演化性：拥抱变化</h5><ol>
+<li>敏捷<ul>
+<li>在组织流程方面， 敏捷（agile） 工作模式为适应变化提供了一个框架。敏捷社区还开发了对在频繁变化的环境中开发软件很有帮助的技术工具和模式，如 测试驱动开发（TDD, test-driven development） 和 重构（refactoring） 。</li>
+<li>这些敏捷技术的大部分讨论都集中在相当小的规模（同一个应用中的几个代码文件）。更大数据系统层面上提高敏捷性的方法，可能由几个不同的应用或服务组成。</li>
+<li>数据系统层面的敏捷性： 可演化性（evolvability）</li>
+</ul>
+</li>
+</ol>
+<h1 id="第二章-数据模型与查询语言"><a href="#第二章-数据模型与查询语言" class="headerlink" title="第二章 数据模型与查询语言"></a>第二章 数据模型与查询语言</h1><p>几种查询语言需要再总结一下吗？数据模型就是当前数据库类型，对数据的存储模型，当前主流是关系型、图形数据库、文档数据库，对关系型了解，另两种都是什么？有什么具体的例子和应用场景。</p>
+<h1 id="第三章存储与检索"><a href="#第三章存储与检索" class="headerlink" title="第三章存储与检索"></a>第三章存储与检索</h1><p>数据如何存储，如何新追加，各数据库引擎如何设计的。几种索引方式，什么是B树，LSM树，还有其他索引方式。</p>
+<h1 id="第四章编码与演化"><a href="#第四章编码与演化" class="headerlink" title="第四章编码与演化"></a>第四章编码与演化</h1><p>讲了数据结构转换为网络中的字节或磁盘上的字节的几种方法。提到了protobuf和thrift、rest api和rpc。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0consul%E7%AC%94%E8%AE%B0/" rel="prev" title="服务注册与发现consul笔记">
+      <i class="fa fa-chevron-left"></i> 服务注册与发现consul笔记
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E6%83%8A%E7%BE%A4%E6%95%88%E5%BA%94/" rel="next" title="惊群效应">
+      惊群效应 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%EF%BC%9A%E6%95%B0%E6%8D%AE%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%9F%BA%E7%9F%B3"><span class="nav-text">第一部分：数据系统的基石</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E5%8F%AF%E9%9D%A0%E6%80%A7%E3%80%81%E5%8F%AF%E6%89%A9%E5%B1%95%E6%80%A7%E3%80%81%E5%8F%AF%E7%BB%B4%E6%8A%A4%E6%80%A7"><span class="nav-text">第一章：可靠性、可扩展性、可维护性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E4%B8%80%E4%B8%AA%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E5%8F%AF%E8%83%BD%E9%9C%80%E8%A6%81%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B3%BB%E7%BB%9F%E9%83%BD%E6%9C%89%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-text">1. 一个应用程序可能需要的数据系统都有什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%BF%99%E4%B8%89%E8%80%85%E7%9A%84%E5%AE%9A%E4%B9%89%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-text">2. 这三者的定义是什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%90%86%E8%A7%A3"><span class="nav-text">3. 可靠性理解</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#3-1-%E6%95%85%E9%9A%9C"><span class="nav-text">3.1 故障</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-2-%E6%95%85%E9%9A%9C%E5%A4%A7%E8%87%B4%E5%88%86%E4%B8%BA%E4%B8%89%E7%B1%BB%EF%BC%9A%E7%A1%AC%E4%BB%B6%E6%95%85%E9%9A%9C%E3%80%81%E8%BD%AF%E4%BB%B6%E9%94%99%E8%AF%AF%E3%80%81%E4%BA%BA%E4%B8%BA%E9%94%99%E8%AF%AF%E3%80%82"><span class="nav-text">3.2 故障大致分为三类：硬件故障、软件错误、人为错误。</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%8F%AF%E6%89%A9%E5%B1%95%E6%80%A7%E7%90%86%E8%A7%A3"><span class="nav-text">4. 可扩展性理解</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#4-1-%E6%80%8E%E6%A0%B7%E6%8F%8F%E8%BF%B0%E8%B4%9F%E8%BD%BD%EF%BC%9F"><span class="nav-text">4.1 怎样描述负载？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-2-%E6%80%8E%E4%B9%88%E6%8F%8F%E8%BF%B0%E6%80%A7%E8%83%BD%EF%BC%9F"><span class="nav-text">4.2 怎么描述性能？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-3-%E5%93%8D%E5%BA%94%E6%97%B6%E9%97%B4%E7%9A%84%E8%AE%A8%E8%AE%BA"><span class="nav-text">4.3 响应时间的讨论</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-4-%E5%BA%94%E5%AF%B9%E8%B4%9F%E8%BD%BD%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-text">4.4 应对负载的方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%8F%AF%E7%BB%B4%E6%8A%A4%E6%80%A7%E7%90%86%E8%A7%A3"><span class="nav-text">5. 可维护性理解</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#5-1-%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%B8%89%E4%B8%AA%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99"><span class="nav-text">5.1 软件系统的三个设计原则</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-2-%E5%8F%AF%E6%93%8D%E4%BD%9C%E6%80%A7%EF%BC%9A%E4%BA%BA%E7%94%9F%E8%8B%A6%E7%9F%AD%EF%BC%8C%E5%85%B3%E7%88%B1%E8%BF%90%E7%BB%B4"><span class="nav-text">5.2 可操作性：人生苦短，关爱运维</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-3-%E7%AE%80%E5%8D%95%E6%80%A7%EF%BC%9A%E7%AE%A1%E7%90%86%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="nav-text">5.3 简单性：管理复杂度</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-4-%E5%8F%AF%E6%BC%94%E5%8C%96%E6%80%A7%EF%BC%9A%E6%8B%A5%E6%8A%B1%E5%8F%98%E5%8C%96"><span class="nav-text">5.4 可演化性：拥抱变化</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B%E4%B8%8E%E6%9F%A5%E8%AF%A2%E8%AF%AD%E8%A8%80"><span class="nav-text">第二章 数据模型与查询语言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E7%AB%A0%E5%AD%98%E5%82%A8%E4%B8%8E%E6%A3%80%E7%B4%A2"><span class="nav-text">第三章存储与检索</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E7%AB%A0%E7%BC%96%E7%A0%81%E4%B8%8E%E6%BC%94%E5%8C%96"><span class="nav-text">第四章编码与演化</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="不知自己无知"
+      src="/images/head.jpeg">
+  <p class="site-author-name" itemprop="name">不知自己无知</p>
+  <div class="site-description" itemprop="description">以阅读为生是一件很酷的事，以写作为生是一件更酷的事。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">57</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">53</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+    <!--
+    <div id="music163player">
+      <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=110 src="//music.163.com/outchain/player?type=0&id=5445280661&auto=0&height=90"></iframe>
+       </div>
+    -->
+  </aside>
+  
+  
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不知自己无知</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">346k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">5:14</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='200' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : true,
+      appId      : 'Dv4yd2JUuvVhLBe640B6m1jw-gzGzoHsz',
+      appKey     : 'sNdrMuVcw6jJzlz0HpXBNhdB',
+      placeholder: "来交流交流吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+    </div>
+  
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/miku.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":true},"react":{"opacity":1},"log":false});</script></body>
+</html>
+
+
+
