@@ -1228,7 +1228,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #663605;
+  background: #b3ba40;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2758,7 +2758,6 @@ header.post-header {
   font-size: 13px;
 }
 body {
-  background: url("https://xtlvlv.github.io/images/background.jpeg");
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-position: 50% 50%;
